@@ -5,261 +5,196 @@ var output = function (_, Kotlin) {
   'use strict';
   var throwCCE = Kotlin.throwCCE;
   var Unit = Kotlin.kotlin.Unit;
-  var Kind_OBJECT = Kotlin.Kind.OBJECT;
-  var Enum = Kotlin.kotlin.Enum;
   var Kind_CLASS = Kotlin.Kind.CLASS;
-  var throwISE = Kotlin.throwISE;
-  var HashMap_init = Kotlin.kotlin.collections.HashMap_init_q3lmfv$;
   var Math_0 = Math;
+  var Kind_OBJECT = Kotlin.Kind.OBJECT;
   var println = Kotlin.kotlin.io.println_s8jyv4$;
-  KeyMap.prototype = Object.create(Enum.prototype);
-  KeyMap.prototype.constructor = KeyMap;
-  SimpleRobot.prototype = Object.create(RobotBase.prototype);
-  SimpleRobot.prototype.constructor = SimpleRobot;
+  var HashMap_init = Kotlin.kotlin.collections.HashMap_init_q3lmfv$;
+  var Kind_INTERFACE = Kotlin.Kind.INTERFACE;
+  TankDriveRobot.prototype = Object.create(RobotBase.prototype);
+  TankDriveRobot.prototype.constructor = TankDriveRobot;
   var canvas;
-  var ctx;
-  var canvasWidth;
-  var canvasHeight;
-  function main$lambda(closure$robot) {
-    return function () {
-      ctx.save();
-      ctx.setTransform(1.0, 0.0, 0.0, 1.0, 0.0, 0.0);
-      ctx.clearRect(0.0, 0.0, canvasWidth, canvasHeight);
-      ctx.restore();
-      closure$robot.update();
-      return Unit;
-    };
+  var simulator;
+  var period;
+  var canvasMaxX;
+  var canvasMaxY;
+  function main$lambda() {
+    clear(simulator);
+    TankDriveRobot_getInstance().loop();
+    Keys_getInstance().loop();
+    return Unit;
   }
   function main() {
-    var robot = new SimpleRobot(void 0, void 0, 5.0);
-    ctx.translate(canvasWidth / 2.0, canvasHeight / 2.0);
-    ctx.scale(1.0, -1.0);
-    window.setInterval(main$lambda(robot), 16);
+    simulator.translate(canvasMaxX, canvasMaxY);
+    simulator.scale(1.0, -1.0);
+    window.setInterval(main$lambda, 16);
   }
-  function KeyManager() {
-    KeyManager_instance = this;
-    this.keys_0 = HashMap_init();
-    document.addEventListener('keydown', KeyManager_init$lambda(this));
-    document.addEventListener('keyup', KeyManager_init$lambda_0(this));
+  function RobotBase(size, maxVelocity) {
+    this.size = size;
+    this.maxVelocity = maxVelocity * 16 / 1000;
+    this.pos = new Point(0.0, 0.0);
+    this.bearing = 0.0;
   }
-  KeyManager.prototype.get_xx09k3$ = function (key) {
-    var tmp$;
-    return (tmp$ = this.keys_0.get_11rb$(key.raw)) != null ? tmp$ : false;
+  RobotBase.prototype.loop = function () {
+    this.update();
+    var x = this.bearing;
+    var sin = Math_0.sin(x);
+    var x_0 = this.bearing;
+    var cos = Math_0.cos(x_0);
+    var corners = [(new Point(this.pos.x + this.size / 2, this.pos.y + this.size / 2)).rotate_6utxgo$(this.pos, sin, cos), (new Point(this.pos.x + this.size / 2, this.pos.y - this.size / 2)).rotate_6utxgo$(this.pos, sin, cos), (new Point(this.pos.x - this.size / 2, this.pos.y - this.size / 2)).rotate_6utxgo$(this.pos, sin, cos), (new Point(this.pos.x - this.size / 2, this.pos.y + this.size / 2)).rotate_6utxgo$(this.pos, sin, cos)];
+    simulator.lineWidth = 5.0;
+    simulator.strokeStyle = '#000000';
+    strokePolygon(simulator, corners.slice());
+    simulator.strokeStyle = '#0000ff';
+    strokeLine(simulator, corners[0], corners[3]);
   };
-  function KeyManager_init$lambda(this$KeyManager) {
+  RobotBase.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'RobotBase',
+    interfaces: [Loopable]
+  };
+  function TankDriveRobot() {
+    TankDriveRobot_instance = this;
+    RobotBase.call(this, 50.0, 500.0);
+  }
+  TankDriveRobot.prototype.update = function () {
+    var x = -Keys_getInstance().z;
+    var y = Keys_getInstance().y;
+    var v = (1 - Math_0.abs(x)) * y + y;
+    var w = (1 - Math_0.abs(y)) * x + x;
+    var l = (v - w) / 2 * this.maxVelocity;
+    var r = (v + w) / 2 * this.maxVelocity;
+    var s = (l + r) / 2;
+    var theta = (l - r) / this.size;
+    var tmp$ = this.pos;
+    var tmp$_0 = this.pos.x;
+    var x_0 = this.bearing;
+    tmp$.x = tmp$_0 + s * Math_0.sin(x_0);
+    var tmp$_1 = this.pos;
+    var tmp$_2 = this.pos.y;
+    var x_1 = this.bearing;
+    tmp$_1.y = tmp$_2 + s * Math_0.cos(x_1);
+    this.bearing = this.bearing + theta;
+  };
+  TankDriveRobot.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'TankDriveRobot',
+    interfaces: [RobotBase]
+  };
+  var TankDriveRobot_instance = null;
+  function TankDriveRobot_getInstance() {
+    if (TankDriveRobot_instance === null) {
+      new TankDriveRobot();
+    }
+    return TankDriveRobot_instance;
+  }
+  function strokePolygon($receiver, points) {
+    if (points.length < 3) {
+      println('Tried to draw polygon with less than 3 points');
+      return;
+    }
+    $receiver.beginPath();
+    $receiver.moveTo(points[0].x, points[0].y);
+    for (var i = 1; i < points.length; i++) {
+      $receiver.lineTo(points[i].x, points[i].y);
+    }
+    $receiver.closePath();
+    $receiver.stroke();
+  }
+  function strokeLine($receiver, from, to) {
+    $receiver.beginPath();
+    $receiver.moveTo(from.x, from.y);
+    $receiver.lineTo(to.x, to.y);
+    $receiver.closePath();
+    $receiver.stroke();
+  }
+  function clear($receiver) {
+    $receiver.save();
+    $receiver.setTransform(1.0, 0.0, 0.0, 1.0, 0.0, 0.0);
+    $receiver.clearRect(0.0, 0.0, $receiver.canvas.width, $receiver.canvas.height);
+    $receiver.restore();
+  }
+  function Keys() {
+    Keys_instance = this;
+    this.x = 0.0;
+    this.y = 0.0;
+    this.z = 0.0;
+    this.A_0 = 65;
+    this.D_0 = 68;
+    this.S_0 = 83;
+    this.W_0 = 87;
+    this.LEFT_0 = 37;
+    this.RIGHT_0 = 39;
+    this.keys_0 = HashMap_init();
+    document.addEventListener('keydown', Keys_init$lambda(this));
+    document.addEventListener('keyup', Keys_init$lambda_0(this));
+  }
+  Keys.prototype.isPressed_0 = function ($receiver) {
+    var tmp$;
+    return (tmp$ = this.keys_0.get_11rb$($receiver)) != null ? tmp$ : false;
+  };
+  Keys.prototype.loop = function () {
+    this.x = 0.0;
+    this.y = 0.0;
+    this.z = 0.0;
+    if (this.isPressed_0(65))
+      this.x -= 1.0;
+    if (this.isPressed_0(68))
+      this.x += 1.0;
+    if (this.isPressed_0(83))
+      this.y -= 1.0;
+    if (this.isPressed_0(87))
+      this.y += 1.0;
+    if (this.isPressed_0(37))
+      this.z -= 1.0;
+    if (this.isPressed_0(39))
+      this.z += 1.0;
+  };
+  Keys.prototype.toString = function () {
+    return 'X: ' + this.x + ' | Y: ' + this.y + ' | Z: ' + this.z;
+  };
+  function Keys_init$lambda(this$Keys) {
     return function (it) {
       var tmp$, tmp$_0;
-      tmp$_0 = this$KeyManager.keys_0;
+      tmp$_0 = this$Keys.keys_0;
       var key = (Kotlin.isType(tmp$ = it, KeyboardEvent) ? tmp$ : throwCCE()).keyCode;
       tmp$_0.put_xwzc9p$(key, true);
       return Unit;
     };
   }
-  function KeyManager_init$lambda_0(this$KeyManager) {
+  function Keys_init$lambda_0(this$Keys) {
     return function (it) {
       var tmp$, tmp$_0;
-      tmp$_0 = this$KeyManager.keys_0;
+      tmp$_0 = this$Keys.keys_0;
       var key = (Kotlin.isType(tmp$ = it, KeyboardEvent) ? tmp$ : throwCCE()).keyCode;
       tmp$_0.put_xwzc9p$(key, false);
       return Unit;
     };
   }
-  KeyManager.$metadata$ = {
+  Keys.$metadata$ = {
     kind: Kind_OBJECT,
-    simpleName: 'KeyManager',
+    simpleName: 'Keys',
+    interfaces: [Loopable]
+  };
+  var Keys_instance = null;
+  function Keys_getInstance() {
+    if (Keys_instance === null) {
+      new Keys();
+    }
+    return Keys_instance;
+  }
+  function Loopable() {
+  }
+  Loopable.$metadata$ = {
+    kind: Kind_INTERFACE,
+    simpleName: 'Loopable',
     interfaces: []
-  };
-  var KeyManager_instance = null;
-  function KeyManager_getInstance() {
-    if (KeyManager_instance === null) {
-      new KeyManager();
-    }
-    return KeyManager_instance;
-  }
-  function KeyMap(name, ordinal, raw) {
-    Enum.call(this);
-    this.raw = raw;
-    this.name$ = name;
-    this.ordinal$ = ordinal;
-  }
-  function KeyMap_initFields() {
-    KeyMap_initFields = function () {
-    };
-    KeyMap$W_instance = new KeyMap('W', 0, 87);
-    KeyMap$A_instance = new KeyMap('A', 1, 83);
-    KeyMap$S_instance = new KeyMap('S', 2, 65);
-    KeyMap$D_instance = new KeyMap('D', 3, 68);
-    KeyMap$UP_instance = new KeyMap('UP', 4, 38);
-    KeyMap$DOWN_instance = new KeyMap('DOWN', 5, 40);
-    KeyMap$LEFT_instance = new KeyMap('LEFT', 6, 37);
-    KeyMap$RIGHT_instance = new KeyMap('RIGHT', 7, 39);
-  }
-  var KeyMap$W_instance;
-  function KeyMap$W_getInstance() {
-    KeyMap_initFields();
-    return KeyMap$W_instance;
-  }
-  var KeyMap$A_instance;
-  function KeyMap$A_getInstance() {
-    KeyMap_initFields();
-    return KeyMap$A_instance;
-  }
-  var KeyMap$S_instance;
-  function KeyMap$S_getInstance() {
-    KeyMap_initFields();
-    return KeyMap$S_instance;
-  }
-  var KeyMap$D_instance;
-  function KeyMap$D_getInstance() {
-    KeyMap_initFields();
-    return KeyMap$D_instance;
-  }
-  var KeyMap$UP_instance;
-  function KeyMap$UP_getInstance() {
-    KeyMap_initFields();
-    return KeyMap$UP_instance;
-  }
-  var KeyMap$DOWN_instance;
-  function KeyMap$DOWN_getInstance() {
-    KeyMap_initFields();
-    return KeyMap$DOWN_instance;
-  }
-  var KeyMap$LEFT_instance;
-  function KeyMap$LEFT_getInstance() {
-    KeyMap_initFields();
-    return KeyMap$LEFT_instance;
-  }
-  var KeyMap$RIGHT_instance;
-  function KeyMap$RIGHT_getInstance() {
-    KeyMap_initFields();
-    return KeyMap$RIGHT_instance;
-  }
-  KeyMap.$metadata$ = {
-    kind: Kind_CLASS,
-    simpleName: 'KeyMap',
-    interfaces: [Enum]
-  };
-  function KeyMap$values() {
-    return [KeyMap$W_getInstance(), KeyMap$A_getInstance(), KeyMap$S_getInstance(), KeyMap$D_getInstance(), KeyMap$UP_getInstance(), KeyMap$DOWN_getInstance(), KeyMap$LEFT_getInstance(), KeyMap$RIGHT_getInstance()];
-  }
-  KeyMap.values = KeyMap$values;
-  function KeyMap$valueOf(name) {
-    switch (name) {
-      case 'W':
-        return KeyMap$W_getInstance();
-      case 'A':
-        return KeyMap$A_getInstance();
-      case 'S':
-        return KeyMap$S_getInstance();
-      case 'D':
-        return KeyMap$D_getInstance();
-      case 'UP':
-        return KeyMap$UP_getInstance();
-      case 'DOWN':
-        return KeyMap$DOWN_getInstance();
-      case 'LEFT':
-        return KeyMap$LEFT_getInstance();
-      case 'RIGHT':
-        return KeyMap$RIGHT_getInstance();
-      default:throwISE('No enum constant KeyMap.' + name);
-    }
-  }
-  KeyMap.valueOf_61zpoe$ = KeyMap$valueOf;
-  function RobotBase(width, height, maxVelocity, pos, angle) {
-    this.width = width;
-    this.height = height;
-    this.maxVelocity = maxVelocity;
-    this.pos = pos;
-    this.angle = angle;
-  }
-  Object.defineProperty(RobotBase.prototype, 'topLeft', {
-    get: function () {
-      return (new Point(this.pos.x - this.width / 2, this.pos.y + this.height / 2)).rotate_mcmwxq$(this.angle, this.pos);
-    }
-  });
-  Object.defineProperty(RobotBase.prototype, 'topRight', {
-    get: function () {
-      return (new Point(this.pos.x + this.width / 2, this.pos.y + this.height / 2)).rotate_mcmwxq$(this.angle, this.pos);
-    }
-  });
-  Object.defineProperty(RobotBase.prototype, 'bottomLeft', {
-    get: function () {
-      return (new Point(this.pos.x - this.width / 2, this.pos.y - this.height / 2)).rotate_mcmwxq$(this.angle, this.pos);
-    }
-  });
-  Object.defineProperty(RobotBase.prototype, 'bottomRight', {
-    get: function () {
-      return (new Point(this.pos.x + this.width / 2, this.pos.y - this.height / 2)).rotate_mcmwxq$(this.angle, this.pos);
-    }
-  });
-  RobotBase.$metadata$ = {
-    kind: Kind_CLASS,
-    simpleName: 'RobotBase',
-    interfaces: []
-  };
-  function SimpleRobot(width, height, maxVelocity, pos, angle) {
-    if (width === void 0)
-      width = 50.0;
-    if (height === void 0)
-      height = 60.0;
-    if (maxVelocity === void 0)
-      maxVelocity = 10.0;
-    if (pos === void 0)
-      pos = new Point(0.0, 0.0);
-    if (angle === void 0)
-      angle = 0.0;
-    RobotBase.call(this, width, height, maxVelocity, pos, angle);
-    this.maxAngularVelocity_0 = 2 * maxVelocity / width;
-  }
-  SimpleRobot.prototype.update = function () {
-    if (KeyManager_getInstance().get_xx09k3$(KeyMap$W_getInstance())) {
-      this.pos.y = this.pos.y + this.maxVelocity;
-    }
-    if (KeyManager_getInstance().get_xx09k3$(KeyMap$A_getInstance())) {
-      this.pos.y = this.pos.y - this.maxVelocity;
-    }
-    if (KeyManager_getInstance().get_xx09k3$(KeyMap$S_getInstance())) {
-      this.pos.x = this.pos.x - this.maxVelocity;
-    }
-    if (KeyManager_getInstance().get_xx09k3$(KeyMap$D_getInstance())) {
-      this.pos.x = this.pos.x + this.maxVelocity;
-    }
-    if (KeyManager_getInstance().get_xx09k3$(KeyMap$LEFT_getInstance())) {
-      this.angle = this.angle - this.maxAngularVelocity_0;
-    }
-    if (KeyManager_getInstance().get_xx09k3$(KeyMap$RIGHT_getInstance())) {
-      this.angle = this.angle + this.maxAngularVelocity_0;
-    }
-    var tmp$ = this.pos;
-    var a = (-canvasWidth + this.width) / 2;
-    var b = this.pos.x;
-    tmp$.x = Math_0.max(a, b);
-    var tmp$_0 = this.pos;
-    var a_0 = (canvasWidth - this.width) / 2;
-    var b_0 = this.pos.x;
-    tmp$_0.x = Math_0.min(a_0, b_0);
-    var tmp$_1 = this.pos;
-    var a_1 = (-canvasHeight + this.height) / 2;
-    var b_1 = this.pos.y;
-    tmp$_1.y = Math_0.max(a_1, b_1);
-    var tmp$_2 = this.pos;
-    var a_2 = (canvasHeight - this.height) / 2;
-    var b_2 = this.pos.y;
-    tmp$_2.y = Math_0.min(a_2, b_2);
-    fillPolygon(ctx, [this.topLeft, this.topRight, this.bottomRight, this.bottomLeft]);
-  };
-  SimpleRobot.$metadata$ = {
-    kind: Kind_CLASS,
-    simpleName: 'SimpleRobot',
-    interfaces: [RobotBase]
   };
   function Point(x, y) {
     this.x = x;
     this.y = y;
   }
-  Point.prototype.rotate_mcmwxq$ = function (theta, about) {
-    var cos = Math_0.cos(theta);
-    var sin = Math_0.sin(theta);
+  Point.prototype.rotate_6utxgo$ = function (about, sin, cos) {
     var newX = this.x - about.x;
     var newY = this.y - about.y;
     return new Point(newX * cos + newY * sin + about.x, -newX * sin + newY * cos + about.y);
@@ -290,79 +225,52 @@ var output = function (_, Kotlin) {
   Point.prototype.equals = function (other) {
     return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.x, other.x) && Kotlin.equals(this.y, other.y)))));
   };
-  function fillPolygon($receiver, points) {
-    if (points.length < 3) {
-      println('Tried to draw polygon with less than 3 points');
-      return;
-    }
-    ctx.beginPath();
-    ctx.moveTo(points[0].x, points[0].y);
-    for (var i = 1; i < points.length; i++) {
-      ctx.lineTo(points[i].x, points[i].y);
-    }
-    ctx.closePath();
-    ctx.fill();
-  }
   Object.defineProperty(_, 'canvas', {
     get: function () {
       return canvas;
     }
   });
-  Object.defineProperty(_, 'ctx', {
+  Object.defineProperty(_, 'simulator', {
     get: function () {
-      return ctx;
+      return simulator;
     }
   });
-  Object.defineProperty(_, 'canvasWidth', {
+  Object.defineProperty(_, 'period', {
     get: function () {
-      return canvasWidth;
+      return period;
     }
   });
-  Object.defineProperty(_, 'canvasHeight', {
+  Object.defineProperty(_, 'canvasMaxX', {
     get: function () {
-      return canvasHeight;
+      return canvasMaxX;
+    }
+  });
+  Object.defineProperty(_, 'canvasMaxY', {
+    get: function () {
+      return canvasMaxY;
     }
   });
   _.main = main;
-  Object.defineProperty(_, 'KeyManager', {
-    get: KeyManager_getInstance
-  });
-  Object.defineProperty(KeyMap, 'W', {
-    get: KeyMap$W_getInstance
-  });
-  Object.defineProperty(KeyMap, 'A', {
-    get: KeyMap$A_getInstance
-  });
-  Object.defineProperty(KeyMap, 'S', {
-    get: KeyMap$S_getInstance
-  });
-  Object.defineProperty(KeyMap, 'D', {
-    get: KeyMap$D_getInstance
-  });
-  Object.defineProperty(KeyMap, 'UP', {
-    get: KeyMap$UP_getInstance
-  });
-  Object.defineProperty(KeyMap, 'DOWN', {
-    get: KeyMap$DOWN_getInstance
-  });
-  Object.defineProperty(KeyMap, 'LEFT', {
-    get: KeyMap$LEFT_getInstance
-  });
-  Object.defineProperty(KeyMap, 'RIGHT', {
-    get: KeyMap$RIGHT_getInstance
-  });
-  _.KeyMap = KeyMap;
   var package$robots = _.robots || (_.robots = {});
   package$robots.RobotBase = RobotBase;
-  _.SimpleRobot = SimpleRobot;
-  _.Point = Point;
+  Object.defineProperty(package$robots, 'TankDriveRobot', {
+    get: TankDriveRobot_getInstance
+  });
   var package$util = _.util || (_.util = {});
-  package$util.fillPolygon_8zks36$ = fillPolygon;
+  package$util.strokePolygon_ef5b96$ = strokePolygon;
+  package$util.strokeLine_z11l89$ = strokeLine;
+  package$util.clear_qtrdl1$ = clear;
+  Object.defineProperty(package$util, 'Keys', {
+    get: Keys_getInstance
+  });
+  package$util.Loopable = Loopable;
+  package$util.Point = Point;
   var tmp$, tmp$_0;
   canvas = Kotlin.isType(tmp$ = document.getElementById('simulator'), HTMLCanvasElement) ? tmp$ : throwCCE();
-  ctx = Kotlin.isType(tmp$_0 = canvas.getContext('2d'), CanvasRenderingContext2D) ? tmp$_0 : throwCCE();
-  canvasWidth = canvas.width;
-  canvasHeight = canvas.height;
+  simulator = Kotlin.isType(tmp$_0 = canvas.getContext('2d'), CanvasRenderingContext2D) ? tmp$_0 : throwCCE();
+  period = 16;
+  canvasMaxX = canvas.width / 2;
+  canvasMaxY = canvas.height / 2;
   main();
   Kotlin.defineModule('output', _);
   return _;
