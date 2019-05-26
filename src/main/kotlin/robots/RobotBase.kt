@@ -1,29 +1,64 @@
 package robots
 
-import Point
+import period
+import simulator
+import util.Loopable
+import util.Point
+import util.strokeLine
+import util.strokePolygon
+import kotlin.math.cos
+import kotlin.math.sin
 
 /**
- * Base robot which contains common information
+ * Base class for all robots
  *
- * @param width of the robot (px)
- * @param height of the robot (px)
- * @param maxVelocity of the robot (px) every 1000/60 seconds
- * @param pos point of center of the robot
- * @param angle of the robot in degrees (clockwise from North)
+ * @param size width/hieght of the robot (in pixels)
+ * @param maxVelocity of the robot (in pixels per second)
+ *
+ * @see Loopable
  */
 abstract class RobotBase(
-    val width: Double,
-    val height: Double,
-    val maxVelocity: Double,
-    val pos: Point,
-    var angle: Double
-) {
+    val size: Double,
+    maxVelocity: Double
+) : Loopable {
 
     /**
-     * Points of the corners of the robot
+     * Calculate maxVelocity per frame
      */
-    val topLeft get() = Point(pos.x - width / 2, pos.y + height / 2).rotate(angle, pos)
-    val topRight get() = Point(pos.x + width / 2, pos.y + height / 2).rotate(angle, pos)
-    val bottomLeft get() = Point(pos.x - width / 2, pos.y - height / 2).rotate(angle, pos)
-    val bottomRight get() = Point(pos.x + width / 2, pos.y - height / 2).rotate(angle, pos)
+    val maxVelocity = maxVelocity * period / 1000
+
+    /**
+     * Current position and bearing of the robot
+     */
+    var pos = Point(0.0, 0.0)
+    var bearing = 0.0
+
+    /**
+     * Abstract function to be called by the robot before `loop`
+     */
+    abstract fun update()
+
+    override fun loop() {
+        update()
+
+        val sin = sin(bearing)
+        val cos = cos(bearing)
+
+        val corners = arrayOf(
+            Point(pos.x + size / 2, pos.y + size / 2).rotate(pos, sin, cos), // top right
+            Point(pos.x + size / 2, pos.y - size / 2).rotate(pos, sin, cos), // bottom right
+            Point(pos.x - size / 2, pos.y - size / 2).rotate(pos, sin, cos), // bottom left
+            Point(pos.x - size / 2, pos.y + size / 2).rotate(pos, sin, cos) // top left
+        )
+
+        simulator.lineWidth = 5.0
+        simulator.strokeStyle = "#000000"
+        simulator.strokePolygon(*corners)
+        simulator.strokeStyle = "#0000ff"
+        simulator.strokeLine(
+            corners[0],
+            corners[3]
+        )
+    }
+
 }
