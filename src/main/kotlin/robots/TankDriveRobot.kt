@@ -1,8 +1,8 @@
 package robots
 
+import control.KeyboardControl
 import org.w3c.dom.CanvasRenderingContext2D
-import util.settings.Settings
-import util.KeyboardControl
+import settings.Settings
 import kotlin.math.abs
 import kotlin.math.cos
 import kotlin.math.sin
@@ -11,7 +11,7 @@ class TankDriveRobot(
     context: CanvasRenderingContext2D,
     private val controls: KeyboardControl,
     private val settings: Settings
-) : RobotBase(
+) : Robot(
     context,
     settings
 ) {
@@ -29,7 +29,7 @@ class TankDriveRobot(
 
         // left/right output to position
         val s = (l + r) / 2
-        val theta = (l - r) / settings.robotWidth()
+        val theta = (l - r) / settings.robotWidth
 
         pos.x += s * sin(bearing)
         pos.y += s * cos(bearing)

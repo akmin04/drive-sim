@@ -1,8 +1,8 @@
+import control.KeyboardControl
 import org.w3c.dom.CanvasRenderingContext2D
 import org.w3c.dom.HTMLCanvasElement
 import robots.TankDriveRobot
-import util.settings.Settings
-import util.KeyboardControl
+import settings.Settings
 import util.canvas.cartesian
 import util.canvas.clear
 import kotlin.browser.document

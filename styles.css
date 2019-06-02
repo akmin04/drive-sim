@@ -9,14 +9,13 @@
     border: 1px solid black;
 }
 
-.text-input {
-    border-width: 0;
-}
-
-.numberInput {
+/*noinspection CssUnusedSymbol*/
+.textInput {
     border: none;
+    width: 4ch;
 }
 
-.numberInput:focus {
+/*noinspection CssUnusedSymbol*/
+.textInput:focus {
     outline: none;
 }

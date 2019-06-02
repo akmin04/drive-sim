@@ -2,27 +2,27 @@ package robots
 
 import org.w3c.dom.CanvasRenderingContext2D
 import period
-import util.settings.Settings
+import settings.Settings
 import util.canvas.Component
 import util.canvas.drawComponent
 import util.canvas.strokeConnectedLines
 import util.canvas.strokeLines
 import util.xy
 
-abstract class RobotBase(
+abstract class Robot(
     private val context: CanvasRenderingContext2D,
     private val settings: Settings
 ) : Component {
 
-    val maxVelocityPerFrame get() = settings.maxVelocity() * period / 1000
+    val maxVelocityPerFrame get() = settings.maxVelocity * period / 1000
 
     var pos = 0.0 xy 0.0
     var bearing = 0.0
 
     override val draw = fun CanvasRenderingContext2D.() {
 
-        val halfWidth = settings.robotWidth() / 2
-        val halfLength = settings.robotLength() / 2
+        val halfWidth = settings.robotWidth / 2
+        val halfLength = settings.robotLength / 2
 
         val corners = arrayOf(
             halfWidth xy halfLength, // top right
