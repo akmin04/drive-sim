@@ -5,67 +5,89 @@ var output = function (_, Kotlin) {
   'use strict';
   var throwCCE = Kotlin.throwCCE;
   var Unit = Kotlin.kotlin.Unit;
+  var to = Kotlin.kotlin.to_ujzrz7$;
   var Kind_CLASS = Kotlin.Kind.CLASS;
   var Math_0 = Math;
   var Kind_OBJECT = Kotlin.Kind.OBJECT;
-  var println = Kotlin.kotlin.io.println_s8jyv4$;
   var HashMap_init = Kotlin.kotlin.collections.HashMap_init_q3lmfv$;
   var Kind_INTERFACE = Kotlin.Kind.INTERFACE;
+  var toDouble = Kotlin.kotlin.text.toDouble_pdl1vz$;
+  var equals = Kotlin.equals;
+  var NumberFormatException = Kotlin.kotlin.NumberFormatException;
   TankDriveRobot.prototype = Object.create(RobotBase.prototype);
   TankDriveRobot.prototype.constructor = TankDriveRobot;
-  var canvas;
-  var simulator;
   var period;
-  var canvasMaxX;
-  var canvasMaxY;
-  function main$lambda() {
-    clear(simulator);
-    TankDriveRobot_getInstance().loop();
-    Keys_getInstance().loop();
-    return Unit;
+  var simulatorCanvas;
+  function main$lambda(closure$simulatorCanvasContext, closure$robot, closure$controls) {
+    return function () {
+      clear(closure$simulatorCanvasContext);
+      closure$robot.loop();
+      closure$controls.loop();
+      return Unit;
+    };
   }
   function main() {
-    simulator.translate(canvasMaxX, canvasMaxY);
-    simulator.scale(1.0, -1.0);
-    window.setInterval(main$lambda, 16);
+    var tmp$;
+    var $receiver = Kotlin.isType(tmp$ = simulatorCanvas.getContext('2d'), CanvasRenderingContext2D) ? tmp$ : throwCCE();
+    cartesian($receiver);
+    var simulatorCanvasContext = $receiver;
+    var settings = new Settings();
+    var controls = new KeyboardControl();
+    var robot = new TankDriveRobot(simulatorCanvasContext, controls, settings);
+    window.setInterval(main$lambda(simulatorCanvasContext, robot, controls), 16);
   }
-  function RobotBase(size, maxVelocity) {
-    this.size = size;
-    this.maxVelocity = maxVelocity * 16 / 1000;
-    this.pos = new Point(0.0, 0.0);
+  function RobotBase(context, settings) {
+    this.context_pi64qr$_0 = context;
+    this.settings_tskujl$_0 = settings;
+    this.pos = xy(0.0, 0.0);
     this.bearing = 0.0;
+    this.draw_719uoy$_0 = RobotBase$draw$lambda(this);
   }
+  Object.defineProperty(RobotBase.prototype, 'maxVelocityPerFrame', {
+    get: function () {
+      return this.settings_tskujl$_0.maxVelocity.invoke() * 16 / 1000;
+    }
+  });
+  Object.defineProperty(RobotBase.prototype, 'draw', {
+    get: function () {
+      return this.draw_719uoy$_0;
+    }
+  });
   RobotBase.prototype.loop = function () {
     this.update();
-    var x = this.bearing;
-    var sin = Math_0.sin(x);
-    var x_0 = this.bearing;
-    var cos = Math_0.cos(x_0);
-    var corners = [(new Point(this.pos.x + this.size / 2, this.pos.y + this.size / 2)).rotate_6utxgo$(this.pos, sin, cos), (new Point(this.pos.x + this.size / 2, this.pos.y - this.size / 2)).rotate_6utxgo$(this.pos, sin, cos), (new Point(this.pos.x - this.size / 2, this.pos.y - this.size / 2)).rotate_6utxgo$(this.pos, sin, cos), (new Point(this.pos.x - this.size / 2, this.pos.y + this.size / 2)).rotate_6utxgo$(this.pos, sin, cos)];
-    simulator.lineWidth = 5.0;
-    simulator.strokeStyle = '#000000';
-    strokePolygon(simulator, corners.slice());
-    simulator.strokeStyle = '#0000ff';
-    strokeLine(simulator, corners[0], corners[3]);
+    drawComponent(this.context_pi64qr$_0, this.draw, this.pos, this.bearing);
   };
+  function RobotBase$draw$lambda(this$RobotBase) {
+    return function ($receiver) {
+      var halfWidth = this$RobotBase.settings_tskujl$_0.robotWidth.invoke() / 2;
+      var halfLength = this$RobotBase.settings_tskujl$_0.robotLength.invoke() / 2;
+      var corners = [xy(halfWidth, halfLength), xy(halfWidth, -halfLength), xy(-halfWidth, -halfLength), xy(-halfWidth, halfLength)];
+      $receiver.lineWidth = 5.0;
+      $receiver.strokeStyle = '#000000';
+      strokeConnectedLines($receiver, corners.slice());
+      $receiver.strokeStyle = '#0000ff';
+      strokeLines($receiver, [to(corners[0], corners[3])]);
+    };
+  }
   RobotBase.$metadata$ = {
     kind: Kind_CLASS,
     simpleName: 'RobotBase',
-    interfaces: [Loopable]
+    interfaces: [Component]
   };
-  function TankDriveRobot() {
-    TankDriveRobot_instance = this;
-    RobotBase.call(this, 50.0, 500.0);
+  function TankDriveRobot(context, controls, settings) {
+    RobotBase.call(this, context, settings);
+    this.controls_0 = controls;
+    this.settings_0 = settings;
   }
   TankDriveRobot.prototype.update = function () {
-    var x = -Keys_getInstance().z;
-    var y = Keys_getInstance().y;
+    var x = -this.controls_0.z;
+    var y = this.controls_0.y;
     var v = (1 - Math_0.abs(x)) * y + y;
     var w = (1 - Math_0.abs(y)) * x + x;
-    var l = (v - w) / 2 * this.maxVelocity;
-    var r = (v + w) / 2 * this.maxVelocity;
+    var l = (v - w) / 2 * this.maxVelocityPerFrame;
+    var r = (v + w) / 2 * this.maxVelocityPerFrame;
     var s = (l + r) / 2;
-    var theta = (l - r) / this.size;
+    var theta = (l - r) / this.settings_0.robotWidth.invoke();
     var tmp$ = this.pos;
     var tmp$_0 = this.pos.x;
     var x_0 = this.bearing;
@@ -77,63 +99,45 @@ var output = function (_, Kotlin) {
     this.bearing = this.bearing + theta;
   };
   TankDriveRobot.$metadata$ = {
-    kind: Kind_OBJECT,
+    kind: Kind_CLASS,
     simpleName: 'TankDriveRobot',
     interfaces: [RobotBase]
   };
-  var TankDriveRobot_instance = null;
-  function TankDriveRobot_getInstance() {
-    if (TankDriveRobot_instance === null) {
-      new TankDriveRobot();
-    }
-    return TankDriveRobot_instance;
-  }
-  function strokePolygon($receiver, points) {
-    if (points.length < 3) {
-      println('Tried to draw polygon with less than 3 points');
-      return;
-    }
-    $receiver.beginPath();
-    $receiver.moveTo(points[0].x, points[0].y);
-    for (var i = 1; i < points.length; i++) {
-      $receiver.lineTo(points[i].x, points[i].y);
-    }
-    $receiver.closePath();
-    $receiver.stroke();
-  }
-  function strokeLine($receiver, from, to) {
-    $receiver.beginPath();
-    $receiver.moveTo(from.x, from.y);
-    $receiver.lineTo(to.x, to.y);
-    $receiver.closePath();
-    $receiver.stroke();
-  }
-  function clear($receiver) {
-    $receiver.save();
-    $receiver.setTransform(1.0, 0.0, 0.0, 1.0, 0.0, 0.0);
-    $receiver.clearRect(0.0, 0.0, $receiver.canvas.width, $receiver.canvas.height);
-    $receiver.restore();
-  }
-  function Keys() {
-    Keys_instance = this;
+  function KeyboardControl() {
+    KeyboardControl$Companion_getInstance();
     this.x = 0.0;
     this.y = 0.0;
     this.z = 0.0;
+    this.keys_0 = HashMap_init();
+    document.addEventListener('keydown', KeyboardControl_init$lambda(this));
+    document.addEventListener('keyup', KeyboardControl_init$lambda_0(this));
+  }
+  function KeyboardControl$Companion() {
+    KeyboardControl$Companion_instance = this;
     this.A_0 = 65;
     this.D_0 = 68;
     this.S_0 = 83;
     this.W_0 = 87;
     this.LEFT_0 = 37;
     this.RIGHT_0 = 39;
-    this.keys_0 = HashMap_init();
-    document.addEventListener('keydown', Keys_init$lambda(this));
-    document.addEventListener('keyup', Keys_init$lambda_0(this));
   }
-  Keys.prototype.isPressed_0 = function ($receiver) {
+  KeyboardControl$Companion.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'Companion',
+    interfaces: []
+  };
+  var KeyboardControl$Companion_instance = null;
+  function KeyboardControl$Companion_getInstance() {
+    if (KeyboardControl$Companion_instance === null) {
+      new KeyboardControl$Companion();
+    }
+    return KeyboardControl$Companion_instance;
+  }
+  KeyboardControl.prototype.isPressed_0 = function ($receiver) {
     var tmp$;
     return (tmp$ = this.keys_0.get_11rb$($receiver)) != null ? tmp$ : false;
   };
-  Keys.prototype.loop = function () {
+  KeyboardControl.prototype.loop = function () {
     this.x = 0.0;
     this.y = 0.0;
     this.z = 0.0;
@@ -150,39 +154,32 @@ var output = function (_, Kotlin) {
     if (this.isPressed_0(39))
       this.z += 1.0;
   };
-  Keys.prototype.toString = function () {
+  KeyboardControl.prototype.toString = function () {
     return 'X: ' + this.x + ' | Y: ' + this.y + ' | Z: ' + this.z;
   };
-  function Keys_init$lambda(this$Keys) {
+  function KeyboardControl_init$lambda(this$KeyboardControl) {
     return function (it) {
       var tmp$, tmp$_0;
-      tmp$_0 = this$Keys.keys_0;
+      tmp$_0 = this$KeyboardControl.keys_0;
       var key = (Kotlin.isType(tmp$ = it, KeyboardEvent) ? tmp$ : throwCCE()).keyCode;
       tmp$_0.put_xwzc9p$(key, true);
       return Unit;
     };
   }
-  function Keys_init$lambda_0(this$Keys) {
+  function KeyboardControl_init$lambda_0(this$KeyboardControl) {
     return function (it) {
       var tmp$, tmp$_0;
-      tmp$_0 = this$Keys.keys_0;
+      tmp$_0 = this$KeyboardControl.keys_0;
       var key = (Kotlin.isType(tmp$ = it, KeyboardEvent) ? tmp$ : throwCCE()).keyCode;
       tmp$_0.put_xwzc9p$(key, false);
       return Unit;
     };
   }
-  Keys.$metadata$ = {
-    kind: Kind_OBJECT,
-    simpleName: 'Keys',
+  KeyboardControl.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'KeyboardControl',
     interfaces: [Loopable]
   };
-  var Keys_instance = null;
-  function Keys_getInstance() {
-    if (Keys_instance === null) {
-      new Keys();
-    }
-    return Keys_instance;
-  }
   function Loopable() {
   }
   Loopable.$metadata$ = {
@@ -194,11 +191,6 @@ var output = function (_, Kotlin) {
     this.x = x;
     this.y = y;
   }
-  Point.prototype.rotate_6utxgo$ = function (about, sin, cos) {
-    var newX = this.x - about.x;
-    var newY = this.y - about.y;
-    return new Point(newX * cos + newY * sin + about.x, -newX * sin + newY * cos + about.y);
-  };
   Point.$metadata$ = {
     kind: Kind_CLASS,
     simpleName: 'Point',
@@ -225,52 +217,198 @@ var output = function (_, Kotlin) {
   Point.prototype.equals = function (other) {
     return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.x, other.x) && Kotlin.equals(this.y, other.y)))));
   };
-  Object.defineProperty(_, 'canvas', {
-    get: function () {
-      return canvas;
+  function xy($receiver, that) {
+    return new Point($receiver, that);
+  }
+  function strokeConnectedLines($receiver, points) {
+    $receiver.beginPath();
+    $receiver.moveTo(points[0].x, points[0].y);
+    for (var i = 1; i < points.length; i++) {
+      $receiver.lineTo(points[i].x, points[i].y);
     }
-  });
-  Object.defineProperty(_, 'simulator', {
-    get: function () {
-      return simulator;
+    $receiver.closePath();
+    $receiver.stroke();
+  }
+  function strokeLines($receiver, points) {
+    var tmp$;
+    for (tmp$ = 0; tmp$ !== points.length; ++tmp$) {
+      var element = points[tmp$];
+      $receiver.beginPath();
+      $receiver.moveTo(element.first.x, element.first.y);
+      $receiver.lineTo(element.second.x, element.second.y);
+      $receiver.closePath();
+      $receiver.stroke();
     }
-  });
+  }
+  function drawComponent($receiver, component, pos, bearing) {
+    if (bearing === void 0)
+      bearing = 0.0;
+    $receiver.save();
+    $receiver.translate(pos.x, pos.y);
+    $receiver.rotate(-bearing);
+    component($receiver);
+    $receiver.restore();
+  }
+  function clear($receiver) {
+    $receiver.save();
+    $receiver.setTransform(1.0, 0.0, 0.0, 1.0, 0.0, 0.0);
+    $receiver.clearRect(0.0, 0.0, $receiver.canvas.width, $receiver.canvas.height);
+    $receiver.restore();
+  }
+  function cartesian($receiver) {
+    $receiver.translate($receiver.canvas.width / 2.0, $receiver.canvas.height / 2.0);
+    $receiver.scale(1.0, -1.0);
+  }
+  function Component() {
+  }
+  Component.$metadata$ = {
+    kind: Kind_INTERFACE,
+    simpleName: 'Component',
+    interfaces: [Loopable]
+  };
+  function RangeSettings(rangeInput, textInput, initialValue, min, max) {
+    this.value = initialValue;
+    rangeInput.min = min.toString();
+    rangeInput.max = max.toString();
+    rangeInput.value = initialValue.toString();
+    rangeInput.value;
+    rangeInput.addEventListener('input', RangeSettings_init$lambda$lambda(rangeInput, textInput, this));
+    textInput.value = initialValue.toString();
+    textInput.addEventListener('keydown', RangeSettings_init$lambda$lambda_0(textInput, rangeInput, this));
+  }
+  RangeSettings.prototype.invoke = function () {
+    return this.value;
+  };
+  function RangeSettings_init$lambda$lambda(this$, closure$textInput, this$RangeSettings) {
+    return function (it) {
+      closure$textInput.value = this$.value;
+      this$RangeSettings.value = toDouble(this$.value);
+      return Unit;
+    };
+  }
+  function RangeSettings_init$lambda$lambda_0(this$, closure$rangeInput, this$RangeSettings) {
+    return function (it) {
+      var tmp$, tmp$_0, tmp$_1;
+      if (equals((Kotlin.isType(tmp$ = it, KeyboardEvent) ? tmp$ : throwCCE()).key, 'Enter')) {
+        tmp$_1 = this$RangeSettings;
+        try {
+          var a = toDouble(this$.value);
+          var b = toDouble(closure$rangeInput.max);
+          var a_0 = Math_0.min(a, b);
+          var b_0 = toDouble(closure$rangeInput.min);
+          tmp$_0 = Math_0.max(a_0, b_0);
+        }
+         catch (e) {
+          if (Kotlin.isType(e, NumberFormatException)) {
+            tmp$_0 = toDouble(closure$rangeInput.value);
+          }
+           else
+            throw e;
+        }
+        var $receiver = tmp$_0;
+        var closure$rangeInput_0 = closure$rangeInput;
+        var this$_0 = this$;
+        closure$rangeInput_0.value = $receiver.toString();
+        this$_0.value = $receiver.toString();
+        tmp$_1.value = $receiver;
+        this$.blur();
+      }
+      return Unit;
+    };
+  }
+  RangeSettings.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'RangeSettings',
+    interfaces: []
+  };
+  var maxVelocityRangeInput;
+  var maxVelocityTextInput;
+  var robotWidthRangeInput;
+  var robotWidthTextInput;
+  var robotLengthRangeInput;
+  var robotLengthTextInput;
+  function Settings() {
+    this.maxVelocity = new RangeSettings(maxVelocityRangeInput, maxVelocityTextInput, 500.0, 0.0, 1000.0);
+    this.robotWidth = new RangeSettings(robotWidthRangeInput, robotWidthTextInput, 50.0, 10.0, 200.0);
+    this.robotLength = new RangeSettings(robotLengthRangeInput, robotLengthTextInput, 50.0, 10.0, 200.0);
+  }
+  Settings.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'Settings',
+    interfaces: []
+  };
   Object.defineProperty(_, 'period', {
     get: function () {
       return period;
     }
   });
-  Object.defineProperty(_, 'canvasMaxX', {
+  Object.defineProperty(_, 'simulatorCanvas', {
     get: function () {
-      return canvasMaxX;
-    }
-  });
-  Object.defineProperty(_, 'canvasMaxY', {
-    get: function () {
-      return canvasMaxY;
+      return simulatorCanvas;
     }
   });
   _.main = main;
   var package$robots = _.robots || (_.robots = {});
   package$robots.RobotBase = RobotBase;
-  Object.defineProperty(package$robots, 'TankDriveRobot', {
-    get: TankDriveRobot_getInstance
+  package$robots.TankDriveRobot = TankDriveRobot;
+  Object.defineProperty(KeyboardControl, 'Companion', {
+    get: KeyboardControl$Companion_getInstance
   });
   var package$util = _.util || (_.util = {});
-  package$util.strokePolygon_ef5b96$ = strokePolygon;
-  package$util.strokeLine_z11l89$ = strokeLine;
-  package$util.clear_qtrdl1$ = clear;
-  Object.defineProperty(package$util, 'Keys', {
-    get: Keys_getInstance
-  });
+  package$util.KeyboardControl = KeyboardControl;
   package$util.Loopable = Loopable;
   package$util.Point = Point;
-  var tmp$, tmp$_0;
-  canvas = Kotlin.isType(tmp$ = document.getElementById('simulator'), HTMLCanvasElement) ? tmp$ : throwCCE();
-  simulator = Kotlin.isType(tmp$_0 = canvas.getContext('2d'), CanvasRenderingContext2D) ? tmp$_0 : throwCCE();
+  package$util.xy_38ydlf$ = xy;
+  var package$canvas = package$util.canvas || (package$util.canvas = {});
+  package$canvas.strokeConnectedLines_ef5b96$ = strokeConnectedLines;
+  package$canvas.strokeLines_8nyhx9$ = strokeLines;
+  package$canvas.drawComponent_nt76e$ = drawComponent;
+  package$canvas.clear_qtrdl1$ = clear;
+  package$canvas.cartesian_qtrdl1$ = cartesian;
+  package$canvas.Component = Component;
+  var package$settings = package$util.settings || (package$util.settings = {});
+  package$settings.RangeSettings = RangeSettings;
+  Object.defineProperty(package$settings, 'maxVelocityRangeInput', {
+    get: function () {
+      return maxVelocityRangeInput;
+    }
+  });
+  Object.defineProperty(package$settings, 'maxVelocityTextInput', {
+    get: function () {
+      return maxVelocityTextInput;
+    }
+  });
+  Object.defineProperty(package$settings, 'robotWidthRangeInput', {
+    get: function () {
+      return robotWidthRangeInput;
+    }
+  });
+  Object.defineProperty(package$settings, 'robotWidthTextInput', {
+    get: function () {
+      return robotWidthTextInput;
+    }
+  });
+  Object.defineProperty(package$settings, 'robotLengthRangeInput', {
+    get: function () {
+      return robotLengthRangeInput;
+    }
+  });
+  Object.defineProperty(package$settings, 'robotLengthTextInput', {
+    get: function () {
+      return robotLengthTextInput;
+    }
+  });
+  package$settings.Settings = Settings;
   period = 16;
-  canvasMaxX = canvas.width / 2;
-  canvasMaxY = canvas.height / 2;
+  var tmp$;
+  simulatorCanvas = Kotlin.isType(tmp$ = document.getElementById('simulatorCanvas'), HTMLCanvasElement) ? tmp$ : throwCCE();
+  var tmp$_0, tmp$_1, tmp$_2, tmp$_3, tmp$_4, tmp$_5;
+  maxVelocityRangeInput = Kotlin.isType(tmp$_0 = document.getElementById('maxVelocityRangeInput'), HTMLInputElement) ? tmp$_0 : throwCCE();
+  maxVelocityTextInput = Kotlin.isType(tmp$_1 = document.getElementById('maxVelocityTextInput'), HTMLInputElement) ? tmp$_1 : throwCCE();
+  robotWidthRangeInput = Kotlin.isType(tmp$_2 = document.getElementById('robotWidthRangeInput'), HTMLInputElement) ? tmp$_2 : throwCCE();
+  robotWidthTextInput = Kotlin.isType(tmp$_3 = document.getElementById('robotWidthTextInput'), HTMLInputElement) ? tmp$_3 : throwCCE();
+  robotLengthRangeInput = Kotlin.isType(tmp$_4 = document.getElementById('robotLengthRangeInput'), HTMLInputElement) ? tmp$_4 : throwCCE();
+  robotLengthTextInput = Kotlin.isType(tmp$_5 = document.getElementById('robotLengthTextInput'), HTMLInputElement) ? tmp$_5 : throwCCE();
   main();
   Kotlin.defineModule('output', _);
   return _;

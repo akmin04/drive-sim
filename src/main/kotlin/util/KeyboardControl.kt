@@ -3,10 +3,17 @@ package util
 import org.w3c.dom.events.KeyboardEvent
 import kotlin.browser.document
 
-/**
- * Receive keyboard events and translate to x, y, and z axes.
- */
-object Keys : Loopable {
+class KeyboardControl : Loopable {
+
+    companion object {
+        private const val A = 65
+        private const val D = 68
+        private const val S = 83
+        private const val W = 87
+        private const val LEFT = 37
+        private const val RIGHT = 39
+    }
+
     /**
      *  Left-Right value (A, D) from -1.0 to 1.0
      */
@@ -21,17 +28,6 @@ object Keys : Loopable {
      * Rotate Left-Right value (LEFT, RIGHT) from -1.0 to 1.0
      */
     var z = 0.0
-
-
-    /**
-     * Key-codes
-     */
-    private const val A = 65
-    private const val D = 68
-    private const val S = 83
-    private const val W = 87
-    private const val LEFT = 37
-    private const val RIGHT = 39
 
     private val keys = hashMapOf<Int, Boolean>()
 

@@ -1,64 +1,48 @@
 package robots
 
+import org.w3c.dom.CanvasRenderingContext2D
 import period
-import simulator
-import util.Loopable
-import util.Point
-import util.strokeLine
-import util.strokePolygon
-import kotlin.math.cos
-import kotlin.math.sin
+import util.settings.Settings
+import util.canvas.Component
+import util.canvas.drawComponent
+import util.canvas.strokeConnectedLines
+import util.canvas.strokeLines
+import util.xy
 
-/**
- * Base class for all robots
- *
- * @param size width/hieght of the robot (in pixels)
- * @param maxVelocity of the robot (in pixels per second)
- *
- * @see Loopable
- */
 abstract class RobotBase(
-    val size: Double,
-    maxVelocity: Double
-) : Loopable {
+    private val context: CanvasRenderingContext2D,
+    private val settings: Settings
+) : Component {
 
-    /**
-     * Calculate maxVelocity per frame
-     */
-    val maxVelocity = maxVelocity * period / 1000
+    val maxVelocityPerFrame get() = settings.maxVelocity() * period / 1000
 
-    /**
-     * Current position and bearing of the robot
-     */
-    var pos = Point(0.0, 0.0)
+    var pos = 0.0 xy 0.0
     var bearing = 0.0
 
-    /**
-     * Abstract function to be called by the robot before `loop`
-     */
+    override val draw = fun CanvasRenderingContext2D.() {
+
+        val halfWidth = settings.robotWidth() / 2
+        val halfLength = settings.robotLength() / 2
+
+        val corners = arrayOf(
+            halfWidth xy halfLength, // top right
+            halfWidth xy -halfLength, // bottom right
+            -halfWidth xy -halfLength, // bottom left
+            -halfWidth xy halfLength // top left
+        )
+
+        lineWidth = 5.0
+        strokeStyle = "#000000"
+        strokeConnectedLines(*corners)
+        strokeStyle = "#0000ff"
+        strokeLines(corners[0] to corners[3])
+    }
+
     abstract fun update()
 
     override fun loop() {
         update()
-
-        val sin = sin(bearing)
-        val cos = cos(bearing)
-
-        val corners = arrayOf(
-            Point(pos.x + size / 2, pos.y + size / 2).rotate(pos, sin, cos), // top right
-            Point(pos.x + size / 2, pos.y - size / 2).rotate(pos, sin, cos), // bottom right
-            Point(pos.x - size / 2, pos.y - size / 2).rotate(pos, sin, cos), // bottom left
-            Point(pos.x - size / 2, pos.y + size / 2).rotate(pos, sin, cos) // top left
-        )
-
-        simulator.lineWidth = 5.0
-        simulator.strokeStyle = "#000000"
-        simulator.strokePolygon(*corners)
-        simulator.strokeStyle = "#0000ff"
-        simulator.strokeLine(
-            corners[0],
-            corners[3]
-        )
+        context.drawComponent(draw, pos, bearing)
     }
 
 }
