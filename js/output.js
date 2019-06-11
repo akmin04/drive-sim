@@ -9,11 +9,12 @@ var output = function (_, Kotlin, $module$kotlinx_html_js) {
   var throwCCE = Kotlin.throwCCE;
   var Unit = Kotlin.kotlin.Unit;
   var Kind_CLASS = Kotlin.Kind.CLASS;
-  var Kind_OBJECT = Kotlin.Kind.OBJECT;
-  var HashMap_init = Kotlin.kotlin.collections.HashMap_init_q3lmfv$;
-  var to = Kotlin.kotlin.to_ujzrz7$;
+  var Kind_INTERFACE = Kotlin.Kind.INTERFACE;
+  var ArrayList_init = Kotlin.kotlin.collections.ArrayList_init_287e2$;
+  var PropertyMetadata = Kotlin.PropertyMetadata;
+  var listOf = Kotlin.kotlin.collections.listOf_i5x0yv$;
+  var println = Kotlin.kotlin.io.println_s8jyv4$;
   var Math_0 = Math;
-  var throwUPAE = Kotlin.throwUPAE;
   var capitalize = Kotlin.kotlin.text.capitalize_pdl1vz$;
   var ensureNotNull = Kotlin.ensureNotNull;
   var div = $module$kotlinx_html_js.kotlinx.html.div_59el9d$;
@@ -27,171 +28,244 @@ var output = function (_, Kotlin, $module$kotlinx_html_js) {
   var Regex_init = Kotlin.kotlin.text.Regex_init_61zpoe$;
   var StringBuilder_init = Kotlin.kotlin.text.StringBuilder_init_za3lpa$;
   var ReadOnlyProperty = Kotlin.kotlin.properties.ReadOnlyProperty;
-  var PropertyMetadata = Kotlin.PropertyMetadata;
-  var Kind_INTERFACE = Kotlin.Kind.INTERFACE;
-  KeyboardControl.prototype = Object.create(Control.prototype);
-  KeyboardControl.prototype.constructor = KeyboardControl;
-  TankDriveRobot.prototype = Object.create(Robot.prototype);
+  var toString = Kotlin.kotlin.text.toString_dqglrj$;
+  var Kind_OBJECT = Kotlin.Kind.OBJECT;
+  var HashMap_init = Kotlin.kotlin.collections.HashMap_init_q3lmfv$;
+  Group.prototype = Object.create(Tag.prototype);
+  Group.prototype.constructor = Group;
+  Body.prototype = Object.create(Group.prototype);
+  Body.prototype.constructor = Body;
+  TankDriveRobot.prototype = Object.create(RobotBase.prototype);
   TankDriveRobot.prototype.constructor = TankDriveRobot;
   RangeSetting.prototype = Object.create(Setting.prototype);
   RangeSetting.prototype.constructor = RangeSetting;
   var period;
-  var simulatorCanvas;
-  function main$lambda(closure$simulatorCanvasContext, closure$robot, closure$controls) {
-    return function () {
-      clear(closure$simulatorCanvasContext);
-      closure$robot.loop();
-      closure$controls.loop();
-      return Unit;
-    };
+  var robot;
+  var controls;
+  var simulator;
+  function main$lambda() {
+    clear(simulator);
+    robot.loop();
+    controls.loop();
+    return Unit;
   }
   function main() {
-    var tmp$;
-    var $receiver = Kotlin.isType(tmp$ = simulatorCanvas.getContext('2d'), CanvasRenderingContext2D) ? tmp$ : throwCCE();
-    cartesian($receiver);
-    var simulatorCanvasContext = $receiver;
-    var settings = new Settings();
-    var controls = new KeyboardControl();
-    var robot = new TankDriveRobot(simulatorCanvasContext, controls, settings);
-    window.setInterval(main$lambda(simulatorCanvasContext, robot, controls), 16);
+    window.setInterval(main$lambda, 16);
   }
-  function Control() {
-    this.x = 0.0;
-    this.y = 0.0;
-    this.z = 0.0;
+  function body(setup) {
+    var $receiver = new Body();
+    setup($receiver);
+    return $receiver;
   }
-  Control.prototype.toString = function () {
-    return 'X: ' + this.x + ' | Y: ' + this.y + ' | Z: ' + this.z;
-  };
-  Control.$metadata$ = {
+  function Body() {
+    Group.call(this, 'body');
+  }
+  Body.$metadata$ = {
     kind: Kind_CLASS,
-    simpleName: 'Control',
-    interfaces: [Loopable]
+    simpleName: 'Body',
+    interfaces: [Group]
   };
-  function KeyboardControl() {
-    KeyboardControl$Companion_getInstance();
-    Control.call(this);
-    this.keys_0 = HashMap_init();
-    document.addEventListener('keydown', KeyboardControl_init$lambda(this));
-    document.addEventListener('keyup', KeyboardControl_init$lambda_0(this));
+  function render($receiver, body, pos, bearing) {
+    if (bearing === void 0)
+      bearing = 0.0;
+    $receiver.save();
+    $receiver.translate(pos.x, pos.y);
+    $receiver.rotate(-bearing);
+    body.render($receiver);
+    $receiver.restore();
   }
-  function KeyboardControl$Companion() {
-    KeyboardControl$Companion_instance = this;
-    this.A_0 = 65;
-    this.D_0 = 68;
-    this.S_0 = 83;
-    this.W_0 = 87;
-    this.LEFT_0 = 37;
-    this.RIGHT_0 = 39;
+  function Element() {
   }
-  KeyboardControl$Companion.$metadata$ = {
-    kind: Kind_OBJECT,
-    simpleName: 'Companion',
+  Element.$metadata$ = {
+    kind: Kind_INTERFACE,
+    simpleName: 'Element',
     interfaces: []
   };
-  var KeyboardControl$Companion_instance = null;
-  function KeyboardControl$Companion_getInstance() {
-    if (KeyboardControl$Companion_instance === null) {
-      new KeyboardControl$Companion();
-    }
-    return KeyboardControl$Companion_instance;
+  function Group(name) {
+    Tag.call(this);
   }
-  KeyboardControl.prototype.isPressed_0 = function ($receiver) {
-    var tmp$;
-    return (tmp$ = this.keys_0.get_11rb$($receiver)) != null ? tmp$ : false;
+  Group.prototype.line_a0kn23$ = function (start, end, width, color) {
+    if (width === void 0)
+      width = 5.0;
+    if (color === void 0)
+      color = Color$Companion_getInstance().black;
+    return this.initTag_fofoa3$(new Line(start, end, width, color));
   };
-  KeyboardControl.prototype.loop = function () {
-    this.x = 0.0;
-    this.y = 0.0;
-    this.z = 0.0;
-    if (this.isPressed_0(65))
-      this.x = this.x - 1.0;
-    if (this.isPressed_0(68))
-      this.x = this.x + 1.0;
-    if (this.isPressed_0(83))
-      this.y = this.y - 1.0;
-    if (this.isPressed_0(87))
-      this.y = this.y + 1.0;
-    if (this.isPressed_0(37))
-      this.z = this.z - 1.0;
-    if (this.isPressed_0(39))
-      this.z = this.z + 1.0;
+  Group.prototype.group_psgofc$ = function (name, init) {
+    if (name === void 0)
+      name = 'group';
+    return this.initTag_fofoa3$(new Group(name), init);
   };
-  function KeyboardControl_init$lambda(this$KeyboardControl) {
-    return function (it) {
-      var tmp$, tmp$_0;
-      tmp$_0 = this$KeyboardControl.keys_0;
-      var key = (Kotlin.isType(tmp$ = it, KeyboardEvent) ? tmp$ : throwCCE()).keyCode;
-      tmp$_0.put_xwzc9p$(key, true);
-      return Unit;
-    };
-  }
-  function KeyboardControl_init$lambda_0(this$KeyboardControl) {
-    return function (it) {
-      var tmp$, tmp$_0;
-      tmp$_0 = this$KeyboardControl.keys_0;
-      var key = (Kotlin.isType(tmp$ = it, KeyboardEvent) ? tmp$ : throwCCE()).keyCode;
-      tmp$_0.put_xwzc9p$(key, false);
-      return Unit;
-    };
-  }
-  KeyboardControl.$metadata$ = {
+  Group.$metadata$ = {
     kind: Kind_CLASS,
-    simpleName: 'KeyboardControl',
-    interfaces: [Control]
+    simpleName: 'Group',
+    interfaces: [Tag]
   };
-  function Robot(context, settings) {
-    this.context_z3vui4$_0 = context;
-    this.settings_91ra5q$_0 = settings;
+  function Line(start, end, width, color) {
+    this.start_0 = start;
+    this.end_0 = end;
+    this.width_0 = width;
+    this.color_0 = color;
+    this.render_cygs4o$_0 = Line$render$lambda(this);
+  }
+  Object.defineProperty(Line.prototype, 'render', {
+    get: function () {
+      return this.render_cygs4o$_0;
+    },
+    set: function (render) {
+      this.render_cygs4o$_0 = render;
+    }
+  });
+  Line.prototype.toString = function () {
+    return 'Line from ' + this.start_0 + ' to ' + this.end_0 + '. Width: ' + this.width_0 + '. Color: ' + this.color_0;
+  };
+  function Line$render$lambda(this$Line) {
+    return function ($receiver) {
+      $receiver.lineWidth = this$Line.width_0;
+      $receiver.strokeStyle = this$Line.color_0.toString();
+      $receiver.beginPath();
+      $receiver.moveTo(this$Line.start_0.x, this$Line.start_0.y);
+      $receiver.lineTo(this$Line.end_0.x, this$Line.end_0.y);
+      $receiver.stroke();
+    };
+  }
+  Line.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'Line',
+    interfaces: [Element]
+  };
+  function Tag() {
+    this.children_gpn3hz$_0 = ArrayList_init();
+    this.render_bwz3gy$_0 = Tag$render$lambda(this);
+  }
+  function Tag$initTag$lambda($receiver) {
+    return Unit;
+  }
+  Tag.prototype.initTag_fofoa3$ = function (tag, setup) {
+    if (setup === void 0)
+      setup = Tag$initTag$lambda;
+    setup(tag);
+    this.children_gpn3hz$_0.add_11rb$(tag);
+    return tag;
+  };
+  Object.defineProperty(Tag.prototype, 'render', {
+    get: function () {
+      return this.render_bwz3gy$_0;
+    }
+  });
+  function Tag$render$lambda(this$Tag) {
+    return function ($receiver) {
+      var tmp$;
+      tmp$ = this$Tag.children_gpn3hz$_0.iterator();
+      while (tmp$.hasNext()) {
+        var c = tmp$.next();
+        c.render($receiver);
+      }
+    };
+  }
+  Tag.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'Tag',
+    interfaces: [Element]
+  };
+  function RobotBase(wheels) {
+    this.wheels_mzrdcm$_0 = wheels;
+    this.maxVelocity_9kbjtd$_0 = (new RangeSetting(600.0, 100.0, 1100.0)).provideDelegate_n5byny$(this, RobotBase$maxVelocity_metadata);
+    this.robotWidth_wy3boa$_0 = (new RangeSetting(100.0, 50.0, 150.0)).provideDelegate_n5byny$(this, RobotBase$robotWidth_metadata);
+    this.robotLength_mys6si$_0 = (new RangeSetting(100.0, 50.0, 150.0)).provideDelegate_n5byny$(this, RobotBase$robotLength_metadata);
+    this.numberOfWheels = this.wheels_mzrdcm$_0.length;
     this.pos = xy(0.0, 0.0);
     this.bearing = 0.0;
-    this.draw_sy5tpp$_0 = Robot$draw$lambda(this);
+    this.body_72fakg$_0 = body(RobotBase$body$lambda(this));
   }
-  Object.defineProperty(Robot.prototype, 'maxVelocityPerFrame', {
+  var RobotBase$maxVelocity_metadata = new PropertyMetadata('maxVelocity');
+  Object.defineProperty(RobotBase.prototype, 'maxVelocity', {
     get: function () {
-      return this.settings_91ra5q$_0.maxVelocity * 16 / 1000;
+      return this.maxVelocity_9kbjtd$_0.getValue_lrcp0p$(this, RobotBase$maxVelocity_metadata);
     }
   });
-  Object.defineProperty(Robot.prototype, 'draw', {
+  var RobotBase$robotWidth_metadata = new PropertyMetadata('robotWidth');
+  Object.defineProperty(RobotBase.prototype, 'robotWidth', {
     get: function () {
-      return this.draw_sy5tpp$_0;
+      return this.robotWidth_wy3boa$_0.getValue_lrcp0p$(this, RobotBase$robotWidth_metadata);
     }
   });
-  Robot.prototype.loop = function () {
-    this.update();
-    drawComponent(this.context_z3vui4$_0, this.draw, this.pos, this.bearing);
+  var RobotBase$robotLength_metadata = new PropertyMetadata('robotLength');
+  Object.defineProperty(RobotBase.prototype, 'robotLength', {
+    get: function () {
+      return this.robotLength_mys6si$_0.getValue_lrcp0p$(this, RobotBase$robotLength_metadata);
+    }
+  });
+  Object.defineProperty(RobotBase.prototype, 'maxVelocityPerFrame', {
+    get: function () {
+      return this.maxVelocity * 16 / 1000;
+    }
+  });
+  Object.defineProperty(RobotBase.prototype, 'halfWidth_5frg69$_0', {
+    get: function () {
+      return this.robotWidth / 2;
+    }
+  });
+  Object.defineProperty(RobotBase.prototype, 'halfLength_ndnnm1$_0', {
+    get: function () {
+      return this.robotLength / 2;
+    }
+  });
+  Object.defineProperty(RobotBase.prototype, 'corners_rb1qac$_0', {
+    get: function () {
+      return listOf([xy(this.halfWidth_5frg69$_0, this.halfLength_ndnnm1$_0), xy(this.halfWidth_5frg69$_0, -this.halfLength_ndnnm1$_0), xy(-this.halfWidth_5frg69$_0, -this.halfLength_ndnnm1$_0), xy(-this.halfWidth_5frg69$_0, this.halfLength_ndnnm1$_0)]);
+    }
+  });
+  RobotBase.prototype.loop = function () {
+    var tmp$;
+    var vectors = this.update();
+    if (vectors.length !== this.numberOfWheels) {
+      println('Number of wheels error. Vector size: ' + vectors.length + '. Number of wheels: ' + this.numberOfWheels);
+    }
+     else {
+      tmp$ = this.numberOfWheels;
+      for (var i = 0; i < tmp$; i++) {
+        this.wheels_mzrdcm$_0[i].vector = vectors[i];
+      }
+    }
+    render(simulator, this.body_72fakg$_0, this.pos, this.bearing);
   };
-  function Robot$draw$lambda(this$Robot) {
+  function RobotBase$body$lambda$lambda(this$RobotBase) {
     return function ($receiver) {
-      var halfWidth = this$Robot.settings_91ra5q$_0.robotWidth / 2;
-      var halfLength = this$Robot.settings_91ra5q$_0.robotLength / 2;
-      var corners = [xy(halfWidth, halfLength), xy(halfWidth, -halfLength), xy(-halfWidth, -halfLength), xy(-halfWidth, halfLength)];
-      $receiver.lineWidth = 5.0;
-      $receiver.strokeStyle = '#000000';
-      strokeConnectedLines($receiver, corners.slice());
-      $receiver.strokeStyle = '#0000ff';
-      strokeLines($receiver, [to(corners[0], corners[3])]);
+      for (var i = 0; i < 3; i++) {
+        $receiver.line_a0kn23$(this$RobotBase.corners_rb1qac$_0.get_za3lpa$(i), this$RobotBase.corners_rb1qac$_0.get_za3lpa$(i + 1 | 0));
+      }
+      $receiver.line_a0kn23$(this$RobotBase.corners_rb1qac$_0.get_za3lpa$(0), this$RobotBase.corners_rb1qac$_0.get_za3lpa$(3), void 0, Color$Companion_getInstance().blue);
+      return Unit;
     };
   }
-  Robot.$metadata$ = {
+  function RobotBase$body$lambda$lambda_0($receiver) {
+    return Unit;
+  }
+  function RobotBase$body$lambda(this$RobotBase) {
+    return function ($receiver) {
+      $receiver.group_psgofc$('robot', RobotBase$body$lambda$lambda(this$RobotBase));
+      $receiver.group_psgofc$('wheels', RobotBase$body$lambda$lambda_0);
+      return Unit;
+    };
+  }
+  RobotBase.$metadata$ = {
     kind: Kind_CLASS,
-    simpleName: 'Robot',
-    interfaces: [Component]
+    simpleName: 'RobotBase',
+    interfaces: [Loopable]
   };
-  function TankDriveRobot(context, controls, settings) {
-    Robot.call(this, context, settings);
-    this.controls_0 = controls;
-    this.settings_0 = settings;
+  function TankDriveRobot() {
+    RobotBase.call(this, [new Wheel(-0.5, 0.0), new Wheel(0.5, 0.0)]);
   }
   TankDriveRobot.prototype.update = function () {
-    var x = -this.controls_0.z;
-    var y = this.controls_0.y;
+    var x = -controls.z;
+    var y = controls.y;
     var v = (1 - Math_0.abs(x)) * y + y;
     var w = (1 - Math_0.abs(y)) * x + x;
     var l = (v - w) / 2 * this.maxVelocityPerFrame;
     var r = (v + w) / 2 * this.maxVelocityPerFrame;
     var s = (l + r) / 2;
-    var theta = (l - r) / this.settings_0.robotWidth;
+    var theta = (l - r) / this.robotWidth;
     var tmp$ = this.pos;
     var tmp$_0 = this.pos.x;
     var x_0 = this.bearing;
@@ -201,41 +275,20 @@ var output = function (_, Kotlin, $module$kotlinx_html_js) {
     var x_1 = this.bearing;
     tmp$_1.y = tmp$_2 + s * Math_0.cos(x_1);
     this.bearing = this.bearing + theta;
+    return [vec(l, this.bearing), vec(r, this.bearing)];
   };
   TankDriveRobot.$metadata$ = {
     kind: Kind_CLASS,
     simpleName: 'TankDriveRobot',
-    interfaces: [Robot]
+    interfaces: [RobotBase]
   };
   function RangeSetting(initialValue, min, max) {
     Setting.call(this);
     this.initialValue = initialValue;
     this.min = min;
     this.max = max;
-    this.name_cxpugv$_0 = this.name_cxpugv$_0;
-    this.camelCase_lsst4s$_0 = this.camelCase_lsst4s$_0;
     this.value_ld2e87$_0 = this.initialValue;
   }
-  Object.defineProperty(RangeSetting.prototype, 'name_0', {
-    get: function () {
-      if (this.name_cxpugv$_0 == null)
-        return throwUPAE('name');
-      return this.name_cxpugv$_0;
-    },
-    set: function (name) {
-      this.name_cxpugv$_0 = name;
-    }
-  });
-  Object.defineProperty(RangeSetting.prototype, 'camelCase_0', {
-    get: function () {
-      if (this.camelCase_lsst4s$_0 == null)
-        return throwUPAE('camelCase');
-      return this.camelCase_lsst4s$_0;
-    },
-    set: function (camelCase) {
-      this.camelCase_lsst4s$_0 = camelCase;
-    }
-  });
   Object.defineProperty(RangeSetting.prototype, 'value', {
     get: function () {
       return this.value_ld2e87$_0;
@@ -244,36 +297,36 @@ var output = function (_, Kotlin, $module$kotlinx_html_js) {
       this.value_ld2e87$_0 = value;
     }
   });
-  function RangeSetting$provideDelegate$lambda$lambda(this$RangeSetting) {
+  function RangeSetting$provideDelegate$lambda$lambda(closure$name) {
     return function ($receiver) {
-      $receiver.unaryPlus_pdl1vz$(this$RangeSetting.name_0);
+      $receiver.unaryPlus_pdl1vz$(closure$name);
       return Unit;
     };
   }
-  function RangeSetting$provideDelegate$lambda$lambda_0(this$RangeSetting) {
+  function RangeSetting$provideDelegate$lambda$lambda_0(closure$camelCase) {
     return function ($receiver) {
-      set_id($receiver, this$RangeSetting.camelCase_0 + 'Range');
+      set_id($receiver, closure$camelCase + 'Range');
       return Unit;
     };
   }
-  function RangeSetting$provideDelegate$lambda$lambda_1(this$RangeSetting) {
+  function RangeSetting$provideDelegate$lambda$lambda_1(closure$camelCase) {
     return function ($receiver) {
-      set_id($receiver, this$RangeSetting.camelCase_0 + 'Text');
+      set_id($receiver, closure$camelCase + 'Text');
       return Unit;
     };
   }
-  function RangeSetting$provideDelegate$lambda$lambda_2(this$RangeSetting) {
+  function RangeSetting$provideDelegate$lambda$lambda_2(closure$camelCase) {
     return function ($receiver) {
-      set_id($receiver, this$RangeSetting.camelCase_0 + 'Button');
+      set_id($receiver, closure$camelCase + 'Button');
       return Unit;
     };
   }
-  function RangeSetting$provideDelegate$lambda(this$RangeSetting) {
+  function RangeSetting$provideDelegate$lambda(closure$name, closure$camelCase) {
     return function ($receiver) {
-      div($receiver, void 0, RangeSetting$provideDelegate$lambda$lambda(this$RangeSetting));
-      input($receiver, InputType.range, void 0, void 0, void 0, 'rangeInput', RangeSetting$provideDelegate$lambda$lambda_0(this$RangeSetting));
-      input($receiver, void 0, void 0, void 0, void 0, 'textInput', RangeSetting$provideDelegate$lambda$lambda_1(this$RangeSetting));
-      input($receiver, InputType.button, void 0, void 0, void 0, 'buttonInput', RangeSetting$provideDelegate$lambda$lambda_2(this$RangeSetting));
+      div($receiver, void 0, RangeSetting$provideDelegate$lambda$lambda(closure$name));
+      input($receiver, InputType.range, void 0, void 0, void 0, 'rangeInput', RangeSetting$provideDelegate$lambda$lambda_0(closure$camelCase));
+      input($receiver, void 0, void 0, void 0, void 0, 'textInput', RangeSetting$provideDelegate$lambda$lambda_1(closure$camelCase));
+      input($receiver, InputType.button, void 0, void 0, void 0, 'buttonInput', RangeSetting$provideDelegate$lambda$lambda_2(closure$camelCase));
       return Unit;
     };
   }
@@ -324,7 +377,7 @@ var output = function (_, Kotlin, $module$kotlinx_html_js) {
   }
   RangeSetting.prototype.provideDelegate_n5byny$ = function (thisRef, property) {
     var tmp$, tmp$_0, tmp$_1;
-    this.camelCase_0 = property.callableName;
+    var camelCase = property.callableName;
     var tmp$_2 = capitalize(property.callableName);
     var regex = Regex_init('[A-Z]');
     var replace_20wsma$result;
@@ -351,11 +404,11 @@ var output = function (_, Kotlin, $module$kotlinx_html_js) {
       replace_20wsma$result = sb.toString();
     }
      while (false);
-    this.name_0 = replace_20wsma$result;
-    append(ensureNotNull(ensureNotNull(ensureNotNull(document.body).getElementsByClassName('main')[0]).getElementsByClassName('settings')[0]), RangeSetting$provideDelegate$lambda(this));
-    var rangeInput = Kotlin.isType(tmp$ = document.getElementById(this.camelCase_0 + 'Range'), HTMLInputElement) ? tmp$ : throwCCE();
-    var textInput = Kotlin.isType(tmp$_0 = document.getElementById(this.camelCase_0 + 'Text'), HTMLInputElement) ? tmp$_0 : throwCCE();
-    var buttonInput = Kotlin.isType(tmp$_1 = document.getElementById(this.camelCase_0 + 'Button'), HTMLInputElement) ? tmp$_1 : throwCCE();
+    var name = replace_20wsma$result;
+    append(ensureNotNull(ensureNotNull(ensureNotNull(document.body).getElementsByClassName('main')[0]).getElementsByClassName('settings')[0]), RangeSetting$provideDelegate$lambda(name, camelCase));
+    var rangeInput = Kotlin.isType(tmp$ = document.getElementById(camelCase + 'Range'), HTMLInputElement) ? tmp$ : throwCCE();
+    var textInput = Kotlin.isType(tmp$_0 = document.getElementById(camelCase + 'Text'), HTMLInputElement) ? tmp$_0 : throwCCE();
+    var buttonInput = Kotlin.isType(tmp$_1 = document.getElementById(camelCase + 'Button'), HTMLInputElement) ? tmp$_1 : throwCCE();
     rangeInput.min = this.min.toString();
     rangeInput.max = this.max.toString();
     rangeInput.value = this.initialValue.toString();
@@ -392,33 +445,148 @@ var output = function (_, Kotlin, $module$kotlinx_html_js) {
     simpleName: 'Setting',
     interfaces: []
   };
-  function Settings() {
-    this.maxVelocity_uz92yh$_0 = (new RangeSetting(500.0, 0.0, 1000.0)).provideDelegate_n5byny$(this, Settings$maxVelocity_metadata);
-    this.robotWidth_tlxszi$_0 = (new RangeSetting(50.0, 10.0, 200.0)).provideDelegate_n5byny$(this, Settings$robotWidth_metadata);
-    this.robotLength_qnec1i$_0 = (new RangeSetting(50.0, 10.0, 200.0)).provideDelegate_n5byny$(this, Settings$robotLength_metadata);
+  function clear($receiver) {
+    $receiver.save();
+    $receiver.setTransform(1.0, 0.0, 0.0, 1.0, 0.0, 0.0);
+    $receiver.clearRect(0.0, 0.0, $receiver.canvas.width, $receiver.canvas.height);
+    $receiver.restore();
   }
-  var Settings$maxVelocity_metadata = new PropertyMetadata('maxVelocity');
-  Object.defineProperty(Settings.prototype, 'maxVelocity', {
-    get: function () {
-      return this.maxVelocity_uz92yh$_0.getValue_lrcp0p$(this, Settings$maxVelocity_metadata);
-    }
-  });
-  var Settings$robotWidth_metadata = new PropertyMetadata('robotWidth');
-  Object.defineProperty(Settings.prototype, 'robotWidth', {
-    get: function () {
-      return this.robotWidth_tlxszi$_0.getValue_lrcp0p$(this, Settings$robotWidth_metadata);
-    }
-  });
-  var Settings$robotLength_metadata = new PropertyMetadata('robotLength');
-  Object.defineProperty(Settings.prototype, 'robotLength', {
-    get: function () {
-      return this.robotLength_qnec1i$_0.getValue_lrcp0p$(this, Settings$robotLength_metadata);
-    }
-  });
-  Settings.$metadata$ = {
-    kind: Kind_CLASS,
-    simpleName: 'Settings',
+  function cartesian($receiver) {
+    $receiver.translate($receiver.canvas.width / 2.0, $receiver.canvas.height / 2.0);
+    $receiver.scale(1.0, -1.0);
+  }
+  function Color(r, g, b) {
+    Color$Companion_getInstance();
+    this.r = r;
+    this.g = g;
+    this.b = b;
+  }
+  Color.prototype.toString = function () {
+    return '#' + toString(this.r, 16) + toString(this.g, 16) + toString(this.b, 16);
+  };
+  function Color$Companion() {
+    Color$Companion_instance = this;
+    this.black = new Color(0, 0, 0);
+    this.white = new Color(255, 255, 255);
+    this.red = new Color(255, 0, 0);
+    this.green = new Color(0, 255, 0);
+    this.blue = new Color(0, 0, 255);
+  }
+  Color$Companion.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'Companion',
     interfaces: []
+  };
+  var Color$Companion_instance = null;
+  function Color$Companion_getInstance() {
+    if (Color$Companion_instance === null) {
+      new Color$Companion();
+    }
+    return Color$Companion_instance;
+  }
+  Color.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'Color',
+    interfaces: []
+  };
+  Color.prototype.component1 = function () {
+    return this.r;
+  };
+  Color.prototype.component2 = function () {
+    return this.g;
+  };
+  Color.prototype.component3 = function () {
+    return this.b;
+  };
+  Color.prototype.copy_qt1dr2$ = function (r, g, b) {
+    return new Color(r === void 0 ? this.r : r, g === void 0 ? this.g : g, b === void 0 ? this.b : b);
+  };
+  Color.prototype.hashCode = function () {
+    var result = 0;
+    result = result * 31 + Kotlin.hashCode(this.r) | 0;
+    result = result * 31 + Kotlin.hashCode(this.g) | 0;
+    result = result * 31 + Kotlin.hashCode(this.b) | 0;
+    return result;
+  };
+  Color.prototype.equals = function (other) {
+    return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.r, other.r) && Kotlin.equals(this.g, other.g) && Kotlin.equals(this.b, other.b)))));
+  };
+  function KeyboardControl() {
+    KeyboardControl$Companion_getInstance();
+    this.x = 0.0;
+    this.y = 0.0;
+    this.z = 0.0;
+    this.keys_0 = HashMap_init();
+    document.addEventListener('keydown', KeyboardControl_init$lambda(this));
+    document.addEventListener('keyup', KeyboardControl_init$lambda_0(this));
+  }
+  function KeyboardControl$Companion() {
+    KeyboardControl$Companion_instance = this;
+    this.A_0 = 65;
+    this.D_0 = 68;
+    this.S_0 = 83;
+    this.W_0 = 87;
+    this.LEFT_0 = 37;
+    this.RIGHT_0 = 39;
+  }
+  KeyboardControl$Companion.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'Companion',
+    interfaces: []
+  };
+  var KeyboardControl$Companion_instance = null;
+  function KeyboardControl$Companion_getInstance() {
+    if (KeyboardControl$Companion_instance === null) {
+      new KeyboardControl$Companion();
+    }
+    return KeyboardControl$Companion_instance;
+  }
+  KeyboardControl.prototype.isPressed_0 = function ($receiver) {
+    var tmp$;
+    return (tmp$ = this.keys_0.get_11rb$($receiver)) != null ? tmp$ : false;
+  };
+  KeyboardControl.prototype.loop = function () {
+    this.x = 0.0;
+    this.y = 0.0;
+    this.z = 0.0;
+    if (this.isPressed_0(65))
+      this.x -= 1.0;
+    if (this.isPressed_0(68))
+      this.x += 1.0;
+    if (this.isPressed_0(83))
+      this.y -= 1.0;
+    if (this.isPressed_0(87))
+      this.y += 1.0;
+    if (this.isPressed_0(37))
+      this.z -= 1.0;
+    if (this.isPressed_0(39))
+      this.z += 1.0;
+  };
+  KeyboardControl.prototype.toString = function () {
+    return 'X: ' + this.x + ' | Y: ' + this.y + ' | Z: ' + this.z;
+  };
+  function KeyboardControl_init$lambda(this$KeyboardControl) {
+    return function (it) {
+      var tmp$, tmp$_0;
+      tmp$_0 = this$KeyboardControl.keys_0;
+      var key = (Kotlin.isType(tmp$ = it, KeyboardEvent) ? tmp$ : throwCCE()).keyCode;
+      tmp$_0.put_xwzc9p$(key, true);
+      return Unit;
+    };
+  }
+  function KeyboardControl_init$lambda_0(this$KeyboardControl) {
+    return function (it) {
+      var tmp$, tmp$_0;
+      tmp$_0 = this$KeyboardControl.keys_0;
+      var key = (Kotlin.isType(tmp$ = it, KeyboardEvent) ? tmp$ : throwCCE()).keyCode;
+      tmp$_0.put_xwzc9p$(key, false);
+      return Unit;
+    };
+  }
+  KeyboardControl.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'KeyboardControl',
+    interfaces: [Loopable]
   };
   function Loopable() {
   }
@@ -431,6 +599,9 @@ var output = function (_, Kotlin, $module$kotlinx_html_js) {
     this.x = x;
     this.y = y;
   }
+  Point.prototype.toString = function () {
+    return '(' + this.x + ', ' + this.y + ')';
+  };
   Point.$metadata$ = {
     kind: Kind_CLASS,
     simpleName: 'Point',
@@ -445,9 +616,6 @@ var output = function (_, Kotlin, $module$kotlinx_html_js) {
   Point.prototype.copy_lu1900$ = function (x, y) {
     return new Point(x === void 0 ? this.x : x, y === void 0 ? this.y : y);
   };
-  Point.prototype.toString = function () {
-    return 'Point(x=' + Kotlin.toString(this.x) + (', y=' + Kotlin.toString(this.y)) + ')';
-  };
   Point.prototype.hashCode = function () {
     var result = 0;
     result = result * 31 + Kotlin.hashCode(this.x) | 0;
@@ -460,90 +628,135 @@ var output = function (_, Kotlin, $module$kotlinx_html_js) {
   function xy($receiver, that) {
     return new Point($receiver, that);
   }
-  function strokeConnectedLines($receiver, points) {
-    $receiver.beginPath();
-    $receiver.moveTo(points[0].x, points[0].y);
-    for (var i = 1; i < points.length; i++) {
-      $receiver.lineTo(points[i].x, points[i].y);
-    }
-    $receiver.closePath();
-    $receiver.stroke();
+  function Vector(magnitude, bearing) {
+    this.magnitude = magnitude;
+    this.bearing = bearing;
   }
-  function strokeLines($receiver, points) {
-    var tmp$;
-    for (tmp$ = 0; tmp$ !== points.length; ++tmp$) {
-      var element = points[tmp$];
-      $receiver.beginPath();
-      $receiver.moveTo(element.first.x, element.first.y);
-      $receiver.lineTo(element.second.x, element.second.y);
-      $receiver.closePath();
-      $receiver.stroke();
-    }
+  Vector.prototype.toString = function () {
+    return '(' + this.magnitude + ', ' + this.bearing + ')';
+  };
+  Vector.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'Vector',
+    interfaces: []
+  };
+  Vector.prototype.component1 = function () {
+    return this.magnitude;
+  };
+  Vector.prototype.component2 = function () {
+    return this.bearing;
+  };
+  Vector.prototype.copy_lu1900$ = function (magnitude, bearing) {
+    return new Vector(magnitude === void 0 ? this.magnitude : magnitude, bearing === void 0 ? this.bearing : bearing);
+  };
+  Vector.prototype.hashCode = function () {
+    var result = 0;
+    result = result * 31 + Kotlin.hashCode(this.magnitude) | 0;
+    result = result * 31 + Kotlin.hashCode(this.bearing) | 0;
+    return result;
+  };
+  Vector.prototype.equals = function (other) {
+    return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.magnitude, other.magnitude) && Kotlin.equals(this.bearing, other.bearing)))));
+  };
+  function vec($receiver, that) {
+    return new Vector($receiver, that);
   }
-  function drawComponent($receiver, component, pos, bearing) {
-    if (bearing === void 0)
-      bearing = 0.0;
-    $receiver.save();
-    $receiver.translate(pos.x, pos.y);
-    $receiver.rotate(-bearing);
-    component($receiver);
-    $receiver.restore();
+  function Wheel(relativeX, relativeY, vector) {
+    if (vector === void 0)
+      vector = new Vector(0.0, 0.0);
+    this.relativeX = relativeX;
+    this.relativeY = relativeY;
+    this.vector = vector;
   }
-  function clear($receiver) {
-    $receiver.save();
-    $receiver.setTransform(1.0, 0.0, 0.0, 1.0, 0.0, 0.0);
-    $receiver.clearRect(0.0, 0.0, $receiver.canvas.width, $receiver.canvas.height);
-    $receiver.restore();
-  }
-  function cartesian($receiver) {
-    $receiver.translate($receiver.canvas.width / 2.0, $receiver.canvas.height / 2.0);
-    $receiver.scale(1.0, -1.0);
-  }
-  function Component() {
-  }
-  Component.$metadata$ = {
-    kind: Kind_INTERFACE,
-    simpleName: 'Component',
-    interfaces: [Loopable]
+  Wheel.prototype.toString = function () {
+    return 'Wheel@(' + this.relativeX + ', ' + this.relativeY + ') : ' + this.vector;
+  };
+  Wheel.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'Wheel',
+    interfaces: []
+  };
+  Wheel.prototype.component1 = function () {
+    return this.relativeX;
+  };
+  Wheel.prototype.component2 = function () {
+    return this.relativeY;
+  };
+  Wheel.prototype.component3 = function () {
+    return this.vector;
+  };
+  Wheel.prototype.copy_y20ykt$ = function (relativeX, relativeY, vector) {
+    return new Wheel(relativeX === void 0 ? this.relativeX : relativeX, relativeY === void 0 ? this.relativeY : relativeY, vector === void 0 ? this.vector : vector);
+  };
+  Wheel.prototype.hashCode = function () {
+    var result = 0;
+    result = result * 31 + Kotlin.hashCode(this.relativeX) | 0;
+    result = result * 31 + Kotlin.hashCode(this.relativeY) | 0;
+    result = result * 31 + Kotlin.hashCode(this.vector) | 0;
+    return result;
+  };
+  Wheel.prototype.equals = function (other) {
+    return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.relativeX, other.relativeX) && Kotlin.equals(this.relativeY, other.relativeY) && Kotlin.equals(this.vector, other.vector)))));
   };
   Object.defineProperty(_, 'period', {
     get: function () {
       return period;
     }
   });
-  Object.defineProperty(_, 'simulatorCanvas', {
+  Object.defineProperty(_, 'robot', {
     get: function () {
-      return simulatorCanvas;
+      return robot;
+    }
+  });
+  Object.defineProperty(_, 'controls', {
+    get: function () {
+      return controls;
+    }
+  });
+  Object.defineProperty(_, 'simulator', {
+    get: function () {
+      return simulator;
     }
   });
   _.main = main;
-  var package$control = _.control || (_.control = {});
-  package$control.Control = Control;
-  Object.defineProperty(KeyboardControl, 'Companion', {
-    get: KeyboardControl$Companion_getInstance
-  });
-  package$control.KeyboardControl = KeyboardControl;
+  var package$kanvas = _.kanvas || (_.kanvas = {});
+  package$kanvas.body_suihwv$ = body;
+  package$kanvas.Body = Body;
+  package$kanvas.render_omq1gn$ = render;
+  package$kanvas.Element = Element;
+  package$kanvas.Group = Group;
+  package$kanvas.Line = Line;
+  package$kanvas.Tag = Tag;
   var package$robots = _.robots || (_.robots = {});
-  package$robots.Robot = Robot;
+  package$robots.RobotBase = RobotBase;
   package$robots.TankDriveRobot = TankDriveRobot;
   var package$settings = _.settings || (_.settings = {});
   package$settings.RangeSetting = RangeSetting;
   package$settings.Setting = Setting;
-  package$settings.Settings = Settings;
   var package$util = _.util || (_.util = {});
+  package$util.clear_qtrdl1$ = clear;
+  package$util.cartesian_qtrdl1$ = cartesian;
+  Object.defineProperty(Color, 'Companion', {
+    get: Color$Companion_getInstance
+  });
+  package$util.Color = Color;
+  Object.defineProperty(KeyboardControl, 'Companion', {
+    get: KeyboardControl$Companion_getInstance
+  });
+  package$util.KeyboardControl = KeyboardControl;
   package$util.Loopable = Loopable;
   package$util.Point = Point;
   package$util.xy_38ydlf$ = xy;
-  var package$canvas = package$util.canvas || (package$util.canvas = {});
-  package$canvas.strokeConnectedLines_ef5b96$ = strokeConnectedLines;
-  package$canvas.strokeLines_8nyhx9$ = strokeLines;
-  package$canvas.drawComponent_nt76e$ = drawComponent;
-  package$canvas.clear_qtrdl1$ = clear;
-  package$canvas.cartesian_qtrdl1$ = cartesian;
-  package$canvas.Component = Component;
+  package$util.Vector = Vector;
+  package$util.vec_38ydlf$ = vec;
+  package$util.Wheel = Wheel;
   period = 16;
-  var tmp$;
-  simulatorCanvas = Kotlin.isType(tmp$ = document.getElementById('simulatorCanvas'), HTMLCanvasElement) ? tmp$ : throwCCE();
+  robot = new TankDriveRobot();
+  controls = new KeyboardControl();
+  var tmp$, tmp$_0;
+  var $receiver = Kotlin.isType(tmp$_0 = (Kotlin.isType(tmp$ = document.getElementById('simulatorCanvas'), HTMLCanvasElement) ? tmp$ : throwCCE()).getContext('2d'), CanvasRenderingContext2D) ? tmp$_0 : throwCCE();
+  cartesian($receiver);
+  simulator = $receiver;
   main();
   Kotlin.defineModule('output', _);
   return _;

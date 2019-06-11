@@ -1,28 +1,24 @@
-import control.KeyboardControl
 import org.w3c.dom.CanvasRenderingContext2D
 import org.w3c.dom.HTMLCanvasElement
 import robots.TankDriveRobot
-import settings.Settings
-import util.canvas.cartesian
-import util.canvas.clear
+import util.KeyboardControl
+import util.cartesian
+import util.clear
 import kotlin.browser.document
 import kotlin.browser.window
 
 const val period = 1000 / 60
 
-val simulatorCanvas = document.getElementById("simulatorCanvas") as HTMLCanvasElement
+val robot = TankDriveRobot()
+val controls = KeyboardControl()
+val simulator = ((document.getElementById("simulatorCanvas") as HTMLCanvasElement)
+    .getContext("2d") as CanvasRenderingContext2D)
+    .apply { cartesian() }
+
 
 fun main() {
-    val simulatorCanvasContext = (simulatorCanvas.getContext("2d") as CanvasRenderingContext2D).apply {
-        cartesian()
-    }
-
-    val settings = Settings()
-    val controls = KeyboardControl()
-    val robot = TankDriveRobot(simulatorCanvasContext, controls, settings)
-
     window.setInterval({
-        simulatorCanvasContext.clear()
+        simulator.clear()
         robot.loop()
         controls.loop()
     }, period)
