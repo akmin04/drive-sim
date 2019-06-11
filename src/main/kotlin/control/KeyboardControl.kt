@@ -1,37 +1,19 @@
-package util
+package control
 
 import org.w3c.dom.events.KeyboardEvent
 import kotlin.browser.document
 
-/**
- * Receive keyboard events and translate to x, y, and z axes.
- */
-object Keys : Loopable {
-    /**
-     *  Left-Right value (A, D) from -1.0 to 1.0
-     */
-    var x = 0.0
+class KeyboardControl : Control() {
 
-    /**
-     * Down-Up value (S, W) from -1.0 to 1.0
-     */
-    var y = 0.0
+    companion object {
+        private const val A = 65
+        private const val D = 68
+        private const val S = 83
+        private const val W = 87
+        private const val LEFT = 37
+        private const val RIGHT = 39
+    }
 
-    /**
-     * Rotate Left-Right value (LEFT, RIGHT) from -1.0 to 1.0
-     */
-    var z = 0.0
-
-
-    /**
-     * Key-codes
-     */
-    private const val A = 65
-    private const val D = 68
-    private const val S = 83
-    private const val W = 87
-    private const val LEFT = 37
-    private const val RIGHT = 39
 
     private val keys = hashMapOf<Int, Boolean>()
 
@@ -60,5 +42,4 @@ object Keys : Loopable {
         if (RIGHT.isPressed()) z += 1.0
     }
 
-    override fun toString(): String = "X: $x | Y: $y | Z: $z"
 }
