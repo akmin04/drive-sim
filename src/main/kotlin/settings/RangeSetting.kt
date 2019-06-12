@@ -1,10 +1,7 @@
 package settings
 
-import kotlinx.html.InputType
-import kotlinx.html.div
+import kotlinx.html.*
 import kotlinx.html.dom.append
-import kotlinx.html.id
-import kotlinx.html.input
 import org.w3c.dom.HTMLInputElement
 import org.w3c.dom.events.KeyboardEvent
 import org.w3c.dom.get
@@ -33,14 +30,14 @@ class RangeSetting(
     override operator fun provideDelegate(thisRef: Any?, property: KProperty<*>): ReadOnlyProperty<Any?, Double> {
 
         val camelCase = property.name
-        val name = property.name.capitalize().replace("[A-Z]".toRegex()) { " ${it.value}" }
+        val titleCase = property.name.capitalize().replace("[A-Z]".toRegex()) { " ${it.value}" }
 
         // Add elements to HTML
         document.body!!
             .getElementsByClassName("main")[0]!!
             .getElementsByClassName("settings")[0]!!
             .append {
-                div { +name }
+                div { +titleCase }
                 input(type = InputType.range, classes = "rangeInput") { id = "${camelCase}Range" }
                 input(classes = "textInput") { id = "${camelCase}Text" }
                 input(type = InputType.button, classes = "buttonInput") { id = "${camelCase}Button" }
@@ -104,5 +101,14 @@ class RangeSetting(
             })
         }
         return super.provideDelegate(thisRef, property)
+    }
+
+    companion object {
+        fun reset(property: KProperty<*>) {
+            val camelCase = property.name
+            val buttonInput = document.getElementById("${camelCase}Button") as HTMLInputElement
+            buttonInput.click()
+        }
+
     }
 }

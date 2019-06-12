@@ -1,11 +1,19 @@
 package util
 
+@Suppress("unused")
 data class Color(
     val r: Int,
     val g: Int,
     val b: Int
 ) {
-    override fun toString(): String = "#${r.toString(16)}${g.toString(16)}${b.toString(16)}"
+
+    private fun base16(num: Int, digits: Int): String {
+        var a = num.toString(16)
+        while (a.length < digits) a = "0$a"
+        return a
+    }
+
+    override fun toString(): String = "#${base16(r, 2)}${base16(g, 2)}${base16(b, 2)}"
 
     companion object {
         val black = Color(0, 0, 0)

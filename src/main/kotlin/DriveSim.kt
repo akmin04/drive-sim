@@ -1,9 +1,9 @@
+import kanvas.cartesian
+import kanvas.clear
 import org.w3c.dom.CanvasRenderingContext2D
 import org.w3c.dom.HTMLCanvasElement
 import robots.TankDriveRobot
 import util.KeyboardControl
-import util.cartesian
-import util.clear
 import kotlin.browser.document
 import kotlin.browser.window
 

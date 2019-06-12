@@ -10,26 +10,28 @@ var output = function (_, Kotlin, $module$kotlinx_html_js) {
   var Unit = Kotlin.kotlin.Unit;
   var Kind_CLASS = Kotlin.Kind.CLASS;
   var Kind_INTERFACE = Kotlin.Kind.INTERFACE;
+  var Math_0 = Math;
   var ArrayList_init = Kotlin.kotlin.collections.ArrayList_init_287e2$;
   var PropertyMetadata = Kotlin.PropertyMetadata;
   var listOf = Kotlin.kotlin.collections.listOf_i5x0yv$;
   var println = Kotlin.kotlin.io.println_s8jyv4$;
-  var Math_0 = Math;
+  var getPropertyCallableRef = Kotlin.getPropertyCallableRef;
   var capitalize = Kotlin.kotlin.text.capitalize_pdl1vz$;
   var ensureNotNull = Kotlin.ensureNotNull;
-  var div = $module$kotlinx_html_js.kotlinx.html.div_59el9d$;
+  var br = $module$kotlinx_html_js.kotlinx.html.br_msntey$;
   var InputType = $module$kotlinx_html_js.kotlinx.html.InputType;
   var set_id = $module$kotlinx_html_js.kotlinx.html.set_id_ueiko3$;
   var input = $module$kotlinx_html_js.kotlinx.html.input_mm0abt$;
   var append = $module$kotlinx_html_js.kotlinx.html.dom.append_k9bwru$;
+  var Regex_init = Kotlin.kotlin.text.Regex_init_61zpoe$;
+  var StringBuilder_init = Kotlin.kotlin.text.StringBuilder_init_za3lpa$;
+  var div = $module$kotlinx_html_js.kotlinx.html.div_59el9d$;
   var toDouble = Kotlin.kotlin.text.toDouble_pdl1vz$;
   var equals = Kotlin.equals;
   var NumberFormatException = Kotlin.kotlin.NumberFormatException;
-  var Regex_init = Kotlin.kotlin.text.Regex_init_61zpoe$;
-  var StringBuilder_init = Kotlin.kotlin.text.StringBuilder_init_za3lpa$;
+  var Kind_OBJECT = Kotlin.Kind.OBJECT;
   var ReadOnlyProperty = Kotlin.kotlin.properties.ReadOnlyProperty;
   var toString = Kotlin.kotlin.text.toString_dqglrj$;
-  var Kind_OBJECT = Kotlin.Kind.OBJECT;
   var HashMap_init = Kotlin.kotlin.collections.HashMap_init_q3lmfv$;
   Group.prototype = Object.create(Tag.prototype);
   Group.prototype.constructor = Group;
@@ -37,6 +39,8 @@ var output = function (_, Kotlin, $module$kotlinx_html_js) {
   Body.prototype.constructor = Body;
   TankDriveRobot.prototype = Object.create(RobotBase.prototype);
   TankDriveRobot.prototype.constructor = TankDriveRobot;
+  ButtonSetting.prototype = Object.create(Setting.prototype);
+  ButtonSetting.prototype.constructor = ButtonSetting;
   RangeSetting.prototype = Object.create(Setting.prototype);
   RangeSetting.prototype.constructor = RangeSetting;
   var period;
@@ -74,6 +78,16 @@ var output = function (_, Kotlin, $module$kotlinx_html_js) {
     body.render($receiver);
     $receiver.restore();
   }
+  function clear($receiver) {
+    $receiver.save();
+    $receiver.setTransform(1.0, 0.0, 0.0, 1.0, 0.0, 0.0);
+    $receiver.clearRect(0.0, 0.0, $receiver.canvas.width, $receiver.canvas.height);
+    $receiver.restore();
+  }
+  function cartesian($receiver) {
+    $receiver.translate($receiver.canvas.width / 2.0, $receiver.canvas.height / 2.0);
+    $receiver.scale(1.0, -1.0);
+  }
   function Element() {
   }
   Element.$metadata$ = {
@@ -90,6 +104,20 @@ var output = function (_, Kotlin, $module$kotlinx_html_js) {
     if (color === void 0)
       color = Color$Companion_getInstance().black;
     return this.initTag_fofoa3$(new Line(start, end, width, color));
+  };
+  Group.prototype.line_abqzl6$ = function (start, vector, width, color) {
+    if (width === void 0)
+      width = 5.0;
+    if (color === void 0)
+      color = Color$Companion_getInstance().black;
+    var tmp$ = start.x;
+    var tmp$_0 = vector.magnitude;
+    var x = vector.bearing;
+    var tmp$_1 = tmp$ + tmp$_0 * Math_0.sin(x);
+    var tmp$_2 = start.y;
+    var tmp$_3 = vector.magnitude;
+    var x_0 = vector.bearing;
+    return this.initTag_fofoa3$(new Line(start, xy(tmp$_1, tmp$_2 + tmp$_3 * Math_0.cos(x_0)), width, color));
   };
   Group.prototype.group_psgofc$ = function (name, init) {
     if (name === void 0)
@@ -173,10 +201,10 @@ var output = function (_, Kotlin, $module$kotlinx_html_js) {
     this.maxVelocity_9kbjtd$_0 = (new RangeSetting(600.0, 100.0, 1100.0)).provideDelegate_n5byny$(this, RobotBase$maxVelocity_metadata);
     this.robotWidth_wy3boa$_0 = (new RangeSetting(100.0, 50.0, 150.0)).provideDelegate_n5byny$(this, RobotBase$robotWidth_metadata);
     this.robotLength_mys6si$_0 = (new RangeSetting(100.0, 50.0, 150.0)).provideDelegate_n5byny$(this, RobotBase$robotLength_metadata);
+    this.resetAll_ljac8g$_0 = (new ButtonSetting(RobotBase$resetAll$lambda(this))).provideDelegate_n5byny$(this, RobotBase$resetAll_metadata);
     this.numberOfWheels = this.wheels_mzrdcm$_0.length;
     this.pos = xy(0.0, 0.0);
     this.bearing = 0.0;
-    this.body_72fakg$_0 = body(RobotBase$body$lambda(this));
   }
   var RobotBase$maxVelocity_metadata = new PropertyMetadata('maxVelocity');
   Object.defineProperty(RobotBase.prototype, 'maxVelocity', {
@@ -194,6 +222,12 @@ var output = function (_, Kotlin, $module$kotlinx_html_js) {
   Object.defineProperty(RobotBase.prototype, 'robotLength', {
     get: function () {
       return this.robotLength_mys6si$_0.getValue_lrcp0p$(this, RobotBase$robotLength_metadata);
+    }
+  });
+  var RobotBase$resetAll_metadata = new PropertyMetadata('resetAll');
+  Object.defineProperty(RobotBase.prototype, 'resetAll', {
+    get: function () {
+      return this.resetAll_ljac8g$_0.getValue_lrcp0p$(this, RobotBase$resetAll_metadata);
     }
   });
   Object.defineProperty(RobotBase.prototype, 'maxVelocityPerFrame', {
@@ -216,6 +250,43 @@ var output = function (_, Kotlin, $module$kotlinx_html_js) {
       return listOf([xy(this.halfWidth_5frg69$_0, this.halfLength_ndnnm1$_0), xy(this.halfWidth_5frg69$_0, -this.halfLength_ndnnm1$_0), xy(-this.halfWidth_5frg69$_0, -this.halfLength_ndnnm1$_0), xy(-this.halfWidth_5frg69$_0, this.halfLength_ndnnm1$_0)]);
     }
   });
+  function RobotBase$get_RobotBase$body$lambda$lambda(this$RobotBase) {
+    return function ($receiver) {
+      for (var i = 0; i < 3; i++) {
+        $receiver.line_a0kn23$(this$RobotBase.corners_rb1qac$_0.get_za3lpa$(i), this$RobotBase.corners_rb1qac$_0.get_za3lpa$(i + 1 | 0));
+      }
+      $receiver.line_a0kn23$(this$RobotBase.corners_rb1qac$_0.get_za3lpa$(0), this$RobotBase.corners_rb1qac$_0.get_za3lpa$(3), void 0, Color$Companion_getInstance().green);
+      return Unit;
+    };
+  }
+  function RobotBase$get_RobotBase$body$lambda$lambda_0(this$RobotBase) {
+    return function ($receiver) {
+      var $receiver_0 = this$RobotBase.wheels_mzrdcm$_0;
+      var tmp$;
+      for (tmp$ = 0; tmp$ !== $receiver_0.length; ++tmp$) {
+        var element = $receiver_0[tmp$];
+        var this$RobotBase_0 = this$RobotBase;
+        var rx = element.component1()
+        , ry = element.component2()
+        , vector = element.component3();
+        $receiver.line_abqzl6$(xy(this$RobotBase_0.robotWidth * rx, this$RobotBase_0.robotLength * ry), vec(vector.magnitude / this$RobotBase_0.maxVelocityPerFrame * 100, vector.bearing - this$RobotBase_0.bearing), 5.0, vector.magnitude > 0 ? Color$Companion_getInstance().blue : Color$Companion_getInstance().red);
+      }
+      println(Color$Companion_getInstance().red.toString());
+      return Unit;
+    };
+  }
+  function RobotBase$get_RobotBase$body$lambda(this$RobotBase) {
+    return function ($receiver) {
+      $receiver.group_psgofc$('robot', RobotBase$get_RobotBase$body$lambda$lambda(this$RobotBase));
+      $receiver.group_psgofc$('wheels', RobotBase$get_RobotBase$body$lambda$lambda_0(this$RobotBase));
+      return Unit;
+    };
+  }
+  Object.defineProperty(RobotBase.prototype, 'body_72fakg$_0', {
+    get: function () {
+      return body(RobotBase$get_RobotBase$body$lambda(this));
+    }
+  });
   RobotBase.prototype.loop = function () {
     var tmp$;
     var vectors = this.update();
@@ -230,22 +301,19 @@ var output = function (_, Kotlin, $module$kotlinx_html_js) {
     }
     render(simulator, this.body_72fakg$_0, this.pos, this.bearing);
   };
-  function RobotBase$body$lambda$lambda(this$RobotBase) {
-    return function ($receiver) {
-      for (var i = 0; i < 3; i++) {
-        $receiver.line_a0kn23$(this$RobotBase.corners_rb1qac$_0.get_za3lpa$(i), this$RobotBase.corners_rb1qac$_0.get_za3lpa$(i + 1 | 0));
-      }
-      $receiver.line_a0kn23$(this$RobotBase.corners_rb1qac$_0.get_za3lpa$(0), this$RobotBase.corners_rb1qac$_0.get_za3lpa$(3), void 0, Color$Companion_getInstance().blue);
-      return Unit;
-    };
-  }
-  function RobotBase$body$lambda$lambda_0($receiver) {
-    return Unit;
-  }
-  function RobotBase$body$lambda(this$RobotBase) {
-    return function ($receiver) {
-      $receiver.group_psgofc$('robot', RobotBase$body$lambda$lambda(this$RobotBase));
-      $receiver.group_psgofc$('wheels', RobotBase$body$lambda$lambda_0);
+  function RobotBase$resetAll$lambda(this$RobotBase) {
+    return function () {
+      this$RobotBase.pos = xy(0.0, 0.0);
+      this$RobotBase.bearing = 0.0;
+      RangeSetting$Companion_getInstance().reset_12czou$(getPropertyCallableRef('maxVelocity', 0, function ($receiver) {
+        return $receiver.maxVelocity;
+      }.bind(null, this$RobotBase)));
+      RangeSetting$Companion_getInstance().reset_12czou$(getPropertyCallableRef('robotWidth', 0, function ($receiver) {
+        return $receiver.robotWidth;
+      }.bind(null, this$RobotBase)));
+      RangeSetting$Companion_getInstance().reset_12czou$(getPropertyCallableRef('robotLength', 0, function ($receiver) {
+        return $receiver.robotLength;
+      }.bind(null, this$RobotBase)));
       return Unit;
     };
   }
@@ -282,7 +350,81 @@ var output = function (_, Kotlin, $module$kotlinx_html_js) {
     simpleName: 'TankDriveRobot',
     interfaces: [RobotBase]
   };
+  function ButtonSetting(onClick) {
+    Setting.call(this);
+    this.onClick = onClick;
+    this.value_xjd99g$_0 = Unit;
+  }
+  Object.defineProperty(ButtonSetting.prototype, 'value', {
+    get: function () {
+      return this.value_xjd99g$_0;
+    },
+    set: function (value) {
+      this.value_xjd99g$_0 = value;
+    }
+  });
+  function ButtonSetting$provideDelegate$lambda$lambda(closure$camelCase) {
+    return function ($receiver) {
+      set_id($receiver, closure$camelCase + 'Button');
+      return Unit;
+    };
+  }
+  function ButtonSetting$provideDelegate$lambda(closure$camelCase) {
+    return function ($receiver) {
+      br($receiver);
+      input($receiver, InputType.button, void 0, void 0, void 0, 'buttonInput', ButtonSetting$provideDelegate$lambda$lambda(closure$camelCase));
+      return Unit;
+    };
+  }
+  function ButtonSetting$provideDelegate$lambda$lambda_0(this$ButtonSetting) {
+    return function (it) {
+      this$ButtonSetting.onClick();
+      return Unit;
+    };
+  }
+  ButtonSetting.prototype.provideDelegate_n5byny$ = function (thisRef, property) {
+    var tmp$;
+    var camelCase = property.callableName;
+    var tmp$_0 = capitalize(property.callableName);
+    var regex = Regex_init('[A-Z]');
+    var replace_20wsma$result;
+    replace_20wsma$break: do {
+      var match = regex.find_905azu$(tmp$_0);
+      if (match == null) {
+        replace_20wsma$result = tmp$_0.toString();
+        break replace_20wsma$break;
+      }
+      var lastStart = 0;
+      var length = tmp$_0.length;
+      var sb = StringBuilder_init(length);
+      do {
+        var foundMatch = ensureNotNull(match);
+        sb.append_ezbsdh$(tmp$_0, lastStart, foundMatch.range.start);
+        sb.append_gw00v9$(' ' + foundMatch.value);
+        lastStart = foundMatch.range.endInclusive + 1 | 0;
+        match = foundMatch.next();
+      }
+       while (lastStart < length && match != null);
+      if (lastStart < length) {
+        sb.append_ezbsdh$(tmp$_0, lastStart, length);
+      }
+      replace_20wsma$result = sb.toString();
+    }
+     while (false);
+    var titleCase = replace_20wsma$result;
+    append(ensureNotNull(ensureNotNull(ensureNotNull(document.body).getElementsByClassName('main')[0]).getElementsByClassName('settings')[0]), ButtonSetting$provideDelegate$lambda(camelCase));
+    var buttonInput = Kotlin.isType(tmp$ = document.getElementById(camelCase + 'Button'), HTMLInputElement) ? tmp$ : throwCCE();
+    buttonInput.value = titleCase;
+    buttonInput.addEventListener('click', ButtonSetting$provideDelegate$lambda$lambda_0(this));
+    return Setting.prototype.provideDelegate_n5byny$.call(this, thisRef, property);
+  };
+  ButtonSetting.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'ButtonSetting',
+    interfaces: [Setting]
+  };
   function RangeSetting(initialValue, min, max) {
+    RangeSetting$Companion_getInstance();
     Setting.call(this);
     this.initialValue = initialValue;
     this.min = min;
@@ -297,9 +439,9 @@ var output = function (_, Kotlin, $module$kotlinx_html_js) {
       this.value_ld2e87$_0 = value;
     }
   });
-  function RangeSetting$provideDelegate$lambda$lambda(closure$name) {
+  function RangeSetting$provideDelegate$lambda$lambda(closure$titleCase) {
     return function ($receiver) {
-      $receiver.unaryPlus_pdl1vz$(closure$name);
+      $receiver.unaryPlus_pdl1vz$(closure$titleCase);
       return Unit;
     };
   }
@@ -321,9 +463,9 @@ var output = function (_, Kotlin, $module$kotlinx_html_js) {
       return Unit;
     };
   }
-  function RangeSetting$provideDelegate$lambda(closure$name, closure$camelCase) {
+  function RangeSetting$provideDelegate$lambda(closure$titleCase, closure$camelCase) {
     return function ($receiver) {
-      div($receiver, void 0, RangeSetting$provideDelegate$lambda$lambda(closure$name));
+      div($receiver, void 0, RangeSetting$provideDelegate$lambda$lambda(closure$titleCase));
       input($receiver, InputType.range, void 0, void 0, void 0, 'rangeInput', RangeSetting$provideDelegate$lambda$lambda_0(closure$camelCase));
       input($receiver, void 0, void 0, void 0, void 0, 'textInput', RangeSetting$provideDelegate$lambda$lambda_1(closure$camelCase));
       input($receiver, InputType.button, void 0, void 0, void 0, 'buttonInput', RangeSetting$provideDelegate$lambda$lambda_2(closure$camelCase));
@@ -404,8 +546,8 @@ var output = function (_, Kotlin, $module$kotlinx_html_js) {
       replace_20wsma$result = sb.toString();
     }
      while (false);
-    var name = replace_20wsma$result;
-    append(ensureNotNull(ensureNotNull(ensureNotNull(document.body).getElementsByClassName('main')[0]).getElementsByClassName('settings')[0]), RangeSetting$provideDelegate$lambda(name, camelCase));
+    var titleCase = replace_20wsma$result;
+    append(ensureNotNull(ensureNotNull(ensureNotNull(document.body).getElementsByClassName('main')[0]).getElementsByClassName('settings')[0]), RangeSetting$provideDelegate$lambda(titleCase, camelCase));
     var rangeInput = Kotlin.isType(tmp$ = document.getElementById(camelCase + 'Range'), HTMLInputElement) ? tmp$ : throwCCE();
     var textInput = Kotlin.isType(tmp$_0 = document.getElementById(camelCase + 'Text'), HTMLInputElement) ? tmp$_0 : throwCCE();
     var buttonInput = Kotlin.isType(tmp$_1 = document.getElementById(camelCase + 'Button'), HTMLInputElement) ? tmp$_1 : throwCCE();
@@ -420,6 +562,27 @@ var output = function (_, Kotlin, $module$kotlinx_html_js) {
     buttonInput.addEventListener('click', RangeSetting$provideDelegate$lambda$lambda_5(this, rangeInput, textInput));
     return Setting.prototype.provideDelegate_n5byny$.call(this, thisRef, property);
   };
+  function RangeSetting$Companion() {
+    RangeSetting$Companion_instance = this;
+  }
+  RangeSetting$Companion.prototype.reset_12czou$ = function (property) {
+    var tmp$;
+    var camelCase = property.callableName;
+    var buttonInput = Kotlin.isType(tmp$ = document.getElementById(camelCase + 'Button'), HTMLInputElement) ? tmp$ : throwCCE();
+    buttonInput.click();
+  };
+  RangeSetting$Companion.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'Companion',
+    interfaces: []
+  };
+  var RangeSetting$Companion_instance = null;
+  function RangeSetting$Companion_getInstance() {
+    if (RangeSetting$Companion_instance === null) {
+      new RangeSetting$Companion();
+    }
+    return RangeSetting$Companion_instance;
+  }
   RangeSetting.$metadata$ = {
     kind: Kind_CLASS,
     simpleName: 'RangeSetting',
@@ -445,24 +608,20 @@ var output = function (_, Kotlin, $module$kotlinx_html_js) {
     simpleName: 'Setting',
     interfaces: []
   };
-  function clear($receiver) {
-    $receiver.save();
-    $receiver.setTransform(1.0, 0.0, 0.0, 1.0, 0.0, 0.0);
-    $receiver.clearRect(0.0, 0.0, $receiver.canvas.width, $receiver.canvas.height);
-    $receiver.restore();
-  }
-  function cartesian($receiver) {
-    $receiver.translate($receiver.canvas.width / 2.0, $receiver.canvas.height / 2.0);
-    $receiver.scale(1.0, -1.0);
-  }
   function Color(r, g, b) {
     Color$Companion_getInstance();
     this.r = r;
     this.g = g;
     this.b = b;
   }
+  Color.prototype.base16_0 = function (num, digits) {
+    var a = toString(num, 16);
+    while (a.length < digits)
+      a = '0' + a;
+    return a;
+  };
   Color.prototype.toString = function () {
-    return '#' + toString(this.r, 16) + toString(this.g, 16) + toString(this.b, 16);
+    return '#' + this.base16_0(this.r, 2) + this.base16_0(this.g, 2) + this.base16_0(this.b, 2);
   };
   function Color$Companion() {
     Color$Companion_instance = this;
@@ -668,9 +827,6 @@ var output = function (_, Kotlin, $module$kotlinx_html_js) {
     this.relativeY = relativeY;
     this.vector = vector;
   }
-  Wheel.prototype.toString = function () {
-    return 'Wheel@(' + this.relativeX + ', ' + this.relativeY + ') : ' + this.vector;
-  };
   Wheel.$metadata$ = {
     kind: Kind_CLASS,
     simpleName: 'Wheel',
@@ -687,6 +843,9 @@ var output = function (_, Kotlin, $module$kotlinx_html_js) {
   };
   Wheel.prototype.copy_y20ykt$ = function (relativeX, relativeY, vector) {
     return new Wheel(relativeX === void 0 ? this.relativeX : relativeX, relativeY === void 0 ? this.relativeY : relativeY, vector === void 0 ? this.vector : vector);
+  };
+  Wheel.prototype.toString = function () {
+    return 'Wheel(relativeX=' + Kotlin.toString(this.relativeX) + (', relativeY=' + Kotlin.toString(this.relativeY)) + (', vector=' + Kotlin.toString(this.vector)) + ')';
   };
   Wheel.prototype.hashCode = function () {
     var result = 0;
@@ -723,6 +882,8 @@ var output = function (_, Kotlin, $module$kotlinx_html_js) {
   package$kanvas.body_suihwv$ = body;
   package$kanvas.Body = Body;
   package$kanvas.render_omq1gn$ = render;
+  package$kanvas.clear_qtrdl1$ = clear;
+  package$kanvas.cartesian_qtrdl1$ = cartesian;
   package$kanvas.Element = Element;
   package$kanvas.Group = Group;
   package$kanvas.Line = Line;
@@ -731,14 +892,16 @@ var output = function (_, Kotlin, $module$kotlinx_html_js) {
   package$robots.RobotBase = RobotBase;
   package$robots.TankDriveRobot = TankDriveRobot;
   var package$settings = _.settings || (_.settings = {});
+  package$settings.ButtonSetting = ButtonSetting;
+  Object.defineProperty(RangeSetting, 'Companion', {
+    get: RangeSetting$Companion_getInstance
+  });
   package$settings.RangeSetting = RangeSetting;
   package$settings.Setting = Setting;
-  var package$util = _.util || (_.util = {});
-  package$util.clear_qtrdl1$ = clear;
-  package$util.cartesian_qtrdl1$ = cartesian;
   Object.defineProperty(Color, 'Companion', {
     get: Color$Companion_getInstance
   });
+  var package$util = _.util || (_.util = {});
   package$util.Color = Color;
   Object.defineProperty(KeyboardControl, 'Companion', {
     get: KeyboardControl$Companion_getInstance
