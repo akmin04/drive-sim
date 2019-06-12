@@ -1,18 +1,11 @@
 package robots
 
 import controls
-import util.Vector
-import util.Wheel
-import util.vec
-import kotlin.math.abs
-import kotlin.math.cos
-import kotlin.math.sin
+import util.*
+import kotlin.math.*
 
 class TankDriveRobot : RobotBase(
-    arrayOf(
-        Wheel(-0.5, 0.0),
-        Wheel(0.5, 0.0)
-    )
+    arrayOf(Wheel(-0.5, 0.0), Wheel(0.5, 0.0))
 ) {
     override fun update(): Array<Vector> {
         // Key to left/right output

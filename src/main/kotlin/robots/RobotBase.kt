@@ -2,10 +2,12 @@ package robots
 
 import kanvas.render
 import period
+import settings.ButtonSetting
 import settings.RangeSetting
 import simulator
 import util.*
 
+@Suppress("MemberVisibilityCanBePrivate", "unused")
 abstract class RobotBase(
     private val wheels: Array<Wheel>
 ) : Loopable {
@@ -27,6 +29,14 @@ abstract class RobotBase(
         min = 50.0,
         max = 150.0
     )
+
+    val resetAll by ButtonSetting {
+        pos = 0.0 xy 0.0
+        bearing = 0.0
+        RangeSetting.reset(::maxVelocity)
+        RangeSetting.reset(::robotWidth)
+        RangeSetting.reset(::robotLength)
+    }
 
     val maxVelocityPerFrame get() = maxVelocity * period / 1000
     val numberOfWheels = wheels.size
@@ -50,11 +60,19 @@ abstract class RobotBase(
                 for (i in 0 until 3) {
                     line(start = corners[i], end = corners[i + 1])
                 }
-                line(start = corners[0], end = corners[3], color = Color.blue)
+                line(start = corners[0], end = corners[3], color = Color.green)
             }
 
             group("wheels") {
-                //            wheels.forEach(::println)
+                wheels.forEach { (rx, ry, vector) ->
+                    line(
+                        start = robotWidth * rx xy robotLength * ry,
+                        vector = vector.magnitude / maxVelocityPerFrame * 100 vec vector.bearing - bearing,
+                        color = if (vector.magnitude > 0) Color.blue else Color.red,
+                        width = 5.0
+                    )
+                }
+                println(Color.red.toString())
             }
         }
 
