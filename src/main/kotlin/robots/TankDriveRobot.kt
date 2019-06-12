@@ -1,22 +1,20 @@
 package robots
 
-import control.KeyboardControl
-import org.w3c.dom.CanvasRenderingContext2D
-import settings.Settings
+import controls
+import util.Vector
+import util.Wheel
+import util.vec
 import kotlin.math.abs
 import kotlin.math.cos
 import kotlin.math.sin
 
-class TankDriveRobot(
-    context: CanvasRenderingContext2D,
-    private val controls: KeyboardControl,
-    private val settings: Settings
-) : Robot(
-    context,
-    settings
+class TankDriveRobot : RobotBase(
+    arrayOf(
+        Wheel(-0.5, 0.0),
+        Wheel(0.5, 0.0)
+    )
 ) {
-
-    override fun update() {
+    override fun update(): Array<Vector> {
         // Key to left/right output
         val x = -controls.z
         val y = controls.y
@@ -29,11 +27,16 @@ class TankDriveRobot(
 
         // left/right output to position
         val s = (l + r) / 2
-        val theta = (l - r) / settings.robotWidth
+        val theta = (l - r) / robotWidth
 
         pos.x += s * sin(bearing)
         pos.y += s * cos(bearing)
         bearing += theta
+
+        return arrayOf(
+            l vec bearing,
+            r vec bearing
+        )
     }
 
 }

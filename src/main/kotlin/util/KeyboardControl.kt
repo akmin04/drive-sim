@@ -1,9 +1,9 @@
-package control
+package util
 
 import org.w3c.dom.events.KeyboardEvent
 import kotlin.browser.document
 
-class KeyboardControl : Control() {
+class KeyboardControl : Loopable {
 
     companion object {
         private const val A = 65
@@ -14,6 +14,20 @@ class KeyboardControl : Control() {
         private const val RIGHT = 39
     }
 
+    /**
+     *  Left-Right value (A, D) from -1.0 to 1.0
+     */
+    var x = 0.0
+
+    /**
+     * Down-Up value (S, W) from -1.0 to 1.0
+     */
+    var y = 0.0
+
+    /**
+     * Rotate Left-Right value (LEFT, RIGHT) from -1.0 to 1.0
+     */
+    var z = 0.0
 
     private val keys = hashMapOf<Int, Boolean>()
 
@@ -42,4 +56,5 @@ class KeyboardControl : Control() {
         if (RIGHT.isPressed()) z += 1.0
     }
 
+    override fun toString(): String = "X: $x | Y: $y | Z: $z"
 }

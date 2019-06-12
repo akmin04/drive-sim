@@ -16,6 +16,7 @@ import kotlin.reflect.KProperty
 
 /**
  * Any setting that is a `Double` that requires a slider, text input, and reset button
+ * Using `RangeSetting` delegate automatically adds all HTML to the page
  *
  * @param initialValue of the setting. Also the value set when reset.
  * @param min value
@@ -27,16 +28,12 @@ class RangeSetting(
     val max: Double
 ) : Setting<Double>() {
 
-    // Title case
-    private lateinit var name: String
-    private lateinit var camelCase: String
-
     override var value = initialValue
 
     override operator fun provideDelegate(thisRef: Any?, property: KProperty<*>): ReadOnlyProperty<Any?, Double> {
 
-        camelCase = property.name
-        name = property.name.capitalize().replace("[A-Z]".toRegex()) { " ${it.value}" }
+        val camelCase = property.name
+        val name = property.name.capitalize().replace("[A-Z]".toRegex()) { " ${it.value}" }
 
         // Add elements to HTML
         document.body!!
@@ -100,7 +97,7 @@ class RangeSetting(
         with(buttonInput) {
             value = "Reset"
             addEventListener("click", {
-                // Reset all avlues
+                // Reset all values
                 this@RangeSetting.value = initialValue
                 rangeInput.value = initialValue.toString()
                 textInput.value = initialValue.toString()
