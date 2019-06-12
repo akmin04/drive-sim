@@ -72,7 +72,6 @@ abstract class RobotBase(
                         width = 5.0
                     )
                 }
-                println(Color.red.toString())
             }
         }
 
