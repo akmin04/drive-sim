@@ -16,4 +16,6 @@ data class Vector(
         val yComp = this.y + that.y
         return sqrt(xComp.pow(2) + yComp.pow(2)) vec atan2(xComp, yComp)
     }
+
+    operator fun div(that: Double): Vector = Vector(this.magnitude / that, this.bearing)
 }

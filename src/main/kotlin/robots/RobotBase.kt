@@ -35,9 +35,9 @@ abstract class RobotBase(
 
     companion object {
         val maxVelocity by RangeSetting(
-            initialValue = 600.0,
-            min = 100.0,
-            max = 1100.0
+            initialValue = 500.0,
+            min = 0.0,
+            max = 1000.0
         )
 
         val robotWidth by RangeSetting(

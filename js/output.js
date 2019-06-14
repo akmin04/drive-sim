@@ -348,7 +348,7 @@ var output = function (_, Kotlin, $module$kotlinx_html_js) {
   };
   function RobotBase$Companion() {
     RobotBase$Companion_instance = this;
-    this.maxVelocity_fiv7e5$_0 = (new RangeSetting(600.0, 100.0, 1100.0)).provideDelegate_n5byny$(this, RobotBase$Companion$maxVelocity_metadata);
+    this.maxVelocity_fiv7e5$_0 = (new RangeSetting(500.0, 0.0, 1000.0)).provideDelegate_n5byny$(this, RobotBase$Companion$maxVelocity_metadata);
     this.robotWidth_7hjpr8$_0 = (new RangeSetting(100.0, 50.0, 150.0)).provideDelegate_n5byny$(this, RobotBase$Companion$robotWidth_metadata);
     this.robotLength_24ekf0$_0 = (new RangeSetting(100.0, 50.0, 150.0)).provideDelegate_n5byny$(this, RobotBase$Companion$robotLength_metadata);
     this.drivetrainType_shbw94$_0 = (new RadioSetting(['Tank', 'Swerve'], RobotBase$Companion$drivetrainType$lambda)).provideDelegate_n5byny$(this, RobotBase$Companion$drivetrainType_metadata);
@@ -577,11 +577,11 @@ var output = function (_, Kotlin, $module$kotlinx_html_js) {
     var right = this.avg_0(xyComponents.get_za3lpa$(1).second, xyComponents.get_za3lpa$(2).second);
     var omega1 = (top - bottom) / RobotBase$Companion_getInstance().robotLength;
     var omega2 = (left - right) / RobotBase$Companion_getInstance().robotWidth;
-    var omega = omega1 + omega2;
+    var omega = (omega1 + omega2) / 2;
     var upDown = vec(left + right, this.bearing);
     var leftRight = vec(top + bottom, this.bearing + math.PI / 2);
-    this.pos.x = this.pos.x + (upDown.x + leftRight.x);
-    this.pos.y = this.pos.y + (upDown.y + leftRight.y);
+    this.pos.x = this.pos.x + (upDown.x + leftRight.x) / 2;
+    this.pos.y = this.pos.y + (upDown.y + leftRight.y) / 2;
     this.bearing = this.bearing + omega;
     return wheelsVectors;
   };
@@ -1158,6 +1158,9 @@ var output = function (_, Kotlin, $module$kotlinx_html_js) {
     var yComp = this.y + that.y;
     var x = Math_0.pow(xComp, 2) + Math_0.pow(yComp, 2);
     return vec(Math_0.sqrt(x), Math_0.atan2(xComp, yComp));
+  };
+  Vector.prototype.div_14dthe$ = function (that) {
+    return new Vector(this.magnitude / that, this.bearing);
   };
   Vector.$metadata$ = {
     kind: Kind_CLASS,
