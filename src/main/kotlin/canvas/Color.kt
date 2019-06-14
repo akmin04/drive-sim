@@ -1,6 +1,5 @@
-package util
+package canvas
 
-@Suppress("unused")
 data class Color(
     val r: Int,
     val g: Int,
@@ -15,6 +14,7 @@ data class Color(
 
     override fun toString(): String = "#${base16(r, 2)}${base16(g, 2)}${base16(b, 2)}"
 
+    @Suppress("unused")
     companion object {
         val black = Color(0, 0, 0)
         val white = Color(255, 255, 255)

@@ -1,5 +1,5 @@
-package kanvas
+package canvas
 
 fun body(setup: Body.() -> Unit): Body = Body().apply(setup)
 
-class Body : Group("body")
+class Body : Tag()

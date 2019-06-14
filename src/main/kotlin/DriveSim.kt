@@ -1,5 +1,5 @@
-import kanvas.cartesian
-import kanvas.clear
+import canvas.cartesian
+import canvas.clear
 import org.w3c.dom.CanvasRenderingContext2D
 import org.w3c.dom.HTMLCanvasElement
 import robots.TankDriveRobot
