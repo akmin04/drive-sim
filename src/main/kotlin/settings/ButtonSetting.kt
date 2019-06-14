@@ -12,11 +12,11 @@ import kotlin.reflect.KProperty
  * Simple button "setting" that has no value (Unit)
  * Using `ButtonSetting` delegate automatically adds all HTML to the page
  *
- * @param onClick action when button is clicked
+ * @param onUpdate function to be called when the value is updated (Button click)
  */
 class ButtonSetting(
-    val onClick: () -> Unit
-) : Setting<Unit>() {
+    onUpdate: () -> Unit
+) : Setting<Unit>(onUpdate) {
     override var value = Unit
 
     override fun provideDelegate(thisRef: Any?, property: KProperty<*>): ReadOnlyProperty<Any?, Unit> {
@@ -24,20 +24,28 @@ class ButtonSetting(
         val camelCase = property.name
         val titleCase = property.name.capitalize().replace("[A-Z]".toRegex()) { " ${it.value}" }
 
+        // Add elements to HTML
         document.body!!
             .getElementsByClassName("main")[0]!!
             .getElementsByClassName("settings")[0]!!
             .append {
-                br()
-                input(type = InputType.button, classes = "buttonInput") { id = "${camelCase}Button" }
+                form {
+                    name = camelCase
+                    br()
+                    input {
+                        type = InputType.button
+                        classes += "buttonInput"
+                        id = "${camelCase}Button"
+                        value = titleCase
+                    }
+                }
             }
 
         val buttonInput = document.getElementById("${camelCase}Button") as HTMLInputElement
 
         with(buttonInput) {
-            value = titleCase
             addEventListener("click", {
-                onClick()
+                onUpdate()
             })
         }
 

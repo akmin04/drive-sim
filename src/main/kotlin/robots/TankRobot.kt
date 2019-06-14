@@ -4,7 +4,7 @@ import controls
 import util.*
 import kotlin.math.*
 
-class TankDriveRobot : RobotBase(
+class TankRobot : RobotBase(
     arrayOf(Wheel(-0.5, 0.0), Wheel(0.5, 0.0))
 ) {
     override fun update(): Array<Vector> {

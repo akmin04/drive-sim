@@ -18,12 +18,14 @@ import kotlin.reflect.KProperty
  * @param initialValue of the setting. Also the value set when reset.
  * @param min value
  * @param max value
+ * @param onUpdate function to be called when the value is updated
  */
 class RangeSetting(
     val initialValue: Double,
     val min: Double,
-    val max: Double
-) : Setting<Double>() {
+    val max: Double,
+    onUpdate: () -> Unit = {}
+) : Setting<Double>(onUpdate) {
 
     override var value = initialValue
 
@@ -37,69 +39,75 @@ class RangeSetting(
             .getElementsByClassName("main")[0]!!
             .getElementsByClassName("settings")[0]!!
             .append {
-                div { +titleCase }
-                input(type = InputType.range, classes = "rangeInput") { id = "${camelCase}Range" }
-                input(classes = "textInput") { id = "${camelCase}Text" }
-                input(type = InputType.button, classes = "buttonInput") { id = "${camelCase}Button" }
+                form {
+                    name = camelCase
+                    div { +titleCase }
+                    input {
+                        type = InputType.range
+                        classes += "rangeInput"
+                        id = "${camelCase}Range"
+                        min = this@RangeSetting.min.toString()
+                        max = this@RangeSetting.max.toString()
+                        value = initialValue.toString()
+                    }
+                    input {
+                        classes += "textInput"
+                        id = "${camelCase}Text"
+                        value = initialValue.toString()
+                    }
+                    input {
+                        type = InputType.button
+                        classes += "buttonInput"
+                        id = "${camelCase}Button"
+                        value = "Reset"
+                    }
+                }
             }
 
         val rangeInput = document.getElementById("${camelCase}Range") as HTMLInputElement
         val textInput = document.getElementById("${camelCase}Text") as HTMLInputElement
         val buttonInput = document.getElementById("${camelCase}Button") as HTMLInputElement
 
-        with(rangeInput) {
-            // Initialize range slider
-            this.min = this@RangeSetting.min.toString()
-            this.max = this@RangeSetting.max.toString()
-            value = initialValue.toString()
-            // Call random variable to update min/max values
-            value
+        rangeInput.addEventListener("input", {
+            onUpdate()
+            textInput.value = rangeInput.value
+            this@RangeSetting.value = rangeInput.value.toDouble()
+        })
 
-            // When value is changed, update setting value and value of textInput
-            addEventListener("input", {
-                textInput.value = this.value
-                this@RangeSetting.value = this.value.toDouble()
-            })
-        }
-
-        with(textInput) {
-            value = initialValue.toString()
-            addEventListener("keydown", {
-                // Update value only when enter is pressed
-                if ((it as KeyboardEvent).key == "Enter") {
-                    // Cap value in range of min..max
-                    this@RangeSetting.value = try {
-                        max(
-                            min(
-                                value.toDouble(),
-                                rangeInput.max.toDouble()
-                            ),
-                            rangeInput.min.toDouble()
-                        )
-                    }
-                    // Don't update value if new value contains non-numbers
-                    catch (e: NumberFormatException) {
-                        rangeInput.value.toDouble()
-                    }.also { newValue ->
-                        // Update range input value and setting value
-                        rangeInput.value = newValue.toString()
-                        value = newValue.toString()
-                    }
-                    // Get rid of focus
-                    blur()
+        textInput.addEventListener("keydown", {
+            // Update value only when enter is pressed
+            if ((it as KeyboardEvent).key == "Enter") {
+                // Cap value in range of min..max
+                this@RangeSetting.value = try {
+                    max(
+                        min(
+                            textInput.value.toDouble(),
+                            rangeInput.max.toDouble()
+                        ),
+                        rangeInput.min.toDouble()
+                    )
                 }
-            })
-        }
+                // Don't update value if new value contains non-numbers
+                catch (e: NumberFormatException) {
+                    rangeInput.value.toDouble()
+                }.also { newValue ->
+                    // Update range input value and setting value
+                    onUpdate()
+                    rangeInput.value = newValue.toString()
+                    textInput.value = newValue.toString()
+                }
+                // Get rid of focus
+                textInput.blur()
+            }
+        })
 
-        with(buttonInput) {
-            value = "Reset"
-            addEventListener("click", {
-                // Reset all values
-                this@RangeSetting.value = initialValue
-                rangeInput.value = initialValue.toString()
-                textInput.value = initialValue.toString()
-            })
-        }
+        buttonInput.addEventListener("click", {
+            // Reset all values
+            onUpdate()
+            this@RangeSetting.value = initialValue
+            rangeInput.value = initialValue.toString()
+            textInput.value = initialValue.toString()
+        })
         return super.provideDelegate(thisRef, property)
     }
 
@@ -109,6 +117,5 @@ class RangeSetting(
             val buttonInput = document.getElementById("${camelCase}Button") as HTMLInputElement
             buttonInput.click()
         }
-
     }
 }

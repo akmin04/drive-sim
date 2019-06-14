@@ -15,20 +15,24 @@ var output = function (_, Kotlin, $module$kotlinx_html_js) {
   var Math_0 = Math;
   var Kind_INTERFACE = Kotlin.Kind.INTERFACE;
   var PropertyMetadata = Kotlin.PropertyMetadata;
+  var getPropertyCallableRef = Kotlin.getPropertyCallableRef;
   var listOf = Kotlin.kotlin.collections.listOf_i5x0yv$;
   var math = Kotlin.kotlin.math;
   var println = Kotlin.kotlin.io.println_s8jyv4$;
-  var getPropertyCallableRef = Kotlin.getPropertyCallableRef;
   var capitalize = Kotlin.kotlin.text.capitalize_pdl1vz$;
   var ensureNotNull = Kotlin.ensureNotNull;
-  var br = $module$kotlinx_html_js.kotlinx.html.br_msntey$;
+  var br = $module$kotlinx_html_js.kotlinx.html.br_5bz84p$;
   var InputType = $module$kotlinx_html_js.kotlinx.html.InputType;
+  var get_classes = $module$kotlinx_html_js.kotlinx.html.get_classes_fxodxh$;
+  var plus = Kotlin.kotlin.collections.plus_xfiyik$;
+  var set_classes = $module$kotlinx_html_js.kotlinx.html.set_classes_njy09m$;
   var set_id = $module$kotlinx_html_js.kotlinx.html.set_id_ueiko3$;
-  var input = $module$kotlinx_html_js.kotlinx.html.input_mm0abt$;
+  var input = $module$kotlinx_html_js.kotlinx.html.input_e1g74z$;
+  var form = $module$kotlinx_html_js.kotlinx.html.form_3ereno$;
   var append = $module$kotlinx_html_js.kotlinx.html.dom.append_k9bwru$;
   var Regex_init = Kotlin.kotlin.text.Regex_init_61zpoe$;
   var StringBuilder_init = Kotlin.kotlin.text.StringBuilder_init_za3lpa$;
-  var div = $module$kotlinx_html_js.kotlinx.html.div_59el9d$;
+  var div = $module$kotlinx_html_js.kotlinx.html.div_ri36nr$;
   var toDouble = Kotlin.kotlin.text.toDouble_pdl1vz$;
   var equals = Kotlin.equals;
   var NumberFormatException = Kotlin.kotlin.NumberFormatException;
@@ -36,10 +40,12 @@ var output = function (_, Kotlin, $module$kotlinx_html_js) {
   var HashMap_init = Kotlin.kotlin.collections.HashMap_init_q3lmfv$;
   Body.prototype = Object.create(Tag.prototype);
   Body.prototype.constructor = Body;
-  TankDriveRobot.prototype = Object.create(RobotBase.prototype);
-  TankDriveRobot.prototype.constructor = TankDriveRobot;
+  TankRobot.prototype = Object.create(RobotBase.prototype);
+  TankRobot.prototype.constructor = TankRobot;
   ButtonSetting.prototype = Object.create(Setting.prototype);
   ButtonSetting.prototype.constructor = ButtonSetting;
+  RadioSetting.prototype = Object.create(Setting.prototype);
+  RadioSetting.prototype.constructor = RadioSetting;
   RangeSetting.prototype = Object.create(Setting.prototype);
   RangeSetting.prototype.constructor = RangeSetting;
   var period;
@@ -311,52 +317,91 @@ var output = function (_, Kotlin, $module$kotlinx_html_js) {
     interfaces: [Element]
   };
   function RobotBase(wheels) {
+    RobotBase$Companion_getInstance();
     this.wheels_mzrdcm$_0 = wheels;
-    this.maxVelocity_9kbjtd$_0 = (new RangeSetting(600.0, 100.0, 1100.0)).provideDelegate_n5byny$(this, RobotBase$maxVelocity_metadata);
-    this.robotWidth_wy3boa$_0 = (new RangeSetting(100.0, 50.0, 150.0)).provideDelegate_n5byny$(this, RobotBase$robotWidth_metadata);
-    this.robotLength_mys6si$_0 = (new RangeSetting(100.0, 50.0, 150.0)).provideDelegate_n5byny$(this, RobotBase$robotLength_metadata);
-    this.resetAll_ljac8g$_0 = (new ButtonSetting(RobotBase$resetAll$lambda(this))).provideDelegate_n5byny$(this, RobotBase$resetAll_metadata);
     this.numberOfWheels = this.wheels_mzrdcm$_0.length;
     this.pos = xy(0.0, 0.0);
     this.bearing = 0.0;
   }
-  var RobotBase$maxVelocity_metadata = new PropertyMetadata('maxVelocity');
-  Object.defineProperty(RobotBase.prototype, 'maxVelocity', {
+  function RobotBase$Companion() {
+    RobotBase$Companion_instance = this;
+    this.maxVelocity_fiv7e5$_0 = (new RangeSetting(600.0, 100.0, 1100.0)).provideDelegate_n5byny$(this, RobotBase$Companion$maxVelocity_metadata);
+    this.robotWidth_7hjpr8$_0 = (new RangeSetting(100.0, 50.0, 150.0)).provideDelegate_n5byny$(this, RobotBase$Companion$robotWidth_metadata);
+    this.robotLength_24ekf0$_0 = (new RangeSetting(100.0, 50.0, 150.0)).provideDelegate_n5byny$(this, RobotBase$Companion$robotLength_metadata);
+    this.drivetrainType_shbw94$_0 = (new RadioSetting(['Tank', 'Swerve'])).provideDelegate_n5byny$(this, RobotBase$Companion$drivetrainType_metadata);
+    this.resetAll_pms5pu$_0 = (new ButtonSetting(RobotBase$Companion$resetAll$lambda(this))).provideDelegate_n5byny$(this, RobotBase$Companion$resetAll_metadata);
+  }
+  var RobotBase$Companion$maxVelocity_metadata = new PropertyMetadata('maxVelocity');
+  Object.defineProperty(RobotBase$Companion.prototype, 'maxVelocity', {
     get: function () {
-      return this.maxVelocity_9kbjtd$_0.getValue_lrcp0p$(this, RobotBase$maxVelocity_metadata);
+      return this.maxVelocity_fiv7e5$_0.getValue_lrcp0p$(this, RobotBase$Companion$maxVelocity_metadata);
     }
   });
-  var RobotBase$robotWidth_metadata = new PropertyMetadata('robotWidth');
-  Object.defineProperty(RobotBase.prototype, 'robotWidth', {
+  var RobotBase$Companion$robotWidth_metadata = new PropertyMetadata('robotWidth');
+  Object.defineProperty(RobotBase$Companion.prototype, 'robotWidth', {
     get: function () {
-      return this.robotWidth_wy3boa$_0.getValue_lrcp0p$(this, RobotBase$robotWidth_metadata);
+      return this.robotWidth_7hjpr8$_0.getValue_lrcp0p$(this, RobotBase$Companion$robotWidth_metadata);
     }
   });
-  var RobotBase$robotLength_metadata = new PropertyMetadata('robotLength');
-  Object.defineProperty(RobotBase.prototype, 'robotLength', {
+  var RobotBase$Companion$robotLength_metadata = new PropertyMetadata('robotLength');
+  Object.defineProperty(RobotBase$Companion.prototype, 'robotLength', {
     get: function () {
-      return this.robotLength_mys6si$_0.getValue_lrcp0p$(this, RobotBase$robotLength_metadata);
+      return this.robotLength_24ekf0$_0.getValue_lrcp0p$(this, RobotBase$Companion$robotLength_metadata);
     }
   });
-  var RobotBase$resetAll_metadata = new PropertyMetadata('resetAll');
-  Object.defineProperty(RobotBase.prototype, 'resetAll', {
+  var RobotBase$Companion$drivetrainType_metadata = new PropertyMetadata('drivetrainType');
+  Object.defineProperty(RobotBase$Companion.prototype, 'drivetrainType', {
     get: function () {
-      return this.resetAll_ljac8g$_0.getValue_lrcp0p$(this, RobotBase$resetAll_metadata);
+      return this.drivetrainType_shbw94$_0.getValue_lrcp0p$(this, RobotBase$Companion$drivetrainType_metadata);
     }
   });
+  var RobotBase$Companion$resetAll_metadata = new PropertyMetadata('resetAll');
+  Object.defineProperty(RobotBase$Companion.prototype, 'resetAll', {
+    get: function () {
+      return this.resetAll_pms5pu$_0.getValue_lrcp0p$(this, RobotBase$Companion$resetAll_metadata);
+    }
+  });
+  function RobotBase$Companion$resetAll$lambda(this$RobotBase$) {
+    return function () {
+      robot.pos = xy(0.0, 0.0);
+      robot.bearing = 0.0;
+      RangeSetting$Companion_getInstance().reset_12czou$(getPropertyCallableRef('maxVelocity', 0, function ($receiver) {
+        return $receiver.maxVelocity;
+      }.bind(null, this$RobotBase$)));
+      RangeSetting$Companion_getInstance().reset_12czou$(getPropertyCallableRef('robotWidth', 0, function ($receiver) {
+        return $receiver.robotWidth;
+      }.bind(null, this$RobotBase$)));
+      RangeSetting$Companion_getInstance().reset_12czou$(getPropertyCallableRef('robotLength', 0, function ($receiver) {
+        return $receiver.robotLength;
+      }.bind(null, this$RobotBase$)));
+      return Unit;
+    };
+  }
+  RobotBase$Companion.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'Companion',
+    interfaces: []
+  };
+  var RobotBase$Companion_instance = null;
+  function RobotBase$Companion_getInstance() {
+    if (RobotBase$Companion_instance === null) {
+      new RobotBase$Companion();
+    }
+    return RobotBase$Companion_instance;
+  }
   Object.defineProperty(RobotBase.prototype, 'maxVelocityPerFrame', {
     get: function () {
-      return this.maxVelocity * 16 / 1000;
+      return RobotBase$Companion_getInstance().maxVelocity * 16 / 1000;
     }
   });
   Object.defineProperty(RobotBase.prototype, 'halfWidth_5frg69$_0', {
     get: function () {
-      return this.robotWidth / 2;
+      return RobotBase$Companion_getInstance().robotWidth / 2;
     }
   });
   Object.defineProperty(RobotBase.prototype, 'halfLength_ndnnm1$_0', {
     get: function () {
-      return this.robotLength / 2;
+      return RobotBase$Companion_getInstance().robotLength / 2;
     }
   });
   Object.defineProperty(RobotBase.prototype, 'corners_rb1qac$_0', {
@@ -378,7 +423,7 @@ var output = function (_, Kotlin, $module$kotlinx_html_js) {
         var rx = element.component1()
         , ry = element.component2()
         , vector = element.component3();
-        var tmp$_0 = xy(this$RobotBase_0.robotWidth * rx, this$RobotBase_0.robotLength * ry);
+        var tmp$_0 = xy(RobotBase$Companion_getInstance().robotWidth * rx, RobotBase$Companion_getInstance().robotLength * ry);
         var $receiver_1 = vector.magnitude;
         arrow_0($receiver, tmp$_0, vec(100.0 * Math_0.sign($receiver_1), vector.bearing - this$RobotBase_0.bearing), 5.0, 25.0, 45.0 / 360.0 * math.PI, vector.magnitude > 0 ? Color$Companion_getInstance().blue : Color$Companion_getInstance().red);
       }
@@ -404,31 +449,15 @@ var output = function (_, Kotlin, $module$kotlinx_html_js) {
     }
     render(simulator, this.body_72fakg$_0, this.pos, this.bearing);
   };
-  function RobotBase$resetAll$lambda(this$RobotBase) {
-    return function () {
-      this$RobotBase.pos = xy(0.0, 0.0);
-      this$RobotBase.bearing = 0.0;
-      RangeSetting$Companion_getInstance().reset_12czou$(getPropertyCallableRef('maxVelocity', 0, function ($receiver) {
-        return $receiver.maxVelocity;
-      }.bind(null, this$RobotBase)));
-      RangeSetting$Companion_getInstance().reset_12czou$(getPropertyCallableRef('robotWidth', 0, function ($receiver) {
-        return $receiver.robotWidth;
-      }.bind(null, this$RobotBase)));
-      RangeSetting$Companion_getInstance().reset_12czou$(getPropertyCallableRef('robotLength', 0, function ($receiver) {
-        return $receiver.robotLength;
-      }.bind(null, this$RobotBase)));
-      return Unit;
-    };
-  }
   RobotBase.$metadata$ = {
     kind: Kind_CLASS,
     simpleName: 'RobotBase',
     interfaces: [Loopable]
   };
-  function TankDriveRobot() {
+  function TankRobot() {
     RobotBase.call(this, [new Wheel(-0.5, 0.0), new Wheel(0.5, 0.0)]);
   }
-  TankDriveRobot.prototype.update = function () {
+  TankRobot.prototype.update = function () {
     var x = -controls.z;
     var y = controls.y;
     var v = (1 - Math_0.abs(x)) * y + y;
@@ -436,7 +465,7 @@ var output = function (_, Kotlin, $module$kotlinx_html_js) {
     var l = (v - w) / 2 * this.maxVelocityPerFrame;
     var r = (v + w) / 2 * this.maxVelocityPerFrame;
     var s = (l + r) / 2;
-    var theta = (l - r) / this.robotWidth;
+    var theta = (l - r) / RobotBase$Companion_getInstance().robotWidth;
     var tmp$ = this.pos;
     var tmp$_0 = this.pos.x;
     var x_0 = this.bearing;
@@ -448,14 +477,13 @@ var output = function (_, Kotlin, $module$kotlinx_html_js) {
     this.bearing = this.bearing + theta;
     return [vec(l, this.bearing), vec(r, this.bearing)];
   };
-  TankDriveRobot.$metadata$ = {
+  TankRobot.$metadata$ = {
     kind: Kind_CLASS,
-    simpleName: 'TankDriveRobot',
+    simpleName: 'TankRobot',
     interfaces: [RobotBase]
   };
-  function ButtonSetting(onClick) {
-    Setting.call(this);
-    this.onClick = onClick;
+  function ButtonSetting(onUpdate) {
+    Setting.call(this, onUpdate);
     this.value_xjd99g$_0 = Unit;
   }
   Object.defineProperty(ButtonSetting.prototype, 'value', {
@@ -466,22 +494,32 @@ var output = function (_, Kotlin, $module$kotlinx_html_js) {
       this.value_xjd99g$_0 = value;
     }
   });
-  function ButtonSetting$provideDelegate$lambda$lambda(closure$camelCase) {
+  function ButtonSetting$provideDelegate$lambda$lambda$lambda(closure$camelCase, closure$titleCase) {
     return function ($receiver) {
+      $receiver.type = InputType.button;
+      set_classes($receiver, plus(get_classes($receiver), 'buttonInput'));
       set_id($receiver, closure$camelCase + 'Button');
+      $receiver.value = closure$titleCase;
       return Unit;
     };
   }
-  function ButtonSetting$provideDelegate$lambda(closure$camelCase) {
+  function ButtonSetting$provideDelegate$lambda$lambda(closure$camelCase, closure$titleCase) {
     return function ($receiver) {
+      $receiver.name = closure$camelCase;
       br($receiver);
-      input($receiver, InputType.button, void 0, void 0, void 0, 'buttonInput', ButtonSetting$provideDelegate$lambda$lambda(closure$camelCase));
+      input($receiver, void 0, void 0, void 0, void 0, void 0, ButtonSetting$provideDelegate$lambda$lambda$lambda(closure$camelCase, closure$titleCase));
+      return Unit;
+    };
+  }
+  function ButtonSetting$provideDelegate$lambda(closure$camelCase, closure$titleCase) {
+    return function ($receiver) {
+      form($receiver, void 0, void 0, void 0, void 0, ButtonSetting$provideDelegate$lambda$lambda(closure$camelCase, closure$titleCase));
       return Unit;
     };
   }
   function ButtonSetting$provideDelegate$lambda$lambda_0(this$ButtonSetting) {
     return function (it) {
-      this$ButtonSetting.onClick();
+      this$ButtonSetting.onUpdate();
       return Unit;
     };
   }
@@ -515,9 +553,8 @@ var output = function (_, Kotlin, $module$kotlinx_html_js) {
     }
      while (false);
     var titleCase = replace_20wsma$result;
-    append(ensureNotNull(ensureNotNull(ensureNotNull(document.body).getElementsByClassName('main')[0]).getElementsByClassName('settings')[0]), ButtonSetting$provideDelegate$lambda(camelCase));
+    append(ensureNotNull(ensureNotNull(ensureNotNull(document.body).getElementsByClassName('main')[0]).getElementsByClassName('settings')[0]), ButtonSetting$provideDelegate$lambda(camelCase, titleCase));
     var buttonInput = Kotlin.isType(tmp$ = document.getElementById(camelCase + 'Button'), HTMLInputElement) ? tmp$ : throwCCE();
-    buttonInput.value = titleCase;
     buttonInput.addEventListener('click', ButtonSetting$provideDelegate$lambda$lambda_0(this));
     return Setting.prototype.provideDelegate_n5byny$.call(this, thisRef, property);
   };
@@ -526,9 +563,126 @@ var output = function (_, Kotlin, $module$kotlinx_html_js) {
     simpleName: 'ButtonSetting',
     interfaces: [Setting]
   };
-  function RangeSetting(initialValue, min, max) {
+  function RadioSetting(options, onUpdate) {
+    if (onUpdate === void 0)
+      onUpdate = RadioSetting_init$lambda;
+    Setting.call(this, onUpdate);
+    this.options = options;
+    this.value_cqnzux$_0 = this.options[0];
+  }
+  Object.defineProperty(RadioSetting.prototype, 'value', {
+    get: function () {
+      return this.value_cqnzux$_0;
+    },
+    set: function (value) {
+      this.value_cqnzux$_0 = value;
+    }
+  });
+  function RadioSetting$provideDelegate$lambda$lambda$lambda(closure$titleCase) {
+    return function ($receiver) {
+      $receiver.unaryPlus_pdl1vz$(closure$titleCase);
+      return Unit;
+    };
+  }
+  function RadioSetting$provideDelegate$lambda$lambda$lambda$lambda$lambda(closure$camelCase, closure$i, closure$option) {
+    return function ($receiver) {
+      $receiver.type = InputType.radio;
+      set_classes($receiver, plus(get_classes($receiver), 'radioInput'));
+      set_id($receiver, closure$camelCase + closure$i + 'Radio');
+      $receiver.name = closure$camelCase;
+      $receiver.value = closure$option;
+      return Unit;
+    };
+  }
+  function RadioSetting$provideDelegate$lambda$lambda$lambda$lambda(closure$camelCase, closure$i, closure$option) {
+    return function ($receiver) {
+      input($receiver, void 0, void 0, void 0, void 0, void 0, RadioSetting$provideDelegate$lambda$lambda$lambda$lambda$lambda(closure$camelCase, closure$i, closure$option));
+      $receiver.unaryPlus_pdl1vz$(closure$option);
+      return Unit;
+    };
+  }
+  function RadioSetting$provideDelegate$lambda$lambda(closure$camelCase, closure$titleCase, this$RadioSetting) {
+    return function ($receiver) {
+      $receiver.name = closure$camelCase;
+      div($receiver, void 0, RadioSetting$provideDelegate$lambda$lambda$lambda(closure$titleCase));
+      var $receiver_0 = this$RadioSetting.options;
+      var tmp$, tmp$_0;
+      var index = 0;
+      for (tmp$ = 0; tmp$ !== $receiver_0.length; ++tmp$) {
+        var item = $receiver_0[tmp$];
+        div($receiver, void 0, RadioSetting$provideDelegate$lambda$lambda$lambda$lambda(closure$camelCase, (tmp$_0 = index, index = tmp$_0 + 1 | 0, tmp$_0), item));
+      }
+      return Unit;
+    };
+  }
+  function RadioSetting$provideDelegate$lambda(closure$camelCase, closure$titleCase, this$RadioSetting) {
+    return function ($receiver) {
+      form($receiver, void 0, void 0, void 0, void 0, RadioSetting$provideDelegate$lambda$lambda(closure$camelCase, closure$titleCase, this$RadioSetting));
+      return Unit;
+    };
+  }
+  function RadioSetting$provideDelegate$lambda_0(this$RadioSetting, closure$radio) {
+    return function (it) {
+      this$RadioSetting.onUpdate();
+      this$RadioSetting.value = closure$radio.value;
+      println(this$RadioSetting.value);
+      return Unit;
+    };
+  }
+  RadioSetting.prototype.provideDelegate_n5byny$ = function (thisRef, property) {
+    var tmp$, tmp$_0, tmp$_1, tmp$_2;
+    var camelCase = property.callableName;
+    var tmp$_3 = capitalize(property.callableName);
+    var regex = Regex_init('[A-Z]');
+    var replace_20wsma$result;
+    replace_20wsma$break: do {
+      var match = regex.find_905azu$(tmp$_3);
+      if (match == null) {
+        replace_20wsma$result = tmp$_3.toString();
+        break replace_20wsma$break;
+      }
+      var lastStart = 0;
+      var length = tmp$_3.length;
+      var sb = StringBuilder_init(length);
+      do {
+        var foundMatch = ensureNotNull(match);
+        sb.append_ezbsdh$(tmp$_3, lastStart, foundMatch.range.start);
+        sb.append_gw00v9$(' ' + foundMatch.value);
+        lastStart = foundMatch.range.endInclusive + 1 | 0;
+        match = foundMatch.next();
+      }
+       while (lastStart < length && match != null);
+      if (lastStart < length) {
+        sb.append_ezbsdh$(tmp$_3, lastStart, length);
+      }
+      replace_20wsma$result = sb.toString();
+    }
+     while (false);
+    var titleCase = replace_20wsma$result;
+    append(ensureNotNull(ensureNotNull(ensureNotNull(document.body).getElementsByClassName('main')[0]).getElementsByClassName('settings')[0]), RadioSetting$provideDelegate$lambda(camelCase, titleCase, this));
+    var radioInputs = Kotlin.isType(tmp$ = document.forms[camelCase], HTMLFormElement) ? tmp$ : throwCCE();
+    (Kotlin.isType(tmp$_0 = radioInputs[0], HTMLInputElement) ? tmp$_0 : throwCCE()).checked = true;
+    tmp$_1 = radioInputs.length;
+    for (var i = 0; i < tmp$_1; i++) {
+      var radio = Kotlin.isType(tmp$_2 = radioInputs[i], HTMLInputElement) ? tmp$_2 : throwCCE();
+      println('radio! ' + radio);
+      radio.addEventListener('click', RadioSetting$provideDelegate$lambda_0(this, radio));
+    }
+    return Setting.prototype.provideDelegate_n5byny$.call(this, thisRef, property);
+  };
+  function RadioSetting_init$lambda() {
+    return Unit;
+  }
+  RadioSetting.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'RadioSetting',
+    interfaces: [Setting]
+  };
+  function RangeSetting(initialValue, min, max, onUpdate) {
     RangeSetting$Companion_getInstance();
-    Setting.call(this);
+    if (onUpdate === void 0)
+      onUpdate = RangeSetting_init$lambda;
+    Setting.call(this, onUpdate);
     this.initialValue = initialValue;
     this.min = min;
     this.max = max;
@@ -542,53 +696,71 @@ var output = function (_, Kotlin, $module$kotlinx_html_js) {
       this.value_ld2e87$_0 = value;
     }
   });
-  function RangeSetting$provideDelegate$lambda$lambda(closure$titleCase) {
+  function RangeSetting$provideDelegate$lambda$lambda$lambda(closure$titleCase) {
     return function ($receiver) {
       $receiver.unaryPlus_pdl1vz$(closure$titleCase);
       return Unit;
     };
   }
-  function RangeSetting$provideDelegate$lambda$lambda_0(closure$camelCase) {
+  function RangeSetting$provideDelegate$lambda$lambda$lambda_0(closure$camelCase, this$RangeSetting) {
     return function ($receiver) {
+      $receiver.type = InputType.range;
+      set_classes($receiver, plus(get_classes($receiver), 'rangeInput'));
       set_id($receiver, closure$camelCase + 'Range');
+      $receiver.min = this$RangeSetting.min.toString();
+      $receiver.max = this$RangeSetting.max.toString();
+      $receiver.value = this$RangeSetting.initialValue.toString();
       return Unit;
     };
   }
-  function RangeSetting$provideDelegate$lambda$lambda_1(closure$camelCase) {
+  function RangeSetting$provideDelegate$lambda$lambda$lambda_1(closure$camelCase, this$RangeSetting) {
     return function ($receiver) {
+      set_classes($receiver, plus(get_classes($receiver), 'textInput'));
       set_id($receiver, closure$camelCase + 'Text');
+      $receiver.value = this$RangeSetting.initialValue.toString();
       return Unit;
     };
   }
-  function RangeSetting$provideDelegate$lambda$lambda_2(closure$camelCase) {
+  function RangeSetting$provideDelegate$lambda$lambda$lambda_2(closure$camelCase) {
     return function ($receiver) {
+      $receiver.type = InputType.button;
+      set_classes($receiver, plus(get_classes($receiver), 'buttonInput'));
       set_id($receiver, closure$camelCase + 'Button');
+      $receiver.value = 'Reset';
       return Unit;
     };
   }
-  function RangeSetting$provideDelegate$lambda(closure$titleCase, closure$camelCase) {
+  function RangeSetting$provideDelegate$lambda$lambda(closure$camelCase, closure$titleCase, this$RangeSetting) {
     return function ($receiver) {
-      div($receiver, void 0, RangeSetting$provideDelegate$lambda$lambda(closure$titleCase));
-      input($receiver, InputType.range, void 0, void 0, void 0, 'rangeInput', RangeSetting$provideDelegate$lambda$lambda_0(closure$camelCase));
-      input($receiver, void 0, void 0, void 0, void 0, 'textInput', RangeSetting$provideDelegate$lambda$lambda_1(closure$camelCase));
-      input($receiver, InputType.button, void 0, void 0, void 0, 'buttonInput', RangeSetting$provideDelegate$lambda$lambda_2(closure$camelCase));
+      $receiver.name = closure$camelCase;
+      div($receiver, void 0, RangeSetting$provideDelegate$lambda$lambda$lambda(closure$titleCase));
+      input($receiver, void 0, void 0, void 0, void 0, void 0, RangeSetting$provideDelegate$lambda$lambda$lambda_0(closure$camelCase, this$RangeSetting));
+      input($receiver, void 0, void 0, void 0, void 0, void 0, RangeSetting$provideDelegate$lambda$lambda$lambda_1(closure$camelCase, this$RangeSetting));
+      input($receiver, void 0, void 0, void 0, void 0, void 0, RangeSetting$provideDelegate$lambda$lambda$lambda_2(closure$camelCase));
       return Unit;
     };
   }
-  function RangeSetting$provideDelegate$lambda$lambda_3(this$, closure$textInput, this$RangeSetting) {
+  function RangeSetting$provideDelegate$lambda(closure$camelCase, closure$titleCase, this$RangeSetting) {
+    return function ($receiver) {
+      form($receiver, void 0, void 0, void 0, void 0, RangeSetting$provideDelegate$lambda$lambda(closure$camelCase, closure$titleCase, this$RangeSetting));
+      return Unit;
+    };
+  }
+  function RangeSetting$provideDelegate$lambda_0(this$RangeSetting, closure$rangeInput, closure$textInput) {
     return function (it) {
-      closure$textInput.value = this$.value;
-      this$RangeSetting.value = toDouble(this$.value);
+      this$RangeSetting.onUpdate();
+      closure$textInput.value = closure$rangeInput.value;
+      this$RangeSetting.value = toDouble(closure$rangeInput.value);
       return Unit;
     };
   }
-  function RangeSetting$provideDelegate$lambda$lambda_4(this$, closure$rangeInput, this$RangeSetting) {
+  function RangeSetting$provideDelegate$lambda_1(closure$textInput, closure$rangeInput, this$RangeSetting) {
     return function (it) {
       var tmp$, tmp$_0, tmp$_1;
       if (equals((Kotlin.isType(tmp$ = it, KeyboardEvent) ? tmp$ : throwCCE()).key, 'Enter')) {
         tmp$_1 = this$RangeSetting;
         try {
-          var a = toDouble(this$.value);
+          var a = toDouble(closure$textInput.value);
           var b = toDouble(closure$rangeInput.max);
           var a_0 = Math_0.min(a, b);
           var b_0 = toDouble(closure$rangeInput.min);
@@ -602,18 +774,21 @@ var output = function (_, Kotlin, $module$kotlinx_html_js) {
             throw e;
         }
         var $receiver = tmp$_0;
+        var this$RangeSetting_0 = this$RangeSetting;
         var closure$rangeInput_0 = closure$rangeInput;
-        var this$_0 = this$;
+        var closure$textInput_0 = closure$textInput;
+        this$RangeSetting_0.onUpdate();
         closure$rangeInput_0.value = $receiver.toString();
-        this$_0.value = $receiver.toString();
+        closure$textInput_0.value = $receiver.toString();
         tmp$_1.value = $receiver;
-        this$.blur();
+        closure$textInput.blur();
       }
       return Unit;
     };
   }
-  function RangeSetting$provideDelegate$lambda$lambda_5(this$RangeSetting, closure$rangeInput, closure$textInput) {
+  function RangeSetting$provideDelegate$lambda_2(this$RangeSetting, closure$rangeInput, closure$textInput) {
     return function (it) {
+      this$RangeSetting.onUpdate();
       this$RangeSetting.value = this$RangeSetting.initialValue;
       closure$rangeInput.value = this$RangeSetting.initialValue.toString();
       closure$textInput.value = this$RangeSetting.initialValue.toString();
@@ -650,19 +825,13 @@ var output = function (_, Kotlin, $module$kotlinx_html_js) {
     }
      while (false);
     var titleCase = replace_20wsma$result;
-    append(ensureNotNull(ensureNotNull(ensureNotNull(document.body).getElementsByClassName('main')[0]).getElementsByClassName('settings')[0]), RangeSetting$provideDelegate$lambda(titleCase, camelCase));
+    append(ensureNotNull(ensureNotNull(ensureNotNull(document.body).getElementsByClassName('main')[0]).getElementsByClassName('settings')[0]), RangeSetting$provideDelegate$lambda(camelCase, titleCase, this));
     var rangeInput = Kotlin.isType(tmp$ = document.getElementById(camelCase + 'Range'), HTMLInputElement) ? tmp$ : throwCCE();
     var textInput = Kotlin.isType(tmp$_0 = document.getElementById(camelCase + 'Text'), HTMLInputElement) ? tmp$_0 : throwCCE();
     var buttonInput = Kotlin.isType(tmp$_1 = document.getElementById(camelCase + 'Button'), HTMLInputElement) ? tmp$_1 : throwCCE();
-    rangeInput.min = this.min.toString();
-    rangeInput.max = this.max.toString();
-    rangeInput.value = this.initialValue.toString();
-    rangeInput.value;
-    rangeInput.addEventListener('input', RangeSetting$provideDelegate$lambda$lambda_3(rangeInput, textInput, this));
-    textInput.value = this.initialValue.toString();
-    textInput.addEventListener('keydown', RangeSetting$provideDelegate$lambda$lambda_4(textInput, rangeInput, this));
-    buttonInput.value = 'Reset';
-    buttonInput.addEventListener('click', RangeSetting$provideDelegate$lambda$lambda_5(this, rangeInput, textInput));
+    rangeInput.addEventListener('input', RangeSetting$provideDelegate$lambda_0(this, rangeInput, textInput));
+    textInput.addEventListener('keydown', RangeSetting$provideDelegate$lambda_1(textInput, rangeInput, this));
+    buttonInput.addEventListener('click', RangeSetting$provideDelegate$lambda_2(this, rangeInput, textInput));
     return Setting.prototype.provideDelegate_n5byny$.call(this, thisRef, property);
   };
   function RangeSetting$Companion() {
@@ -686,12 +855,16 @@ var output = function (_, Kotlin, $module$kotlinx_html_js) {
     }
     return RangeSetting$Companion_instance;
   }
+  function RangeSetting_init$lambda() {
+    return Unit;
+  }
   RangeSetting.$metadata$ = {
     kind: Kind_CLASS,
     simpleName: 'RangeSetting',
     interfaces: [Setting]
   };
-  function Setting() {
+  function Setting(onUpdate) {
+    this.onUpdate = onUpdate;
   }
   function Setting$provideDelegate$ObjectLiteral(this$Setting) {
     this.this$Setting = this$Setting;
@@ -938,11 +1111,15 @@ var output = function (_, Kotlin, $module$kotlinx_html_js) {
   package$elements.line_lnb366$ = line;
   package$elements.line_hh96uv$ = line_0;
   package$elements.Line = Line;
+  Object.defineProperty(RobotBase, 'Companion', {
+    get: RobotBase$Companion_getInstance
+  });
   var package$robots = _.robots || (_.robots = {});
   package$robots.RobotBase = RobotBase;
-  package$robots.TankDriveRobot = TankDriveRobot;
+  package$robots.TankRobot = TankRobot;
   var package$settings = _.settings || (_.settings = {});
   package$settings.ButtonSetting = ButtonSetting;
+  package$settings.RadioSetting = RadioSetting;
   Object.defineProperty(RangeSetting, 'Companion', {
     get: RangeSetting$Companion_getInstance
   });
@@ -960,7 +1137,7 @@ var output = function (_, Kotlin, $module$kotlinx_html_js) {
   package$util.Vector = Vector;
   package$util.Wheel = Wheel;
   period = 16;
-  robot = new TankDriveRobot();
+  robot = new TankRobot();
   controls = new KeyboardControl();
   var tmp$, tmp$_0;
   var $receiver = Kotlin.isType(tmp$_0 = (Kotlin.isType(tmp$ = document.getElementById('simulatorCanvas'), HTMLCanvasElement) ? tmp$ : throwCCE()).getContext('2d'), CanvasRenderingContext2D) ? tmp$_0 : throwCCE();

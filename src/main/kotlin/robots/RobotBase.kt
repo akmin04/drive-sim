@@ -5,8 +5,8 @@ import canvas.elements.arrow
 import canvas.elements.line
 import canvas.render
 import period
-import settings.ButtonSetting
-import settings.RangeSetting
+import robot
+import settings.*
 import simulator
 import util.*
 import kotlin.math.PI
@@ -17,32 +17,39 @@ abstract class RobotBase(
     private val wheels: Array<Wheel>
 ) : Loopable {
 
-    val maxVelocity by RangeSetting(
-        initialValue = 600.0,
-        min = 100.0,
-        max = 1100.0
-    )
+    companion object {
+        val maxVelocity by RangeSetting(
+            initialValue = 600.0,
+            min = 100.0,
+            max = 1100.0
+        )
 
-    val robotWidth by RangeSetting(
-        initialValue = 100.0,
-        min = 50.0,
-        max = 150.0
-    )
+        val robotWidth by RangeSetting(
+            initialValue = 100.0,
+            min = 50.0,
+            max = 150.0
+        )
 
-    val robotLength by RangeSetting(
-        initialValue = 100.0,
-        min = 50.0,
-        max = 150.0
-    )
+        val robotLength by RangeSetting(
+            initialValue = 100.0,
+            min = 50.0,
+            max = 150.0
+        )
 
-    @Suppress("unused")
-    val resetAll by ButtonSetting {
-        pos = 0.0 xy 0.0
-        bearing = 0.0
-        RangeSetting.reset(::maxVelocity)
-        RangeSetting.reset(::robotWidth)
-        RangeSetting.reset(::robotLength)
+        val drivetrainType by RadioSetting(
+            arrayOf("Tank", "Swerve")
+        )
+
+        @Suppress("unused")
+        val resetAll by ButtonSetting {
+            robot.pos = 0.0 xy 0.0
+            robot.bearing = 0.0
+            RangeSetting.reset(::maxVelocity)
+            RangeSetting.reset(::robotWidth)
+            RangeSetting.reset(::robotLength)
+        }
     }
+
 
     val maxVelocityPerFrame get() = maxVelocity * period / 1000
     val numberOfWheels = wheels.size
