@@ -1,4 +1,4 @@
-package kanvas
+package canvas
 
 import org.w3c.dom.CanvasRenderingContext2D
 import util.Point

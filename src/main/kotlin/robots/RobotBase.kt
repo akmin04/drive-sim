@@ -1,13 +1,18 @@
 package robots
 
-import kanvas.render
+import canvas.Color
+import canvas.elements.arrow
+import canvas.elements.line
+import canvas.render
 import period
 import settings.ButtonSetting
 import settings.RangeSetting
 import simulator
 import util.*
+import kotlin.math.PI
+import kotlin.math.sign
 
-@Suppress("MemberVisibilityCanBePrivate", "unused")
+@Suppress("MemberVisibilityCanBePrivate")
 abstract class RobotBase(
     private val wheels: Array<Wheel>
 ) : Loopable {
@@ -30,6 +35,7 @@ abstract class RobotBase(
         max = 150.0
     )
 
+    @Suppress("unused")
     val resetAll by ButtonSetting {
         pos = 0.0 xy 0.0
         bearing = 0.0
@@ -55,24 +61,21 @@ abstract class RobotBase(
         )
 
     private val body
-        get() = kanvas.body {
-            group("robot") {
-                for (i in 0 until 3) {
-                    line(start = corners[i], end = corners[i + 1])
-                }
-                line(start = corners[0], end = corners[3], color = Color.green)
+        get() = canvas.body {
+            for (i in 0 until 3) {
+                line(start = corners[i], end = corners[i + 1])
             }
+            line(start = corners[0], end = corners[3], color = Color.green)
 
-            group("wheels") {
-                wheels.forEach { (rx, ry, vector) ->
-                    line(
-                        start = robotWidth * rx xy robotLength * ry,
-                        vector = vector.magnitude / maxVelocityPerFrame * 100 vec vector.bearing - bearing,
-                        color = if (vector.magnitude > 0) Color.blue else Color.red,
-                        width = 5.0
-                    )
-                }
-                println(Color.red.toString())
+            wheels.forEach { (rx, ry, vector) ->
+                arrow(
+                    start = robotWidth * rx xy robotLength * ry,
+                    vector = 100.0 * vector.magnitude.sign vec vector.bearing - bearing,
+                    width = 5.0,
+                    arrowLength = 25.0,
+                    arrowAngle = 45.0 / 360.0 * PI,
+                    color = if (vector.magnitude > 0) Color.blue else Color.red
+                )
             }
         }
 

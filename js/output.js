@@ -9,11 +9,14 @@ var output = function (_, Kotlin, $module$kotlinx_html_js) {
   var throwCCE = Kotlin.throwCCE;
   var Unit = Kotlin.kotlin.Unit;
   var Kind_CLASS = Kotlin.Kind.CLASS;
-  var Kind_INTERFACE = Kotlin.Kind.INTERFACE;
-  var Math_0 = Math;
+  var toString = Kotlin.kotlin.text.toString_dqglrj$;
+  var Kind_OBJECT = Kotlin.Kind.OBJECT;
   var ArrayList_init = Kotlin.kotlin.collections.ArrayList_init_287e2$;
+  var Math_0 = Math;
+  var Kind_INTERFACE = Kotlin.Kind.INTERFACE;
   var PropertyMetadata = Kotlin.PropertyMetadata;
   var listOf = Kotlin.kotlin.collections.listOf_i5x0yv$;
+  var math = Kotlin.kotlin.math;
   var println = Kotlin.kotlin.io.println_s8jyv4$;
   var getPropertyCallableRef = Kotlin.getPropertyCallableRef;
   var capitalize = Kotlin.kotlin.text.capitalize_pdl1vz$;
@@ -29,13 +32,9 @@ var output = function (_, Kotlin, $module$kotlinx_html_js) {
   var toDouble = Kotlin.kotlin.text.toDouble_pdl1vz$;
   var equals = Kotlin.equals;
   var NumberFormatException = Kotlin.kotlin.NumberFormatException;
-  var Kind_OBJECT = Kotlin.Kind.OBJECT;
   var ReadOnlyProperty = Kotlin.kotlin.properties.ReadOnlyProperty;
-  var toString = Kotlin.kotlin.text.toString_dqglrj$;
   var HashMap_init = Kotlin.kotlin.collections.HashMap_init_q3lmfv$;
-  Group.prototype = Object.create(Tag.prototype);
-  Group.prototype.constructor = Group;
-  Body.prototype = Object.create(Group.prototype);
+  Body.prototype = Object.create(Tag.prototype);
   Body.prototype.constructor = Body;
   TankDriveRobot.prototype = Object.create(RobotBase.prototype);
   TankDriveRobot.prototype.constructor = TankDriveRobot;
@@ -62,12 +61,74 @@ var output = function (_, Kotlin, $module$kotlinx_html_js) {
     return $receiver;
   }
   function Body() {
-    Group.call(this, 'body');
+    Tag.call(this);
   }
   Body.$metadata$ = {
     kind: Kind_CLASS,
     simpleName: 'Body',
-    interfaces: [Group]
+    interfaces: [Tag]
+  };
+  function Color(r, g, b) {
+    Color$Companion_getInstance();
+    this.r = r;
+    this.g = g;
+    this.b = b;
+  }
+  Color.prototype.base16_0 = function (num, digits) {
+    var a = toString(num, 16);
+    while (a.length < digits)
+      a = '0' + a;
+    return a;
+  };
+  Color.prototype.toString = function () {
+    return '#' + this.base16_0(this.r, 2) + this.base16_0(this.g, 2) + this.base16_0(this.b, 2);
+  };
+  function Color$Companion() {
+    Color$Companion_instance = this;
+    this.black = new Color(0, 0, 0);
+    this.white = new Color(255, 255, 255);
+    this.red = new Color(255, 0, 0);
+    this.green = new Color(0, 255, 0);
+    this.blue = new Color(0, 0, 255);
+  }
+  Color$Companion.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'Companion',
+    interfaces: []
+  };
+  var Color$Companion_instance = null;
+  function Color$Companion_getInstance() {
+    if (Color$Companion_instance === null) {
+      new Color$Companion();
+    }
+    return Color$Companion_instance;
+  }
+  Color.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'Color',
+    interfaces: []
+  };
+  Color.prototype.component1 = function () {
+    return this.r;
+  };
+  Color.prototype.component2 = function () {
+    return this.g;
+  };
+  Color.prototype.component3 = function () {
+    return this.b;
+  };
+  Color.prototype.copy_qt1dr2$ = function (r, g, b) {
+    return new Color(r === void 0 ? this.r : r, g === void 0 ? this.g : g, b === void 0 ? this.b : b);
+  };
+  Color.prototype.hashCode = function () {
+    var result = 0;
+    result = result * 31 + Kotlin.hashCode(this.r) | 0;
+    result = result * 31 + Kotlin.hashCode(this.g) | 0;
+    result = result * 31 + Kotlin.hashCode(this.b) | 0;
+    return result;
+  };
+  Color.prototype.equals = function (other) {
+    return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.r, other.r) && Kotlin.equals(this.g, other.g) && Kotlin.equals(this.b, other.b)))));
   };
   function render($receiver, body, pos, bearing) {
     if (bearing === void 0)
@@ -88,24 +149,48 @@ var output = function (_, Kotlin, $module$kotlinx_html_js) {
     $receiver.translate($receiver.canvas.width / 2.0, $receiver.canvas.height / 2.0);
     $receiver.scale(1.0, -1.0);
   }
-  function Element() {
+  function Tag() {
+    this.children_xniz5b$_0 = ArrayList_init();
+    this.render_1rsr4q$_0 = Tag$render$lambda(this);
   }
-  Element.$metadata$ = {
-    kind: Kind_INTERFACE,
-    simpleName: 'Element',
-    interfaces: []
+  function Tag$initTag$lambda($receiver) {
+    return Unit;
+  }
+  Tag.prototype.initTag_5atchw$ = function (tag, setup) {
+    if (setup === void 0)
+      setup = Tag$initTag$lambda;
+    setup(tag);
+    this.children_xniz5b$_0.add_11rb$(tag);
+    return tag;
   };
-  function Group(name) {
-    Tag.call(this);
+  Object.defineProperty(Tag.prototype, 'render', {
+    get: function () {
+      return this.render_1rsr4q$_0;
+    }
+  });
+  function Tag$render$lambda(this$Tag) {
+    return function ($receiver) {
+      var tmp$;
+      tmp$ = this$Tag.children_xniz5b$_0.iterator();
+      while (tmp$.hasNext()) {
+        var c = tmp$.next();
+        c.render($receiver);
+      }
+    };
   }
-  Group.prototype.line_a0kn23$ = function (start, end, width, color) {
+  Tag.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'Tag',
+    interfaces: [Element]
+  };
+  function arrow($receiver, start, end, width, arrowLength, arrowAngle, color) {
     if (width === void 0)
       width = 5.0;
     if (color === void 0)
       color = Color$Companion_getInstance().black;
-    return this.initTag_fofoa3$(new Line(start, end, width, color));
-  };
-  Group.prototype.line_abqzl6$ = function (start, vector, width, color) {
+    return $receiver.initTag_5atchw$(new Arrow(start, end, width, arrowLength, arrowAngle, color));
+  }
+  function arrow_0($receiver, start, vector, width, arrowLength, arrowAngle, color) {
     if (width === void 0)
       width = 5.0;
     if (color === void 0)
@@ -117,36 +202,99 @@ var output = function (_, Kotlin, $module$kotlinx_html_js) {
     var tmp$_2 = start.y;
     var tmp$_3 = vector.magnitude;
     var x_0 = vector.bearing;
-    return this.initTag_fofoa3$(new Line(start, xy(tmp$_1, tmp$_2 + tmp$_3 * Math_0.cos(x_0)), width, color));
-  };
-  Group.prototype.group_psgofc$ = function (name, init) {
-    if (name === void 0)
-      name = 'group';
-    return this.initTag_fofoa3$(new Group(name), init);
-  };
-  Group.$metadata$ = {
+    return $receiver.initTag_5atchw$(new Arrow(start, xy(tmp$_1, tmp$_2 + tmp$_3 * Math_0.cos(x_0)), width, arrowLength, arrowAngle, color));
+  }
+  function Arrow(start, end, width, arrowLength, arrowAngle, color) {
+    this.start_0 = start;
+    this.end_0 = end;
+    this.width_0 = width;
+    this.arrowLength_0 = arrowLength;
+    this.arrowAngle_0 = arrowAngle;
+    this.color_0 = color;
+    this.render_6zt5oe$_0 = Arrow$render$lambda(this);
+  }
+  Object.defineProperty(Arrow.prototype, 'render', {
+    get: function () {
+      return this.render_6zt5oe$_0;
+    },
+    set: function (render) {
+      this.render_6zt5oe$_0 = render;
+    }
+  });
+  function Arrow$render$lambda(this$Arrow) {
+    return function ($receiver) {
+      $receiver.lineWidth = this$Arrow.width_0;
+      $receiver.strokeStyle = this$Arrow.color_0.toString();
+      $receiver.fillStyle = this$Arrow.color_0.toString();
+      $receiver.beginPath();
+      $receiver.moveTo(this$Arrow.start_0.x, this$Arrow.start_0.y);
+      $receiver.lineTo(this$Arrow.end_0.x, this$Arrow.end_0.y);
+      $receiver.stroke();
+      var tmp$ = this$Arrow.arrowLength_0;
+      var $receiver_0 = this$Arrow.end_0.x - this$Arrow.start_0.x;
+      var tmp$_0 = Math_0.pow($receiver_0, 2);
+      var $receiver_1 = this$Arrow.end_0.y - this$Arrow.start_0.y;
+      var x = tmp$_0 + Math_0.pow($receiver_1, 2);
+      var lengthRatio = tmp$ / Math_0.sqrt(x);
+      var x_0 = this$Arrow.arrowAngle_0;
+      var cos = Math_0.cos(x_0);
+      var x_1 = this$Arrow.arrowAngle_0;
+      var sin = Math_0.sin(x_1);
+      $receiver.moveTo(this$Arrow.end_0.x, this$Arrow.end_0.y);
+      $receiver.lineTo(this$Arrow.end_0.x + lengthRatio * ((this$Arrow.start_0.x - this$Arrow.end_0.x) * cos + (this$Arrow.start_0.y - this$Arrow.end_0.y) * sin), this$Arrow.end_0.y + lengthRatio * ((this$Arrow.start_0.y - this$Arrow.end_0.y) * cos - (this$Arrow.start_0.x - this$Arrow.end_0.x) * sin));
+      $receiver.lineTo(this$Arrow.end_0.x + lengthRatio * ((this$Arrow.start_0.x - this$Arrow.end_0.x) * cos - (this$Arrow.start_0.y - this$Arrow.end_0.y) * sin), this$Arrow.end_0.y + lengthRatio * ((this$Arrow.start_0.y - this$Arrow.end_0.y) * cos + (this$Arrow.start_0.x - this$Arrow.end_0.x) * sin));
+      $receiver.lineTo(this$Arrow.end_0.x, this$Arrow.end_0.y);
+      $receiver.fill();
+    };
+  }
+  Arrow.$metadata$ = {
     kind: Kind_CLASS,
-    simpleName: 'Group',
-    interfaces: [Tag]
+    simpleName: 'Arrow',
+    interfaces: [Element]
   };
+  function Element() {
+  }
+  Element.$metadata$ = {
+    kind: Kind_INTERFACE,
+    simpleName: 'Element',
+    interfaces: []
+  };
+  function line($receiver, start, end, width, color) {
+    if (width === void 0)
+      width = 5.0;
+    if (color === void 0)
+      color = Color$Companion_getInstance().black;
+    return $receiver.initTag_5atchw$(new Line(start, end, width, color));
+  }
+  function line_0($receiver, start, vector, width, color) {
+    if (width === void 0)
+      width = 5.0;
+    if (color === void 0)
+      color = Color$Companion_getInstance().black;
+    var tmp$ = start.x;
+    var tmp$_0 = vector.magnitude;
+    var x = vector.bearing;
+    var tmp$_1 = tmp$ + tmp$_0 * Math_0.sin(x);
+    var tmp$_2 = start.y;
+    var tmp$_3 = vector.magnitude;
+    var x_0 = vector.bearing;
+    return $receiver.initTag_5atchw$(new Line(start, xy(tmp$_1, tmp$_2 + tmp$_3 * Math_0.cos(x_0)), width, color));
+  }
   function Line(start, end, width, color) {
     this.start_0 = start;
     this.end_0 = end;
     this.width_0 = width;
     this.color_0 = color;
-    this.render_cygs4o$_0 = Line$render$lambda(this);
+    this.render_rqot11$_0 = Line$render$lambda(this);
   }
   Object.defineProperty(Line.prototype, 'render', {
     get: function () {
-      return this.render_cygs4o$_0;
+      return this.render_rqot11$_0;
     },
     set: function (render) {
-      this.render_cygs4o$_0 = render;
+      this.render_rqot11$_0 = render;
     }
   });
-  Line.prototype.toString = function () {
-    return 'Line from ' + this.start_0 + ' to ' + this.end_0 + '. Width: ' + this.width_0 + '. Color: ' + this.color_0;
-  };
   function Line$render$lambda(this$Line) {
     return function ($receiver) {
       $receiver.lineWidth = this$Line.width_0;
@@ -160,40 +308,6 @@ var output = function (_, Kotlin, $module$kotlinx_html_js) {
   Line.$metadata$ = {
     kind: Kind_CLASS,
     simpleName: 'Line',
-    interfaces: [Element]
-  };
-  function Tag() {
-    this.children_gpn3hz$_0 = ArrayList_init();
-    this.render_bwz3gy$_0 = Tag$render$lambda(this);
-  }
-  function Tag$initTag$lambda($receiver) {
-    return Unit;
-  }
-  Tag.prototype.initTag_fofoa3$ = function (tag, setup) {
-    if (setup === void 0)
-      setup = Tag$initTag$lambda;
-    setup(tag);
-    this.children_gpn3hz$_0.add_11rb$(tag);
-    return tag;
-  };
-  Object.defineProperty(Tag.prototype, 'render', {
-    get: function () {
-      return this.render_bwz3gy$_0;
-    }
-  });
-  function Tag$render$lambda(this$Tag) {
-    return function ($receiver) {
-      var tmp$;
-      tmp$ = this$Tag.children_gpn3hz$_0.iterator();
-      while (tmp$.hasNext()) {
-        var c = tmp$.next();
-        c.render($receiver);
-      }
-    };
-  }
-  Tag.$metadata$ = {
-    kind: Kind_CLASS,
-    simpleName: 'Tag',
     interfaces: [Element]
   };
   function RobotBase(wheels) {
@@ -250,17 +364,12 @@ var output = function (_, Kotlin, $module$kotlinx_html_js) {
       return listOf([xy(this.halfWidth_5frg69$_0, this.halfLength_ndnnm1$_0), xy(this.halfWidth_5frg69$_0, -this.halfLength_ndnnm1$_0), xy(-this.halfWidth_5frg69$_0, -this.halfLength_ndnnm1$_0), xy(-this.halfWidth_5frg69$_0, this.halfLength_ndnnm1$_0)]);
     }
   });
-  function RobotBase$get_RobotBase$body$lambda$lambda(this$RobotBase) {
+  function RobotBase$get_RobotBase$body$lambda(this$RobotBase) {
     return function ($receiver) {
       for (var i = 0; i < 3; i++) {
-        $receiver.line_a0kn23$(this$RobotBase.corners_rb1qac$_0.get_za3lpa$(i), this$RobotBase.corners_rb1qac$_0.get_za3lpa$(i + 1 | 0));
+        line($receiver, this$RobotBase.corners_rb1qac$_0.get_za3lpa$(i), this$RobotBase.corners_rb1qac$_0.get_za3lpa$(i + 1 | 0));
       }
-      $receiver.line_a0kn23$(this$RobotBase.corners_rb1qac$_0.get_za3lpa$(0), this$RobotBase.corners_rb1qac$_0.get_za3lpa$(3), void 0, Color$Companion_getInstance().green);
-      return Unit;
-    };
-  }
-  function RobotBase$get_RobotBase$body$lambda$lambda_0(this$RobotBase) {
-    return function ($receiver) {
+      line($receiver, this$RobotBase.corners_rb1qac$_0.get_za3lpa$(0), this$RobotBase.corners_rb1qac$_0.get_za3lpa$(3), void 0, Color$Companion_getInstance().green);
       var $receiver_0 = this$RobotBase.wheels_mzrdcm$_0;
       var tmp$;
       for (tmp$ = 0; tmp$ !== $receiver_0.length; ++tmp$) {
@@ -269,16 +378,10 @@ var output = function (_, Kotlin, $module$kotlinx_html_js) {
         var rx = element.component1()
         , ry = element.component2()
         , vector = element.component3();
-        $receiver.line_abqzl6$(xy(this$RobotBase_0.robotWidth * rx, this$RobotBase_0.robotLength * ry), vec(vector.magnitude / this$RobotBase_0.maxVelocityPerFrame * 100, vector.bearing - this$RobotBase_0.bearing), 5.0, vector.magnitude > 0 ? Color$Companion_getInstance().blue : Color$Companion_getInstance().red);
+        var tmp$_0 = xy(this$RobotBase_0.robotWidth * rx, this$RobotBase_0.robotLength * ry);
+        var $receiver_1 = vector.magnitude;
+        arrow_0($receiver, tmp$_0, vec(100.0 * Math_0.sign($receiver_1), vector.bearing - this$RobotBase_0.bearing), 5.0, 25.0, 45.0 / 360.0 * math.PI, vector.magnitude > 0 ? Color$Companion_getInstance().blue : Color$Companion_getInstance().red);
       }
-      println(Color$Companion_getInstance().red.toString());
-      return Unit;
-    };
-  }
-  function RobotBase$get_RobotBase$body$lambda(this$RobotBase) {
-    return function ($receiver) {
-      $receiver.group_psgofc$('robot', RobotBase$get_RobotBase$body$lambda$lambda(this$RobotBase));
-      $receiver.group_psgofc$('wheels', RobotBase$get_RobotBase$body$lambda$lambda_0(this$RobotBase));
       return Unit;
     };
   }
@@ -608,68 +711,6 @@ var output = function (_, Kotlin, $module$kotlinx_html_js) {
     simpleName: 'Setting',
     interfaces: []
   };
-  function Color(r, g, b) {
-    Color$Companion_getInstance();
-    this.r = r;
-    this.g = g;
-    this.b = b;
-  }
-  Color.prototype.base16_0 = function (num, digits) {
-    var a = toString(num, 16);
-    while (a.length < digits)
-      a = '0' + a;
-    return a;
-  };
-  Color.prototype.toString = function () {
-    return '#' + this.base16_0(this.r, 2) + this.base16_0(this.g, 2) + this.base16_0(this.b, 2);
-  };
-  function Color$Companion() {
-    Color$Companion_instance = this;
-    this.black = new Color(0, 0, 0);
-    this.white = new Color(255, 255, 255);
-    this.red = new Color(255, 0, 0);
-    this.green = new Color(0, 255, 0);
-    this.blue = new Color(0, 0, 255);
-  }
-  Color$Companion.$metadata$ = {
-    kind: Kind_OBJECT,
-    simpleName: 'Companion',
-    interfaces: []
-  };
-  var Color$Companion_instance = null;
-  function Color$Companion_getInstance() {
-    if (Color$Companion_instance === null) {
-      new Color$Companion();
-    }
-    return Color$Companion_instance;
-  }
-  Color.$metadata$ = {
-    kind: Kind_CLASS,
-    simpleName: 'Color',
-    interfaces: []
-  };
-  Color.prototype.component1 = function () {
-    return this.r;
-  };
-  Color.prototype.component2 = function () {
-    return this.g;
-  };
-  Color.prototype.component3 = function () {
-    return this.b;
-  };
-  Color.prototype.copy_qt1dr2$ = function (r, g, b) {
-    return new Color(r === void 0 ? this.r : r, g === void 0 ? this.g : g, b === void 0 ? this.b : b);
-  };
-  Color.prototype.hashCode = function () {
-    var result = 0;
-    result = result * 31 + Kotlin.hashCode(this.r) | 0;
-    result = result * 31 + Kotlin.hashCode(this.g) | 0;
-    result = result * 31 + Kotlin.hashCode(this.b) | 0;
-    return result;
-  };
-  Color.prototype.equals = function (other) {
-    return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.r, other.r) && Kotlin.equals(this.g, other.g) && Kotlin.equals(this.b, other.b)))));
-  };
   function KeyboardControl() {
     KeyboardControl$Companion_getInstance();
     this.x = 0.0;
@@ -754,6 +795,9 @@ var output = function (_, Kotlin, $module$kotlinx_html_js) {
     simpleName: 'Loopable',
     interfaces: []
   };
+  function xy($receiver, that) {
+    return new Point($receiver, that);
+  }
   function Point(x, y) {
     this.x = x;
     this.y = y;
@@ -784,16 +828,13 @@ var output = function (_, Kotlin, $module$kotlinx_html_js) {
   Point.prototype.equals = function (other) {
     return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.x, other.x) && Kotlin.equals(this.y, other.y)))));
   };
-  function xy($receiver, that) {
-    return new Point($receiver, that);
+  function vec($receiver, that) {
+    return new Vector($receiver, that);
   }
   function Vector(magnitude, bearing) {
     this.magnitude = magnitude;
     this.bearing = bearing;
   }
-  Vector.prototype.toString = function () {
-    return '(' + this.magnitude + ', ' + this.bearing + ')';
-  };
   Vector.$metadata$ = {
     kind: Kind_CLASS,
     simpleName: 'Vector',
@@ -808,6 +849,9 @@ var output = function (_, Kotlin, $module$kotlinx_html_js) {
   Vector.prototype.copy_lu1900$ = function (magnitude, bearing) {
     return new Vector(magnitude === void 0 ? this.magnitude : magnitude, bearing === void 0 ? this.bearing : bearing);
   };
+  Vector.prototype.toString = function () {
+    return 'Vector(magnitude=' + Kotlin.toString(this.magnitude) + (', bearing=' + Kotlin.toString(this.bearing)) + ')';
+  };
   Vector.prototype.hashCode = function () {
     var result = 0;
     result = result * 31 + Kotlin.hashCode(this.magnitude) | 0;
@@ -817,9 +861,6 @@ var output = function (_, Kotlin, $module$kotlinx_html_js) {
   Vector.prototype.equals = function (other) {
     return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.magnitude, other.magnitude) && Kotlin.equals(this.bearing, other.bearing)))));
   };
-  function vec($receiver, that) {
-    return new Vector($receiver, that);
-  }
   function Wheel(relativeX, relativeY, vector) {
     if (vector === void 0)
       vector = new Vector(0.0, 0.0);
@@ -878,16 +919,25 @@ var output = function (_, Kotlin, $module$kotlinx_html_js) {
     }
   });
   _.main = main;
-  var package$kanvas = _.kanvas || (_.kanvas = {});
-  package$kanvas.body_suihwv$ = body;
-  package$kanvas.Body = Body;
-  package$kanvas.render_omq1gn$ = render;
-  package$kanvas.clear_qtrdl1$ = clear;
-  package$kanvas.cartesian_qtrdl1$ = cartesian;
-  package$kanvas.Element = Element;
-  package$kanvas.Group = Group;
-  package$kanvas.Line = Line;
-  package$kanvas.Tag = Tag;
+  var package$canvas = _.canvas || (_.canvas = {});
+  package$canvas.body_jjspwn$ = body;
+  package$canvas.Body = Body;
+  Object.defineProperty(Color, 'Companion', {
+    get: Color$Companion_getInstance
+  });
+  package$canvas.Color = Color;
+  package$canvas.render_kb7f2p$ = render;
+  package$canvas.clear_qtrdl1$ = clear;
+  package$canvas.cartesian_qtrdl1$ = cartesian;
+  package$canvas.Tag = Tag;
+  var package$elements = package$canvas.elements || (package$canvas.elements = {});
+  package$elements.arrow_hhsopa$ = arrow;
+  package$elements.arrow_u02d97$ = arrow_0;
+  package$elements.Arrow = Arrow;
+  package$elements.Element = Element;
+  package$elements.line_lnb366$ = line;
+  package$elements.line_hh96uv$ = line_0;
+  package$elements.Line = Line;
   var package$robots = _.robots || (_.robots = {});
   package$robots.RobotBase = RobotBase;
   package$robots.TankDriveRobot = TankDriveRobot;
@@ -898,20 +948,16 @@ var output = function (_, Kotlin, $module$kotlinx_html_js) {
   });
   package$settings.RangeSetting = RangeSetting;
   package$settings.Setting = Setting;
-  Object.defineProperty(Color, 'Companion', {
-    get: Color$Companion_getInstance
-  });
-  var package$util = _.util || (_.util = {});
-  package$util.Color = Color;
   Object.defineProperty(KeyboardControl, 'Companion', {
     get: KeyboardControl$Companion_getInstance
   });
+  var package$util = _.util || (_.util = {});
   package$util.KeyboardControl = KeyboardControl;
   package$util.Loopable = Loopable;
-  package$util.Point = Point;
   package$util.xy_38ydlf$ = xy;
-  package$util.Vector = Vector;
+  package$util.Point = Point;
   package$util.vec_38ydlf$ = vec;
+  package$util.Vector = Vector;
   package$util.Wheel = Wheel;
   period = 16;
   robot = new TankDriveRobot();
