@@ -55,13 +55,13 @@ class SwerveRobot(
 
         val omega1 = (top - bottom) / robotLength
         val omega2 = (left - right) / robotWidth
-        val omega = omega1 + omega2
+        val omega = (omega1 + omega2) / 2
 
         val upDown = left + right vec bearing
         val leftRight = top + bottom vec bearing + PI / 2
 
-        pos.x += upDown.x + leftRight.x
-        pos.y += upDown.y + leftRight.y
+        pos.x += (upDown.x + leftRight.x) / 2
+        pos.y += (upDown.y + leftRight.y) / 2
         bearing += omega
 
         return wheelsVectors
