@@ -19,9 +19,12 @@ var output = function (_, Kotlin, $module$kotlinx_html_js) {
   var listOf = Kotlin.kotlin.collections.listOf_i5x0yv$;
   var math = Kotlin.kotlin.math;
   var getPropertyCallableRef = Kotlin.getPropertyCallableRef;
-  var Array_0 = Array;
-  var capitalize = Kotlin.kotlin.text.capitalize_pdl1vz$;
   var ensureNotNull = Kotlin.ensureNotNull;
+  var to = Kotlin.kotlin.to_ujzrz7$;
+  var Array_0 = Array;
+  var get_lastIndex = Kotlin.kotlin.collections.get_lastIndex_m7z4lg$;
+  var ArrayList_init_0 = Kotlin.kotlin.collections.ArrayList_init_ww73n8$;
+  var capitalize = Kotlin.kotlin.text.capitalize_pdl1vz$;
   var br = $module$kotlinx_html_js.kotlinx.html.br_5bz84p$;
   var InputType = $module$kotlinx_html_js.kotlinx.html.InputType;
   var get_classes = $module$kotlinx_html_js.kotlinx.html.get_classes_fxodxh$;
@@ -391,19 +394,19 @@ var output = function (_, Kotlin, $module$kotlinx_html_js) {
       return robot.wheels_mzrdcm$_0.length;
     }
   });
-  Object.defineProperty(RobotBase$Companion.prototype, 'halfWidth_0', {
+  Object.defineProperty(RobotBase$Companion.prototype, 'halfWidth', {
     get: function () {
       return this.robotWidth / 2;
     }
   });
-  Object.defineProperty(RobotBase$Companion.prototype, 'halfLength_0', {
+  Object.defineProperty(RobotBase$Companion.prototype, 'halfLength', {
     get: function () {
       return this.robotLength / 2;
     }
   });
   Object.defineProperty(RobotBase$Companion.prototype, 'corners_0', {
     get: function () {
-      return listOf([xy(this.halfWidth_0, this.halfLength_0), xy(this.halfWidth_0, -this.halfLength_0), xy(-this.halfWidth_0, -this.halfLength_0), xy(-this.halfWidth_0, this.halfLength_0)]);
+      return listOf([xy(this.halfWidth, this.halfLength), xy(this.halfWidth, -this.halfLength), xy(-this.halfWidth, -this.halfLength), xy(-this.halfWidth, this.halfLength)]);
     }
   });
   function RobotBase$Companion$get_RobotBase$Companion$body$lambda(this$RobotBase$) {
@@ -420,9 +423,8 @@ var output = function (_, Kotlin, $module$kotlinx_html_js) {
         var rx = element.component1()
         , ry = element.component2()
         , vector = element.component3();
-        var tmp$_0 = xy(this$RobotBase$_0.robotWidth * rx, this$RobotBase$_0.robotLength * ry);
-        var $receiver_1 = vector.magnitude;
-        arrow_0($receiver, tmp$_0, vec(60.0 * Math_0.sign($receiver_1), vector.bearing - robot.bearing), 5.0, 20.0, 45.0 / 360.0 * math.PI, vector.magnitude > 0 ? Color$Companion_getInstance().blue : Color$Companion_getInstance().red);
+        var magnitude = vector.magnitude / this$RobotBase$_0.maxVelocityPerFrame;
+        arrow_0($receiver, xy(this$RobotBase$_0.robotWidth * rx, this$RobotBase$_0.robotLength * ry), vec(60.0 * magnitude, vector.bearing), 5.0, 20.0 * Math_0.abs(magnitude), 45.0 / 360.0 * math.PI, vector.magnitude > 0 ? Color$Companion_getInstance().blue : Color$Companion_getInstance().red);
       }
       return Unit;
     };
@@ -436,14 +438,11 @@ var output = function (_, Kotlin, $module$kotlinx_html_js) {
     switch (it) {
       case 'Tank':
         robot = new TankRobot(robot.pos, robot.bearing);
-        println('Changed to tank');
         break;
       case 'Swerve':
         robot = new SwerveRobot(robot.pos, robot.bearing);
-        println('Changed to swerve');
         break;
-      default:println('Unknown type');
-        break;
+      default:break;
     }
     return Unit;
   }
@@ -487,14 +486,104 @@ var output = function (_, Kotlin, $module$kotlinx_html_js) {
       bearing = 0.0;
     RobotBase.call(this, pos, bearing, [new Wheel(-0.5, 0.5), new Wheel(0.5, 0.5), new Wheel(0.5, -0.5), new Wheel(-0.5, -0.5)]);
   }
+  SwerveRobot.prototype.avg_0 = function ($receiver, that) {
+    return ($receiver + that) / 2;
+  };
   SwerveRobot.prototype.update = function () {
-    var array = Array_0(4);
-    var tmp$;
-    tmp$ = array.length - 1 | 0;
-    for (var i = 0; i <= tmp$; i++) {
-      array[i] = new Vector(1.0, 0.0);
+    var tmp$, tmp$_0;
+    var array = Array_0(RobotBase$Companion_getInstance().numberOfWheels);
+    var tmp$_1;
+    tmp$_1 = array.length - 1 | 0;
+    for (var i = 0; i <= tmp$_1; i++) {
+      array[i] = vec(0.0, 0.0);
     }
-    return array;
+    var wheelsVectors = array;
+    var x = controls.x;
+    var tmp$_2 = Math_0.abs(x);
+    var x_0 = controls.y;
+    var strafeMagnitude = tmp$_2 + Math_0.abs(x_0);
+    var y = controls.x;
+    var x_1 = controls.y;
+    var strafeBearing = Math_0.atan2(y, x_1) - this.bearing;
+    var array_0 = Array_0(RobotBase$Companion_getInstance().numberOfWheels);
+    var tmp$_3;
+    tmp$_3 = array_0.length - 1 | 0;
+    for (var i_0 = 0; i_0 <= tmp$_3; i_0++) {
+      array_0[i_0] = vec(strafeMagnitude, strafeBearing);
+    }
+    var strafeVectors = array_0;
+    var tmp$_4 = controls.z;
+    var y_0 = -RobotBase$Companion_getInstance().halfWidth;
+    var x_2 = RobotBase$Companion_getInstance().halfLength;
+    var tmp$_5 = vec(tmp$_4, Math_0.atan2(y_0, x_2) + math.PI / 2);
+    var tmp$_6 = controls.z;
+    var y_1 = RobotBase$Companion_getInstance().halfWidth;
+    var x_3 = RobotBase$Companion_getInstance().halfLength;
+    var tmp$_7 = vec(tmp$_6, Math_0.atan2(y_1, x_3) + math.PI / 2);
+    var tmp$_8 = controls.z;
+    var y_2 = RobotBase$Companion_getInstance().halfWidth;
+    var x_4 = -RobotBase$Companion_getInstance().halfLength;
+    var tmp$_9 = vec(tmp$_8, Math_0.atan2(y_2, x_4) + math.PI / 2);
+    var tmp$_10 = controls.z;
+    var y_3 = -RobotBase$Companion_getInstance().halfWidth;
+    var x_5 = -RobotBase$Companion_getInstance().halfLength;
+    var rotationVectors = [tmp$_5, tmp$_7, tmp$_9, vec(tmp$_10, Math_0.atan2(y_3, x_5) + math.PI / 2)];
+    tmp$ = RobotBase$Companion_getInstance().numberOfWheels;
+    for (var i_1 = 0; i_1 < tmp$; i_1++) {
+      wheelsVectors[i_1] = strafeVectors[i_1].plus_y1wxxr$(rotationVectors[i_1]);
+    }
+    var maxBy$result;
+    maxBy$break: do {
+      var tmp$_11;
+      if (wheelsVectors.length === 0) {
+        maxBy$result = null;
+        break maxBy$break;
+      }
+      var maxElem = wheelsVectors[0];
+      var maxValue = maxElem.magnitude;
+      tmp$_11 = get_lastIndex(wheelsVectors);
+      for (var i_2 = 1; i_2 <= tmp$_11; i_2++) {
+        var e = wheelsVectors[i_2];
+        var v = e.magnitude;
+        if (Kotlin.compareTo(maxValue, v) < 0) {
+          maxElem = e;
+          maxValue = v;
+        }
+      }
+      maxBy$result = maxElem;
+    }
+     while (false);
+    var max = ensureNotNull(maxBy$result).magnitude;
+    tmp$_0 = RobotBase$Companion_getInstance().numberOfWheels;
+    for (var i_3 = 0; i_3 < tmp$_0; i_3++) {
+      wheelsVectors[i_3].magnitude = wheelsVectors[i_3].magnitude * RobotBase$Companion_getInstance().maxVelocityPerFrame;
+      if (max > 1.0)
+        wheelsVectors[i_3].magnitude = wheelsVectors[i_3].magnitude / max;
+    }
+    var destination = ArrayList_init_0(wheelsVectors.length);
+    var tmp$_12;
+    for (tmp$_12 = 0; tmp$_12 !== wheelsVectors.length; ++tmp$_12) {
+      var item = wheelsVectors[tmp$_12];
+      var tmp$_13 = destination.add_11rb$;
+      var x_6 = item.bearing;
+      var tmp$_14 = Math_0.sin(x_6) * item.magnitude;
+      var x_7 = item.bearing;
+      tmp$_13.call(destination, to(tmp$_14, Math_0.cos(x_7) * item.magnitude));
+    }
+    var xyComponents = destination;
+    var top = this.avg_0(xyComponents.get_za3lpa$(0).first, xyComponents.get_za3lpa$(1).first);
+    var bottom = this.avg_0(xyComponents.get_za3lpa$(3).first, xyComponents.get_za3lpa$(2).first);
+    var left = this.avg_0(xyComponents.get_za3lpa$(0).second, xyComponents.get_za3lpa$(3).second);
+    var right = this.avg_0(xyComponents.get_za3lpa$(1).second, xyComponents.get_za3lpa$(2).second);
+    var omega1 = (top - bottom) / RobotBase$Companion_getInstance().robotLength;
+    var omega2 = (left - right) / RobotBase$Companion_getInstance().robotWidth;
+    var omega = omega1 + omega2;
+    var upDown = vec(left + right, this.bearing);
+    var leftRight = vec(top + bottom, this.bearing + math.PI / 2);
+    this.pos.x = this.pos.x + (upDown.x + leftRight.x);
+    this.pos.y = this.pos.y + (upDown.y + leftRight.y);
+    this.bearing = this.bearing + omega;
+    return wheelsVectors;
   };
   SwerveRobot.$metadata$ = {
     kind: Kind_CLASS,
@@ -526,7 +615,7 @@ var output = function (_, Kotlin, $module$kotlinx_html_js) {
     var x_1 = this.bearing;
     tmp$_1.y = tmp$_2 + s * Math_0.cos(x_1);
     this.bearing = this.bearing + theta;
-    return [vec(l, this.bearing), vec(r, this.bearing)];
+    return [vec(l, 0.0), vec(r, 0.0)];
   };
   TankRobot.$metadata$ = {
     kind: Kind_CLASS,
@@ -1017,6 +1106,9 @@ var output = function (_, Kotlin, $module$kotlinx_html_js) {
     simpleName: 'Loopable',
     interfaces: []
   };
+  function degreesToRadians($receiver) {
+    return $receiver / 180 * math.PI;
+  }
   function xy($receiver, that) {
     return new Point($receiver, that);
   }
@@ -1056,7 +1148,17 @@ var output = function (_, Kotlin, $module$kotlinx_html_js) {
   function Vector(magnitude, bearing) {
     this.magnitude = magnitude;
     this.bearing = bearing;
+    var x = this.bearing;
+    this.x = Math_0.sin(x) * this.magnitude;
+    var x_0 = this.bearing;
+    this.y = Math_0.cos(x_0) * this.magnitude;
   }
+  Vector.prototype.plus_y1wxxr$ = function (that) {
+    var xComp = this.x + that.x;
+    var yComp = this.y + that.y;
+    var x = Math_0.pow(xComp, 2) + Math_0.pow(yComp, 2);
+    return vec(Math_0.sqrt(x), Math_0.atan2(xComp, yComp));
+  };
   Vector.$metadata$ = {
     kind: Kind_CLASS,
     simpleName: 'Vector',
@@ -1184,6 +1286,7 @@ var output = function (_, Kotlin, $module$kotlinx_html_js) {
   var package$util = _.util || (_.util = {});
   package$util.KeyboardControl = KeyboardControl;
   package$util.Loopable = Loopable;
+  package$util.degreesToRadians_yrwdxr$ = degreesToRadians;
   package$util.xy_38ydlf$ = xy;
   package$util.Point = Point;
   package$util.vec_38ydlf$ = vec;

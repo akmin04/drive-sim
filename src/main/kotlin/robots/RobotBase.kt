@@ -9,8 +9,7 @@ import robot
 import settings.*
 import simulator
 import util.*
-import kotlin.math.PI
-import kotlin.math.sign
+import kotlin.math.*
 
 @Suppress("MemberVisibilityCanBePrivate")
 abstract class RobotBase(
@@ -60,14 +59,11 @@ abstract class RobotBase(
             when (it) {
                 "Tank" -> {
                     robot = TankRobot(robot.pos, robot.bearing)
-                    println("Changed to tank")
                 }
                 "Swerve" -> {
                     robot = SwerveRobot(robot.pos, robot.bearing)
-                    println("Changed to swerve")
                 }
                 else -> {
-                    println("Unknown type")
                 }
             }
         }
@@ -83,8 +79,8 @@ abstract class RobotBase(
 
         val maxVelocityPerFrame get() = maxVelocity * period / 1000
         val numberOfWheels get() = robot.wheels.size
-        private val halfWidth get() = robotWidth / 2
-        private val halfLength get() = robotLength / 2
+        val halfWidth get() = robotWidth / 2
+        val halfLength get() = robotLength / 2
 
         private val corners
             get() = listOf(
@@ -102,11 +98,12 @@ abstract class RobotBase(
                 line(start = corners[0], end = corners[3], color = Color.green)
 
                 robot.wheels.forEach { (rx, ry, vector) ->
+                    val magnitude = vector.magnitude / maxVelocityPerFrame
                     arrow(
                         start = robotWidth * rx xy robotLength * ry,
-                        vector = 60.0 * vector.magnitude.sign vec vector.bearing - robot.bearing,
+                        vector = 60.0 * magnitude vec vector.bearing,
                         width = 5.0,
-                        arrowLength = 20.0,
+                        arrowLength = 20.0 * abs(magnitude),
                         arrowAngle = 45.0 / 360.0 * PI,
                         color = if (vector.magnitude > 0) Color.blue else Color.red
                     )

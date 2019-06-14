@@ -31,8 +31,8 @@ class TankRobot(
         bearing += theta
 
         return arrayOf(
-            l vec bearing,
-            r vec bearing
+            l vec 0.0,
+            r vec 0.0
         )
     }
 
