@@ -15,7 +15,7 @@ import kotlin.reflect.KProperty
  * @param onUpdate function to be called when the value is updated (Button click)
  */
 class ButtonSetting(
-    onUpdate: () -> Unit
+    onUpdate: (Unit) -> Unit
 ) : Setting<Unit>(onUpdate) {
     override var value = Unit
 
@@ -45,7 +45,7 @@ class ButtonSetting(
 
         with(buttonInput) {
             addEventListener("click", {
-                onUpdate()
+                onUpdate(Unit)
             })
         }
 

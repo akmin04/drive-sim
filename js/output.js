@@ -14,11 +14,12 @@ var output = function (_, Kotlin, $module$kotlinx_html_js) {
   var ArrayList_init = Kotlin.kotlin.collections.ArrayList_init_287e2$;
   var Math_0 = Math;
   var Kind_INTERFACE = Kotlin.Kind.INTERFACE;
+  var println = Kotlin.kotlin.io.println_s8jyv4$;
   var PropertyMetadata = Kotlin.PropertyMetadata;
-  var getPropertyCallableRef = Kotlin.getPropertyCallableRef;
   var listOf = Kotlin.kotlin.collections.listOf_i5x0yv$;
   var math = Kotlin.kotlin.math;
-  var println = Kotlin.kotlin.io.println_s8jyv4$;
+  var getPropertyCallableRef = Kotlin.getPropertyCallableRef;
+  var Array_0 = Array;
   var capitalize = Kotlin.kotlin.text.capitalize_pdl1vz$;
   var ensureNotNull = Kotlin.ensureNotNull;
   var br = $module$kotlinx_html_js.kotlinx.html.br_5bz84p$;
@@ -40,6 +41,8 @@ var output = function (_, Kotlin, $module$kotlinx_html_js) {
   var HashMap_init = Kotlin.kotlin.collections.HashMap_init_q3lmfv$;
   Body.prototype = Object.create(Tag.prototype);
   Body.prototype.constructor = Body;
+  SwerveRobot.prototype = Object.create(RobotBase.prototype);
+  SwerveRobot.prototype.constructor = SwerveRobot;
   TankRobot.prototype = Object.create(RobotBase.prototype);
   TankRobot.prototype.constructor = TankRobot;
   ButtonSetting.prototype = Object.create(Setting.prototype);
@@ -316,19 +319,36 @@ var output = function (_, Kotlin, $module$kotlinx_html_js) {
     simpleName: 'Line',
     interfaces: [Element]
   };
-  function RobotBase(wheels) {
+  function RobotBase(pos, bearing, wheels) {
     RobotBase$Companion_getInstance();
+    if (pos === void 0)
+      pos = xy(0.0, 0.0);
+    if (bearing === void 0)
+      bearing = 0.0;
+    this.pos = pos;
+    this.bearing = bearing;
     this.wheels_mzrdcm$_0 = wheels;
-    this.numberOfWheels = this.wheels_mzrdcm$_0.length;
-    this.pos = xy(0.0, 0.0);
-    this.bearing = 0.0;
   }
+  RobotBase.prototype.loop = function () {
+    var tmp$;
+    var vectors = this.update();
+    if (vectors.length !== RobotBase$Companion_getInstance().numberOfWheels) {
+      println('Number of wheels error. Vector size: ' + vectors.length + '. Number of wheels: ' + RobotBase$Companion_getInstance().numberOfWheels);
+    }
+     else {
+      tmp$ = RobotBase$Companion_getInstance().numberOfWheels;
+      for (var i = 0; i < tmp$; i++) {
+        this.wheels_mzrdcm$_0[i].vector = vectors[i];
+      }
+    }
+    render(simulator, RobotBase$Companion_getInstance().body_0, this.pos, this.bearing);
+  };
   function RobotBase$Companion() {
     RobotBase$Companion_instance = this;
     this.maxVelocity_fiv7e5$_0 = (new RangeSetting(600.0, 100.0, 1100.0)).provideDelegate_n5byny$(this, RobotBase$Companion$maxVelocity_metadata);
     this.robotWidth_7hjpr8$_0 = (new RangeSetting(100.0, 50.0, 150.0)).provideDelegate_n5byny$(this, RobotBase$Companion$robotWidth_metadata);
     this.robotLength_24ekf0$_0 = (new RangeSetting(100.0, 50.0, 150.0)).provideDelegate_n5byny$(this, RobotBase$Companion$robotLength_metadata);
-    this.drivetrainType_shbw94$_0 = (new RadioSetting(['Tank', 'Swerve'])).provideDelegate_n5byny$(this, RobotBase$Companion$drivetrainType_metadata);
+    this.drivetrainType_shbw94$_0 = (new RadioSetting(['Tank', 'Swerve'], RobotBase$Companion$drivetrainType$lambda)).provideDelegate_n5byny$(this, RobotBase$Companion$drivetrainType_metadata);
     this.resetAll_pms5pu$_0 = (new ButtonSetting(RobotBase$Companion$resetAll$lambda(this))).provideDelegate_n5byny$(this, RobotBase$Companion$resetAll_metadata);
   }
   var RobotBase$Companion$maxVelocity_metadata = new PropertyMetadata('maxVelocity');
@@ -361,8 +381,74 @@ var output = function (_, Kotlin, $module$kotlinx_html_js) {
       return this.resetAll_pms5pu$_0.getValue_lrcp0p$(this, RobotBase$Companion$resetAll_metadata);
     }
   });
+  Object.defineProperty(RobotBase$Companion.prototype, 'maxVelocityPerFrame', {
+    get: function () {
+      return this.maxVelocity * 16 / 1000;
+    }
+  });
+  Object.defineProperty(RobotBase$Companion.prototype, 'numberOfWheels', {
+    get: function () {
+      return robot.wheels_mzrdcm$_0.length;
+    }
+  });
+  Object.defineProperty(RobotBase$Companion.prototype, 'halfWidth_0', {
+    get: function () {
+      return this.robotWidth / 2;
+    }
+  });
+  Object.defineProperty(RobotBase$Companion.prototype, 'halfLength_0', {
+    get: function () {
+      return this.robotLength / 2;
+    }
+  });
+  Object.defineProperty(RobotBase$Companion.prototype, 'corners_0', {
+    get: function () {
+      return listOf([xy(this.halfWidth_0, this.halfLength_0), xy(this.halfWidth_0, -this.halfLength_0), xy(-this.halfWidth_0, -this.halfLength_0), xy(-this.halfWidth_0, this.halfLength_0)]);
+    }
+  });
+  function RobotBase$Companion$get_RobotBase$Companion$body$lambda(this$RobotBase$) {
+    return function ($receiver) {
+      for (var i = 0; i < 3; i++) {
+        line($receiver, this$RobotBase$.corners_0.get_za3lpa$(i), this$RobotBase$.corners_0.get_za3lpa$(i + 1 | 0));
+      }
+      line($receiver, this$RobotBase$.corners_0.get_za3lpa$(0), this$RobotBase$.corners_0.get_za3lpa$(3), void 0, Color$Companion_getInstance().green);
+      var $receiver_0 = robot.wheels_mzrdcm$_0;
+      var tmp$;
+      for (tmp$ = 0; tmp$ !== $receiver_0.length; ++tmp$) {
+        var element = $receiver_0[tmp$];
+        var this$RobotBase$_0 = this$RobotBase$;
+        var rx = element.component1()
+        , ry = element.component2()
+        , vector = element.component3();
+        var tmp$_0 = xy(this$RobotBase$_0.robotWidth * rx, this$RobotBase$_0.robotLength * ry);
+        var $receiver_1 = vector.magnitude;
+        arrow_0($receiver, tmp$_0, vec(60.0 * Math_0.sign($receiver_1), vector.bearing - robot.bearing), 5.0, 20.0, 45.0 / 360.0 * math.PI, vector.magnitude > 0 ? Color$Companion_getInstance().blue : Color$Companion_getInstance().red);
+      }
+      return Unit;
+    };
+  }
+  Object.defineProperty(RobotBase$Companion.prototype, 'body_0', {
+    get: function () {
+      return body(RobotBase$Companion$get_RobotBase$Companion$body$lambda(this));
+    }
+  });
+  function RobotBase$Companion$drivetrainType$lambda(it) {
+    switch (it) {
+      case 'Tank':
+        robot = new TankRobot(robot.pos, robot.bearing);
+        println('Changed to tank');
+        break;
+      case 'Swerve':
+        robot = new SwerveRobot(robot.pos, robot.bearing);
+        println('Changed to swerve');
+        break;
+      default:println('Unknown type');
+        break;
+    }
+    return Unit;
+  }
   function RobotBase$Companion$resetAll$lambda(this$RobotBase$) {
-    return function () {
+    return function (it) {
       robot.pos = xy(0.0, 0.0);
       robot.bearing = 0.0;
       RangeSetting$Companion_getInstance().reset_12czou$(getPropertyCallableRef('maxVelocity', 0, function ($receiver) {
@@ -389,81 +475,46 @@ var output = function (_, Kotlin, $module$kotlinx_html_js) {
     }
     return RobotBase$Companion_instance;
   }
-  Object.defineProperty(RobotBase.prototype, 'maxVelocityPerFrame', {
-    get: function () {
-      return RobotBase$Companion_getInstance().maxVelocity * 16 / 1000;
-    }
-  });
-  Object.defineProperty(RobotBase.prototype, 'halfWidth_5frg69$_0', {
-    get: function () {
-      return RobotBase$Companion_getInstance().robotWidth / 2;
-    }
-  });
-  Object.defineProperty(RobotBase.prototype, 'halfLength_ndnnm1$_0', {
-    get: function () {
-      return RobotBase$Companion_getInstance().robotLength / 2;
-    }
-  });
-  Object.defineProperty(RobotBase.prototype, 'corners_rb1qac$_0', {
-    get: function () {
-      return listOf([xy(this.halfWidth_5frg69$_0, this.halfLength_ndnnm1$_0), xy(this.halfWidth_5frg69$_0, -this.halfLength_ndnnm1$_0), xy(-this.halfWidth_5frg69$_0, -this.halfLength_ndnnm1$_0), xy(-this.halfWidth_5frg69$_0, this.halfLength_ndnnm1$_0)]);
-    }
-  });
-  function RobotBase$get_RobotBase$body$lambda(this$RobotBase) {
-    return function ($receiver) {
-      for (var i = 0; i < 3; i++) {
-        line($receiver, this$RobotBase.corners_rb1qac$_0.get_za3lpa$(i), this$RobotBase.corners_rb1qac$_0.get_za3lpa$(i + 1 | 0));
-      }
-      line($receiver, this$RobotBase.corners_rb1qac$_0.get_za3lpa$(0), this$RobotBase.corners_rb1qac$_0.get_za3lpa$(3), void 0, Color$Companion_getInstance().green);
-      var $receiver_0 = this$RobotBase.wheels_mzrdcm$_0;
-      var tmp$;
-      for (tmp$ = 0; tmp$ !== $receiver_0.length; ++tmp$) {
-        var element = $receiver_0[tmp$];
-        var this$RobotBase_0 = this$RobotBase;
-        var rx = element.component1()
-        , ry = element.component2()
-        , vector = element.component3();
-        var tmp$_0 = xy(RobotBase$Companion_getInstance().robotWidth * rx, RobotBase$Companion_getInstance().robotLength * ry);
-        var $receiver_1 = vector.magnitude;
-        arrow_0($receiver, tmp$_0, vec(100.0 * Math_0.sign($receiver_1), vector.bearing - this$RobotBase_0.bearing), 5.0, 25.0, 45.0 / 360.0 * math.PI, vector.magnitude > 0 ? Color$Companion_getInstance().blue : Color$Companion_getInstance().red);
-      }
-      return Unit;
-    };
-  }
-  Object.defineProperty(RobotBase.prototype, 'body_72fakg$_0', {
-    get: function () {
-      return body(RobotBase$get_RobotBase$body$lambda(this));
-    }
-  });
-  RobotBase.prototype.loop = function () {
-    var tmp$;
-    var vectors = this.update();
-    if (vectors.length !== this.numberOfWheels) {
-      println('Number of wheels error. Vector size: ' + vectors.length + '. Number of wheels: ' + this.numberOfWheels);
-    }
-     else {
-      tmp$ = this.numberOfWheels;
-      for (var i = 0; i < tmp$; i++) {
-        this.wheels_mzrdcm$_0[i].vector = vectors[i];
-      }
-    }
-    render(simulator, this.body_72fakg$_0, this.pos, this.bearing);
-  };
   RobotBase.$metadata$ = {
     kind: Kind_CLASS,
     simpleName: 'RobotBase',
     interfaces: [Loopable]
   };
-  function TankRobot() {
-    RobotBase.call(this, [new Wheel(-0.5, 0.0), new Wheel(0.5, 0.0)]);
+  function SwerveRobot(pos, bearing) {
+    if (pos === void 0)
+      pos = xy(0.0, 0.0);
+    if (bearing === void 0)
+      bearing = 0.0;
+    RobotBase.call(this, pos, bearing, [new Wheel(-0.5, 0.5), new Wheel(0.5, 0.5), new Wheel(0.5, -0.5), new Wheel(-0.5, -0.5)]);
+  }
+  SwerveRobot.prototype.update = function () {
+    var array = Array_0(4);
+    var tmp$;
+    tmp$ = array.length - 1 | 0;
+    for (var i = 0; i <= tmp$; i++) {
+      array[i] = new Vector(1.0, 0.0);
+    }
+    return array;
+  };
+  SwerveRobot.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'SwerveRobot',
+    interfaces: [RobotBase]
+  };
+  function TankRobot(pos, bearing) {
+    if (pos === void 0)
+      pos = xy(0.0, 0.0);
+    if (bearing === void 0)
+      bearing = 0.0;
+    RobotBase.call(this, pos, bearing, [new Wheel(-0.5, 0.0), new Wheel(0.5, 0.0)]);
   }
   TankRobot.prototype.update = function () {
     var x = -controls.z;
     var y = controls.y;
     var v = (1 - Math_0.abs(x)) * y + y;
     var w = (1 - Math_0.abs(y)) * x + x;
-    var l = (v - w) / 2 * this.maxVelocityPerFrame;
-    var r = (v + w) / 2 * this.maxVelocityPerFrame;
+    var l = (v - w) / 2 * RobotBase$Companion_getInstance().maxVelocityPerFrame;
+    var r = (v + w) / 2 * RobotBase$Companion_getInstance().maxVelocityPerFrame;
     var s = (l + r) / 2;
     var theta = (l - r) / RobotBase$Companion_getInstance().robotWidth;
     var tmp$ = this.pos;
@@ -519,7 +570,7 @@ var output = function (_, Kotlin, $module$kotlinx_html_js) {
   }
   function ButtonSetting$provideDelegate$lambda$lambda_0(this$ButtonSetting) {
     return function (it) {
-      this$ButtonSetting.onUpdate();
+      this$ButtonSetting.onUpdate(Unit);
       return Unit;
     };
   }
@@ -567,8 +618,8 @@ var output = function (_, Kotlin, $module$kotlinx_html_js) {
     if (onUpdate === void 0)
       onUpdate = RadioSetting_init$lambda;
     Setting.call(this, onUpdate);
-    this.options = options;
-    this.value_cqnzux$_0 = this.options[0];
+    this.options_0 = options;
+    this.value_cqnzux$_0 = this.options_0[0];
   }
   Object.defineProperty(RadioSetting.prototype, 'value', {
     get: function () {
@@ -605,7 +656,7 @@ var output = function (_, Kotlin, $module$kotlinx_html_js) {
     return function ($receiver) {
       $receiver.name = closure$camelCase;
       div($receiver, void 0, RadioSetting$provideDelegate$lambda$lambda$lambda(closure$titleCase));
-      var $receiver_0 = this$RadioSetting.options;
+      var $receiver_0 = this$RadioSetting.options_0;
       var tmp$, tmp$_0;
       var index = 0;
       for (tmp$ = 0; tmp$ !== $receiver_0.length; ++tmp$) {
@@ -621,11 +672,10 @@ var output = function (_, Kotlin, $module$kotlinx_html_js) {
       return Unit;
     };
   }
-  function RadioSetting$provideDelegate$lambda_0(this$RadioSetting, closure$radio) {
+  function RadioSetting$provideDelegate$lambda_0(closure$radio, this$RadioSetting) {
     return function (it) {
-      this$RadioSetting.onUpdate();
       this$RadioSetting.value = closure$radio.value;
-      println(this$RadioSetting.value);
+      this$RadioSetting.onUpdate(this$RadioSetting.value);
       return Unit;
     };
   }
@@ -665,12 +715,11 @@ var output = function (_, Kotlin, $module$kotlinx_html_js) {
     tmp$_1 = radioInputs.length;
     for (var i = 0; i < tmp$_1; i++) {
       var radio = Kotlin.isType(tmp$_2 = radioInputs[i], HTMLInputElement) ? tmp$_2 : throwCCE();
-      println('radio! ' + radio);
-      radio.addEventListener('click', RadioSetting$provideDelegate$lambda_0(this, radio));
+      radio.addEventListener('click', RadioSetting$provideDelegate$lambda_0(radio, this));
     }
     return Setting.prototype.provideDelegate_n5byny$.call(this, thisRef, property);
   };
-  function RadioSetting_init$lambda() {
+  function RadioSetting_init$lambda(it) {
     return Unit;
   }
   RadioSetting.$metadata$ = {
@@ -746,11 +795,11 @@ var output = function (_, Kotlin, $module$kotlinx_html_js) {
       return Unit;
     };
   }
-  function RangeSetting$provideDelegate$lambda_0(this$RangeSetting, closure$rangeInput, closure$textInput) {
+  function RangeSetting$provideDelegate$lambda_0(closure$rangeInput, closure$textInput, this$RangeSetting) {
     return function (it) {
-      this$RangeSetting.onUpdate();
       closure$textInput.value = closure$rangeInput.value;
       this$RangeSetting.value = toDouble(closure$rangeInput.value);
+      this$RangeSetting.onUpdate(this$RangeSetting.value);
       return Unit;
     };
   }
@@ -774,12 +823,12 @@ var output = function (_, Kotlin, $module$kotlinx_html_js) {
             throw e;
         }
         var $receiver = tmp$_0;
-        var this$RangeSetting_0 = this$RangeSetting;
         var closure$rangeInput_0 = closure$rangeInput;
         var closure$textInput_0 = closure$textInput;
-        this$RangeSetting_0.onUpdate();
+        var this$RangeSetting_0 = this$RangeSetting;
         closure$rangeInput_0.value = $receiver.toString();
         closure$textInput_0.value = $receiver.toString();
+        this$RangeSetting_0.onUpdate(this$RangeSetting_0.value);
         tmp$_1.value = $receiver;
         closure$textInput.blur();
       }
@@ -788,10 +837,10 @@ var output = function (_, Kotlin, $module$kotlinx_html_js) {
   }
   function RangeSetting$provideDelegate$lambda_2(this$RangeSetting, closure$rangeInput, closure$textInput) {
     return function (it) {
-      this$RangeSetting.onUpdate();
       this$RangeSetting.value = this$RangeSetting.initialValue;
       closure$rangeInput.value = this$RangeSetting.initialValue.toString();
       closure$textInput.value = this$RangeSetting.initialValue.toString();
+      this$RangeSetting.onUpdate(this$RangeSetting.value);
       return Unit;
     };
   }
@@ -829,7 +878,7 @@ var output = function (_, Kotlin, $module$kotlinx_html_js) {
     var rangeInput = Kotlin.isType(tmp$ = document.getElementById(camelCase + 'Range'), HTMLInputElement) ? tmp$ : throwCCE();
     var textInput = Kotlin.isType(tmp$_0 = document.getElementById(camelCase + 'Text'), HTMLInputElement) ? tmp$_0 : throwCCE();
     var buttonInput = Kotlin.isType(tmp$_1 = document.getElementById(camelCase + 'Button'), HTMLInputElement) ? tmp$_1 : throwCCE();
-    rangeInput.addEventListener('input', RangeSetting$provideDelegate$lambda_0(this, rangeInput, textInput));
+    rangeInput.addEventListener('input', RangeSetting$provideDelegate$lambda_0(rangeInput, textInput, this));
     textInput.addEventListener('keydown', RangeSetting$provideDelegate$lambda_1(textInput, rangeInput, this));
     buttonInput.addEventListener('click', RangeSetting$provideDelegate$lambda_2(this, rangeInput, textInput));
     return Setting.prototype.provideDelegate_n5byny$.call(this, thisRef, property);
@@ -855,7 +904,7 @@ var output = function (_, Kotlin, $module$kotlinx_html_js) {
     }
     return RangeSetting$Companion_instance;
   }
-  function RangeSetting_init$lambda() {
+  function RangeSetting_init$lambda(it) {
     return Unit;
   }
   RangeSetting.$metadata$ = {
@@ -1079,6 +1128,9 @@ var output = function (_, Kotlin, $module$kotlinx_html_js) {
   Object.defineProperty(_, 'robot', {
     get: function () {
       return robot;
+    },
+    set: function (value) {
+      robot = value;
     }
   });
   Object.defineProperty(_, 'controls', {
@@ -1116,6 +1168,7 @@ var output = function (_, Kotlin, $module$kotlinx_html_js) {
   });
   var package$robots = _.robots || (_.robots = {});
   package$robots.RobotBase = RobotBase;
+  package$robots.SwerveRobot = SwerveRobot;
   package$robots.TankRobot = TankRobot;
   var package$settings = _.settings || (_.settings = {});
   package$settings.ButtonSetting = ButtonSetting;

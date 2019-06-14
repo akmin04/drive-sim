@@ -4,7 +4,7 @@ import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
 
 abstract class Setting<T>(
-    val onUpdate: () -> Unit
+    val onUpdate: (T) -> Unit
 ) {
     abstract var value: T
 

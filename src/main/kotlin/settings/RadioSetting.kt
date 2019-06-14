@@ -14,8 +14,8 @@ import kotlin.reflect.KProperty
  * @param onUpdate function to be called when the value is updated
  */
 class RadioSetting(
-    val options: Array<String>,
-    onUpdate: () -> Unit = {}
+    private val options: Array<String>,
+    onUpdate: (String) -> Unit = {}
 ) : Setting<String>(onUpdate) {
     override var value = options[0]
 
@@ -52,9 +52,8 @@ class RadioSetting(
         for (i in 0 until radioInputs.length) {
             val radio = radioInputs[i] as HTMLInputElement
             radio.addEventListener("click", {
-                onUpdate()
                 value = radio.value
-                println(value)
+                onUpdate(value)
             })
         }
 

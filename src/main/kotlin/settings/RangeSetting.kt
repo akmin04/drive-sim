@@ -24,7 +24,7 @@ class RangeSetting(
     val initialValue: Double,
     val min: Double,
     val max: Double,
-    onUpdate: () -> Unit = {}
+    onUpdate: (Double) -> Unit = {}
 ) : Setting<Double>(onUpdate) {
 
     override var value = initialValue
@@ -69,9 +69,9 @@ class RangeSetting(
         val buttonInput = document.getElementById("${camelCase}Button") as HTMLInputElement
 
         rangeInput.addEventListener("input", {
-            onUpdate()
             textInput.value = rangeInput.value
             this@RangeSetting.value = rangeInput.value.toDouble()
+            onUpdate(value)
         })
 
         textInput.addEventListener("keydown", {
@@ -92,9 +92,9 @@ class RangeSetting(
                     rangeInput.value.toDouble()
                 }.also { newValue ->
                     // Update range input value and setting value
-                    onUpdate()
                     rangeInput.value = newValue.toString()
                     textInput.value = newValue.toString()
+                    onUpdate(value)
                 }
                 // Get rid of focus
                 textInput.blur()
@@ -103,10 +103,10 @@ class RangeSetting(
 
         buttonInput.addEventListener("click", {
             // Reset all values
-            onUpdate()
             this@RangeSetting.value = initialValue
             rangeInput.value = initialValue.toString()
             textInput.value = initialValue.toString()
+            onUpdate(value)
         })
         return super.provideDelegate(thisRef, property)
     }
