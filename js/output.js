@@ -14,7 +14,7 @@ var output = function (_, Kotlin, $module$kotlinx_html_js) {
   var ArrayList_init = Kotlin.kotlin.collections.ArrayList_init_287e2$;
   var Math_0 = Math;
   var Kind_INTERFACE = Kotlin.Kind.INTERFACE;
-  var println = Kotlin.kotlin.io.println_s8jyv4$;
+  var Exception_init = Kotlin.kotlin.Exception_init_pdl1vj$;
   var PropertyMetadata = Kotlin.PropertyMetadata;
   var listOf = Kotlin.kotlin.collections.listOf_i5x0yv$;
   var math = Kotlin.kotlin.math;
@@ -336,7 +336,7 @@ var output = function (_, Kotlin, $module$kotlinx_html_js) {
     var tmp$;
     var vectors = this.update();
     if (vectors.length !== RobotBase$Companion_getInstance().numberOfWheels) {
-      println('Number of wheels error. Vector size: ' + vectors.length + '. Number of wheels: ' + RobotBase$Companion_getInstance().numberOfWheels);
+      throw Exception_init('Number of wheels (' + RobotBase$Companion_getInstance().numberOfWheels + ") didn't match robot update output (" + vectors.length + ').');
     }
      else {
       tmp$ = RobotBase$Companion_getInstance().numberOfWheels;
@@ -693,7 +693,7 @@ var output = function (_, Kotlin, $module$kotlinx_html_js) {
     }
      while (false);
     var titleCase = replace_20wsma$result;
-    append(ensureNotNull(ensureNotNull(ensureNotNull(document.body).getElementsByClassName('main')[0]).getElementsByClassName('settings')[0]), ButtonSetting$provideDelegate$lambda(camelCase, titleCase));
+    append(this.settingsDiv, ButtonSetting$provideDelegate$lambda(camelCase, titleCase));
     var buttonInput = Kotlin.isType(tmp$ = document.getElementById(camelCase + 'Button'), HTMLInputElement) ? tmp$ : throwCCE();
     buttonInput.addEventListener('click', ButtonSetting$provideDelegate$lambda$lambda_0(this));
     return Setting.prototype.provideDelegate_n5byny$.call(this, thisRef, property);
@@ -798,7 +798,7 @@ var output = function (_, Kotlin, $module$kotlinx_html_js) {
     }
      while (false);
     var titleCase = replace_20wsma$result;
-    append(ensureNotNull(ensureNotNull(ensureNotNull(document.body).getElementsByClassName('main')[0]).getElementsByClassName('settings')[0]), RadioSetting$provideDelegate$lambda(camelCase, titleCase, this));
+    append(this.settingsDiv, RadioSetting$provideDelegate$lambda(camelCase, titleCase, this));
     var radioInputs = Kotlin.isType(tmp$ = document.forms[camelCase], HTMLFormElement) ? tmp$ : throwCCE();
     (Kotlin.isType(tmp$_0 = radioInputs[0], HTMLInputElement) ? tmp$_0 : throwCCE()).checked = true;
     tmp$_1 = radioInputs.length;
@@ -963,7 +963,7 @@ var output = function (_, Kotlin, $module$kotlinx_html_js) {
     }
      while (false);
     var titleCase = replace_20wsma$result;
-    append(ensureNotNull(ensureNotNull(ensureNotNull(document.body).getElementsByClassName('main')[0]).getElementsByClassName('settings')[0]), RangeSetting$provideDelegate$lambda(camelCase, titleCase, this));
+    append(this.settingsDiv, RangeSetting$provideDelegate$lambda(camelCase, titleCase, this));
     var rangeInput = Kotlin.isType(tmp$ = document.getElementById(camelCase + 'Range'), HTMLInputElement) ? tmp$ : throwCCE();
     var textInput = Kotlin.isType(tmp$_0 = document.getElementById(camelCase + 'Text'), HTMLInputElement) ? tmp$_0 : throwCCE();
     var buttonInput = Kotlin.isType(tmp$_1 = document.getElementById(camelCase + 'Button'), HTMLInputElement) ? tmp$_1 : throwCCE();
@@ -1003,6 +1003,7 @@ var output = function (_, Kotlin, $module$kotlinx_html_js) {
   };
   function Setting(onUpdate) {
     this.onUpdate = onUpdate;
+    this.settingsDiv = ensureNotNull(ensureNotNull(ensureNotNull(document.body).getElementsByClassName('main')[0]).getElementsByClassName('settings')[0]);
   }
   function Setting$provideDelegate$ObjectLiteral(this$Setting) {
     this.this$Setting = this$Setting;
@@ -1106,9 +1107,6 @@ var output = function (_, Kotlin, $module$kotlinx_html_js) {
     simpleName: 'Loopable',
     interfaces: []
   };
-  function degreesToRadians($receiver) {
-    return $receiver / 180 * math.PI;
-  }
   function xy($receiver, that) {
     return new Point($receiver, that);
   }
@@ -1148,11 +1146,19 @@ var output = function (_, Kotlin, $module$kotlinx_html_js) {
   function Vector(magnitude, bearing) {
     this.magnitude = magnitude;
     this.bearing = bearing;
-    var x = this.bearing;
-    this.x = Math_0.sin(x) * this.magnitude;
-    var x_0 = this.bearing;
-    this.y = Math_0.cos(x_0) * this.magnitude;
   }
+  Object.defineProperty(Vector.prototype, 'x', {
+    get: function () {
+      var x = this.bearing;
+      return Math_0.sin(x) * this.magnitude;
+    }
+  });
+  Object.defineProperty(Vector.prototype, 'y', {
+    get: function () {
+      var x = this.bearing;
+      return Math_0.cos(x) * this.magnitude;
+    }
+  });
   Vector.prototype.plus_y1wxxr$ = function (that) {
     var xComp = this.x + that.x;
     var yComp = this.y + that.y;
@@ -1289,7 +1295,6 @@ var output = function (_, Kotlin, $module$kotlinx_html_js) {
   var package$util = _.util || (_.util = {});
   package$util.KeyboardControl = KeyboardControl;
   package$util.Loopable = Loopable;
-  package$util.degreesToRadians_yrwdxr$ = degreesToRadians;
   package$util.xy_38ydlf$ = xy;
   package$util.Point = Point;
   package$util.vec_38ydlf$ = vec;

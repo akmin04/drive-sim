@@ -4,6 +4,12 @@ import controls
 import util.*
 import kotlin.math.*
 
+/**
+ * A robot with a simple tank drivetrain.
+ *
+ * The left and right side of the robot has wheels.
+ * The robot can translate(vertically) and rotate, but not at the same time.
+ */
 class TankRobot(
     pos: Point = 0.0 xy 0.0,
     bearing: Double = 0.0

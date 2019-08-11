@@ -4,6 +4,12 @@ import controls
 import util.*
 import kotlin.math.*
 
+/**
+ * A robot with a swerve drivetrain.
+ *
+ * Each corner of the robot has a wheel which is independently powered and rotatable.
+ * This allows the robot to both translate(vertically and horizontally) and rotate simultaneously.
+ */
 class SwerveRobot(
     pos: Point = 0.0 xy 0.0,
     bearing: Double = 0.0

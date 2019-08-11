@@ -4,7 +4,6 @@ import kotlinx.html.*
 import kotlinx.html.dom.append
 import org.w3c.dom.HTMLInputElement
 import org.w3c.dom.events.KeyboardEvent
-import org.w3c.dom.get
 import kotlin.browser.document
 import kotlin.math.max
 import kotlin.math.min
@@ -12,13 +11,12 @@ import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
 
 /**
- * Any setting that is a `Double` that requires a slider, text input, and reset button
- * Using `RangeSetting` delegate automatically adds all HTML to the page
+ * Any setting that is a `Double` that requires a slider, text input, and reset button.
+ * Using `RangeSetting` delegate automatically adds all HTML to the page.
  *
- * @param initialValue of the setting. Also the value set when reset.
- * @param min value
- * @param max value
- * @param onUpdate function to be called when the value is updated
+ * @property initialValue of the setting. Also the value set when reset.
+ * @property min value of the setting.
+ * @property max value of the setting.
  */
 class RangeSetting(
     val initialValue: Double,
@@ -35,34 +33,31 @@ class RangeSetting(
         val titleCase = property.name.capitalize().replace("[A-Z]".toRegex()) { " ${it.value}" }
 
         // Add elements to HTML
-        document.body!!
-            .getElementsByClassName("main")[0]!!
-            .getElementsByClassName("settings")[0]!!
-            .append {
-                form {
-                    name = camelCase
-                    div { +titleCase }
-                    input {
-                        type = InputType.range
-                        classes += "rangeInput"
-                        id = "${camelCase}Range"
-                        min = this@RangeSetting.min.toString()
-                        max = this@RangeSetting.max.toString()
-                        value = initialValue.toString()
-                    }
-                    input {
-                        classes += "textInput"
-                        id = "${camelCase}Text"
-                        value = initialValue.toString()
-                    }
-                    input {
-                        type = InputType.button
-                        classes += "buttonInput"
-                        id = "${camelCase}Button"
-                        value = "Reset"
-                    }
+        settingsDiv.append {
+            form {
+                name = camelCase
+                div { +titleCase }
+                input {
+                    type = InputType.range
+                    classes += "rangeInput"
+                    id = "${camelCase}Range"
+                    min = this@RangeSetting.min.toString()
+                    max = this@RangeSetting.max.toString()
+                    value = initialValue.toString()
+                }
+                input {
+                    classes += "textInput"
+                    id = "${camelCase}Text"
+                    value = initialValue.toString()
+                }
+                input {
+                    type = InputType.button
+                    classes += "buttonInput"
+                    id = "${camelCase}Button"
+                    value = "Reset"
                 }
             }
+        }
 
         val rangeInput = document.getElementById("${camelCase}Range") as HTMLInputElement
         val textInput = document.getElementById("${camelCase}Text") as HTMLInputElement
@@ -112,6 +107,12 @@ class RangeSetting(
     }
 
     companion object {
+
+        /**
+         * Reset the value of a range setting
+         *
+         * @param property reference to a range setting
+         */
         fun reset(property: KProperty<*>) {
             val camelCase = property.name
             val buttonInput = document.getElementById("${camelCase}Button") as HTMLInputElement

@@ -9,21 +9,31 @@ import robot
 import settings.*
 import simulator
 import util.*
-import kotlin.math.*
+import kotlin.math.PI
+import kotlin.math.abs
 
-@Suppress("MemberVisibilityCanBePrivate")
+/**
+ * A base robot class that contains basic logic, canvas output, and settings.
+ *
+ * @property pos the current position of the robot.
+ * @property bearing the current direction the robot is facing.
+ * @property wheels an array of all the wheels and their relative position to the robot.
+ */
 abstract class RobotBase(
     var pos: Point = 0.0 xy 0.0,
     var bearing: Double = 0.0,
     private val wheels: Array<Wheel>
 ) : Loopable {
 
+    /**
+     * Function that is run on each tick which calculates the vectors of each wheel.
+     */
     abstract fun update(): Array<Vector>
 
     override fun loop() {
         val vectors = update()
         if (vectors.size != numberOfWheels) {
-            println("Number of wheels error. Vector size: ${vectors.size}. Number of wheels: $numberOfWheels")
+            throw Exception("Number of wheels ($numberOfWheels) didn't match robot update output (${vectors.size}).")
         } else {
             for (i in 0 until numberOfWheels) {
                 wheels[i].vector = vectors[i]
@@ -52,7 +62,6 @@ abstract class RobotBase(
             max = 150.0
         )
 
-        @Suppress("unused")
         val drivetrainType by RadioSetting(
             arrayOf("Tank", "Swerve")
         ) {
@@ -68,7 +77,6 @@ abstract class RobotBase(
             }
         }
 
-        @Suppress("unused")
         val resetAll by ButtonSetting {
             robot.pos = 0.0 xy 0.0
             robot.bearing = 0.0

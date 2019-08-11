@@ -3,10 +3,13 @@ package util
 import org.w3c.dom.events.KeyboardEvent
 import kotlin.browser.document
 
-@Suppress("MemberVisibilityCanBePrivate")
+/**
+ * Listens for keyboard events in the browser.
+ */
 class KeyboardControl : Loopable {
 
     companion object {
+        // Keycodes of the used keys.
         private const val A = 65
         private const val D = 68
         private const val S = 83
@@ -15,13 +18,19 @@ class KeyboardControl : Loopable {
         private const val RIGHT = 39
     }
 
-    // Left-Right value (A, D) from -1.0 to 1.0
+    /**
+     * Left-Right value (A, D) from -1.0 to 1.0.
+     */
     var x = 0.0
 
-    // Down-Up value (S, W) from -1.0 to 1.0
+    /**
+     * Down-Up value (S, W) from -1.0 to 1.0
+     */
     var y = 0.0
 
-    // Rotate Left-Right value (LEFT, RIGHT) from -1.0 to 1.0
+    /**
+     * Rotate Left-Right value (LEFT, RIGHT) from -1.0 to 1.0
+     */
     var z = 0.0
 
     private val keys = hashMapOf<Int, Boolean>()
