@@ -13,8 +13,8 @@ const val period = 1000 / 60
 var robot: RobotBase = TankRobot()
 val controls = KeyboardControl()
 val simulator = ((document.getElementById("simulatorCanvas") as HTMLCanvasElement)
-    .getContext("2d") as CanvasRenderingContext2D)
-    .apply { cartesian() }
+        .getContext("2d") as CanvasRenderingContext2D)
+        .apply { cartesian() }
 
 
 fun main() {

@@ -1,9 +1,9 @@
 package canvas
 
 data class Color(
-    val r: Int,
-    val g: Int,
-    val b: Int
+        val r: Int,
+        val g: Int,
+        val b: Int
 ) {
 
     private fun base16(num: Int, digits: Int): String {

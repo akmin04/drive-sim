@@ -8,7 +8,7 @@ package util
  * @property vector the current vector of the wheel.
  */
 data class Wheel(
-    val relativeX: Double,
-    val relativeY: Double,
-    var vector: Vector = Vector(0.0, 0.0)
+        val relativeX: Double,
+        val relativeY: Double,
+        var vector: Vector = Vector(0.0, 0.0)
 )

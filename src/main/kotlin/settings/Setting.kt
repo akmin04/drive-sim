@@ -12,7 +12,7 @@ import kotlin.reflect.KProperty
  * @property onUpdate function to be called when the value is updated.
  */
 abstract class Setting<T>(
-    val onUpdate: (T) -> Unit
+        val onUpdate: (T) -> Unit
 ) {
 
     /**
@@ -24,8 +24,8 @@ abstract class Setting<T>(
      * The div on the page's HTML where settings should append their elements.
      */
     protected val settingsDiv = document.body!!
-        .getElementsByClassName("main")[0]!!
-        .getElementsByClassName("settings")[0]!!
+            .getElementsByClassName("main")[0]!!
+            .getElementsByClassName("settings")[0]!!
 
     open operator fun provideDelegate(thisRef: Any?, property: KProperty<*>): ReadOnlyProperty<Any?, T> {
         return object : ReadOnlyProperty<Any?, T> {

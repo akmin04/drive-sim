@@ -11,8 +11,8 @@ infix fun Double.vec(that: Double) = Vector(this, that)
  * @property bearing direction of the vector.
  */
 data class Vector(
-    var magnitude: Double,
-    var bearing: Double
+        var magnitude: Double,
+        var bearing: Double
 ) {
     val x get() = sin(this.bearing) * this.magnitude
     val y get() = cos(this.bearing) * this.magnitude

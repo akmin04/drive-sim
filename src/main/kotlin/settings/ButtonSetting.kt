@@ -12,7 +12,7 @@ import kotlin.reflect.KProperty
  * Using `ButtonSetting` delegate automatically adds all HTML to the page.
  */
 class ButtonSetting(
-    onUpdate: (Unit) -> Unit
+        onUpdate: (Unit) -> Unit
 ) : Setting<Unit>(onUpdate) {
     override var value = Unit
 

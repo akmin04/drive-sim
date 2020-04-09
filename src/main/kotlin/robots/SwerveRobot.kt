@@ -11,11 +11,11 @@ import kotlin.math.*
  * This allows the robot to both translate(vertically and horizontally) and rotate simultaneously.
  */
 class SwerveRobot(
-    pos: Point = 0.0 xy 0.0,
-    bearing: Double = 0.0
+        pos: Point = 0.0 xy 0.0,
+        bearing: Double = 0.0
 ) : RobotBase(
-    pos, bearing,
-    arrayOf(Wheel(-0.5, 0.5), Wheel(0.5, 0.5), Wheel(0.5, -0.5), Wheel(-0.5, -0.5))
+        pos, bearing,
+        arrayOf(Wheel(-0.5, 0.5), Wheel(0.5, 0.5), Wheel(0.5, -0.5), Wheel(-0.5, -0.5))
 ) {
 
     private infix fun Double.avg(that: Double) = (this + that) / 2
@@ -31,10 +31,10 @@ class SwerveRobot(
 
         // rotation
         val rotationVectors = arrayOf(
-            controls.z vec atan2(-halfWidth, halfLength) + PI / 2,
-            controls.z vec atan2(halfWidth, halfLength) + PI / 2,
-            controls.z vec atan2(halfWidth, -halfLength) + PI / 2,
-            controls.z vec atan2(-halfWidth, -halfLength) + PI / 2
+                controls.z vec atan2(-halfWidth, halfLength) + PI / 2,
+                controls.z vec atan2(halfWidth, halfLength) + PI / 2,
+                controls.z vec atan2(halfWidth, -halfLength) + PI / 2,
+                controls.z vec atan2(-halfWidth, -halfLength) + PI / 2
         )
 
         // add strafe and rotation

@@ -1,11 +1,10 @@
 if (typeof kotlin === 'undefined') {
   throw new Error("Error loading module 'output'. Its dependency 'kotlin' was not found. Please, check whether 'kotlin' is loaded prior to 'output'.");
-}
-if (typeof this['kotlinx-html-js'] === 'undefined') {
+}if (typeof this['kotlinx-html-js'] === 'undefined') {
   throw new Error("Error loading module 'output'. Its dependency 'kotlinx-html-js' was not found. Please, check whether 'kotlinx-html-js' is loaded prior to 'output'.");
-}
-var output = function (_, Kotlin, $module$kotlinx_html_js) {
+}var output = function (_, Kotlin, $module$kotlinx_html_js) {
   'use strict';
+  var $$importsForInline$$ = _.$$importsForInline$$ || (_.$$importsForInline$$ = {});
   var throwCCE = Kotlin.throwCCE;
   var Unit = Kotlin.kotlin.Unit;
   var Kind_CLASS = Kotlin.Kind.CLASS;
@@ -25,18 +24,23 @@ var output = function (_, Kotlin, $module$kotlinx_html_js) {
   var get_lastIndex = Kotlin.kotlin.collections.get_lastIndex_m7z4lg$;
   var ArrayList_init_0 = Kotlin.kotlin.collections.ArrayList_init_ww73n8$;
   var capitalize = Kotlin.kotlin.text.capitalize_pdl1vz$;
-  var br = $module$kotlinx_html_js.kotlinx.html.br_5bz84p$;
   var InputType = $module$kotlinx_html_js.kotlinx.html.InputType;
   var get_classes = $module$kotlinx_html_js.kotlinx.html.get_classes_fxodxh$;
   var plus = Kotlin.kotlin.collections.plus_xfiyik$;
   var set_classes = $module$kotlinx_html_js.kotlinx.html.set_classes_njy09m$;
   var set_id = $module$kotlinx_html_js.kotlinx.html.set_id_ueiko3$;
-  var input = $module$kotlinx_html_js.kotlinx.html.input_e1g74z$;
-  var form = $module$kotlinx_html_js.kotlinx.html.form_3ereno$;
   var append = $module$kotlinx_html_js.kotlinx.html.dom.append_k9bwru$;
+  var attributesMapOf = $module$kotlinx_html_js.kotlinx.html.attributesMapOf_jyasbz$;
+  var BR_init = $module$kotlinx_html_js.kotlinx.html.BR;
+  var visitTag = $module$kotlinx_html_js.kotlinx.html.visitTag_xwv8ym$;
+  var enumEncode = $module$kotlinx_html_js.kotlinx.html.attributes.enumEncode_m4whry$;
+  var attributesMapOf_0 = $module$kotlinx_html_js.kotlinx.html.attributesMapOf_alerag$;
+  var INPUT_init = $module$kotlinx_html_js.kotlinx.html.INPUT;
+  var FORM_init = $module$kotlinx_html_js.kotlinx.html.FORM;
+  var visitTagAndFinalize = $module$kotlinx_html_js.kotlinx.html.visitTagAndFinalize_g9qte5$;
   var Regex_init = Kotlin.kotlin.text.Regex_init_61zpoe$;
   var StringBuilder_init = Kotlin.kotlin.text.StringBuilder_init_za3lpa$;
-  var div = $module$kotlinx_html_js.kotlinx.html.div_ri36nr$;
+  var DIV_init = $module$kotlinx_html_js.kotlinx.html.DIV;
   var toDouble = Kotlin.kotlin.text.toDouble_pdl1vz$;
   var equals = Kotlin.equals;
   var NumberFormatException = Kotlin.kotlin.NumberFormatException;
@@ -112,8 +116,7 @@ var output = function (_, Kotlin, $module$kotlinx_html_js) {
   function Color$Companion_getInstance() {
     if (Color$Companion_instance === null) {
       new Color$Companion();
-    }
-    return Color$Companion_instance;
+    }return Color$Companion_instance;
   }
   Color.$metadata$ = {
     kind: Kind_CLASS,
@@ -337,8 +340,7 @@ var output = function (_, Kotlin, $module$kotlinx_html_js) {
     var vectors = this.update();
     if (vectors.length !== RobotBase$Companion_getInstance().numberOfWheels) {
       throw Exception_init('Number of wheels (' + RobotBase$Companion_getInstance().numberOfWheels + ") didn't match robot update output (" + vectors.length + ').');
-    }
-     else {
+    } else {
       tmp$ = RobotBase$Companion_getInstance().numberOfWheels;
       for (var i = 0; i < tmp$; i++) {
         this.wheels_mzrdcm$_0[i].vector = vectors[i];
@@ -471,8 +473,7 @@ var output = function (_, Kotlin, $module$kotlinx_html_js) {
   function RobotBase$Companion_getInstance() {
     if (RobotBase$Companion_instance === null) {
       new RobotBase$Companion();
-    }
-    return RobotBase$Companion_instance;
+    }return RobotBase$Companion_instance;
   }
   RobotBase.$metadata$ = {
     kind: Kind_CLASS,
@@ -534,22 +535,22 @@ var output = function (_, Kotlin, $module$kotlinx_html_js) {
     }
     var maxBy$result;
     maxBy$break: do {
-      var tmp$_11;
       if (wheelsVectors.length === 0) {
         maxBy$result = null;
         break maxBy$break;
-      }
-      var maxElem = wheelsVectors[0];
-      var maxValue = maxElem.magnitude;
-      tmp$_11 = get_lastIndex(wheelsVectors);
-      for (var i_2 = 1; i_2 <= tmp$_11; i_2++) {
+      }var maxElem = wheelsVectors[0];
+      var lastIndex = get_lastIndex(wheelsVectors);
+      if (lastIndex === 0) {
+        maxBy$result = maxElem;
+        break maxBy$break;
+      }var maxValue = maxElem.magnitude;
+      for (var i_2 = 1; i_2 <= lastIndex; i_2++) {
         var e = wheelsVectors[i_2];
         var v = e.magnitude;
         if (Kotlin.compareTo(maxValue, v) < 0) {
           maxElem = e;
           maxValue = v;
-        }
-      }
+        }}
       maxBy$result = maxElem;
     }
      while (false);
@@ -561,14 +562,14 @@ var output = function (_, Kotlin, $module$kotlinx_html_js) {
         wheelsVectors[i_3].magnitude = wheelsVectors[i_3].magnitude / max;
     }
     var destination = ArrayList_init_0(wheelsVectors.length);
-    var tmp$_12;
-    for (tmp$_12 = 0; tmp$_12 !== wheelsVectors.length; ++tmp$_12) {
-      var item = wheelsVectors[tmp$_12];
-      var tmp$_13 = destination.add_11rb$;
+    var tmp$_11;
+    for (tmp$_11 = 0; tmp$_11 !== wheelsVectors.length; ++tmp$_11) {
+      var item = wheelsVectors[tmp$_11];
+      var tmp$_12 = destination.add_11rb$;
       var x_6 = item.bearing;
-      var tmp$_14 = Math_0.sin(x_6) * item.magnitude;
+      var tmp$_13 = Math_0.sin(x_6) * item.magnitude;
       var x_7 = item.bearing;
-      tmp$_13.call(destination, to(tmp$_14, Math_0.cos(x_7) * item.magnitude));
+      tmp$_12.call(destination, to(tmp$_13, Math_0.cos(x_7) * item.magnitude));
     }
     var xyComponents = destination;
     var top = this.avg_0(xyComponents.get_za3lpa$(0).first, xyComponents.get_za3lpa$(1).first);
@@ -622,6 +623,33 @@ var output = function (_, Kotlin, $module$kotlinx_html_js) {
     simpleName: 'TankRobot',
     interfaces: [RobotBase]
   };
+  function visit$lambda(closure$block) {
+    return function ($receiver) {
+      closure$block($receiver);
+      return Unit;
+    };
+  }
+  function br$lambda($receiver) {
+    return Unit;
+  }
+  function visit$lambda_0(closure$block) {
+    return function ($receiver) {
+      closure$block($receiver);
+      return Unit;
+    };
+  }
+  function input$lambda($receiver) {
+    return Unit;
+  }
+  function visitAndFinalize$lambda(closure$block) {
+    return function ($receiver) {
+      closure$block($receiver);
+      return Unit;
+    };
+  }
+  function form$lambda($receiver) {
+    return Unit;
+  }
   function ButtonSetting(onUpdate) {
     Setting.call(this, onUpdate);
     this.value_xjd99g$_0 = Unit;
@@ -646,14 +674,16 @@ var output = function (_, Kotlin, $module$kotlinx_html_js) {
   function ButtonSetting$provideDelegate$lambda$lambda(closure$camelCase, closure$titleCase) {
     return function ($receiver) {
       $receiver.name = closure$camelCase;
-      br($receiver);
-      input($receiver, void 0, void 0, void 0, void 0, void 0, ButtonSetting$provideDelegate$lambda$lambda$lambda(closure$camelCase, closure$titleCase));
+      visitTag(new BR_init(attributesMapOf('class', null), $receiver.consumer), visit$lambda(br$lambda));
+      var block = ButtonSetting$provideDelegate$lambda$lambda$lambda(closure$camelCase, closure$titleCase);
+      visitTag(new INPUT_init(attributesMapOf_0(['type', null != null ? enumEncode(null) : null, 'formenctype', null != null ? enumEncode(null) : null, 'formmethod', null != null ? enumEncode(null) : null, 'name', null, 'class', null]), $receiver.consumer), visit$lambda_0(block));
       return Unit;
     };
   }
   function ButtonSetting$provideDelegate$lambda(closure$camelCase, closure$titleCase) {
     return function ($receiver) {
-      form($receiver, void 0, void 0, void 0, void 0, ButtonSetting$provideDelegate$lambda$lambda(closure$camelCase, closure$titleCase));
+      var block = ButtonSetting$provideDelegate$lambda$lambda(closure$camelCase, closure$titleCase);
+      visitTagAndFinalize(new FORM_init(attributesMapOf_0(['action', null, 'enctype', null != null ? enumEncode(null) : null, 'method', null != null ? enumEncode(null) : null, 'class', null]), $receiver), $receiver, visitAndFinalize$lambda(block));
       return Unit;
     };
   }
@@ -674,8 +704,7 @@ var output = function (_, Kotlin, $module$kotlinx_html_js) {
       if (match == null) {
         replace_20wsma$result = tmp$_0.toString();
         break replace_20wsma$break;
-      }
-      var lastStart = 0;
+      }var lastStart = 0;
       var length = tmp$_0.length;
       var sb = StringBuilder_init(length);
       do {
@@ -688,8 +717,7 @@ var output = function (_, Kotlin, $module$kotlinx_html_js) {
        while (lastStart < length && match != null);
       if (lastStart < length) {
         sb.append_ezbsdh$(tmp$_0, lastStart, length);
-      }
-      replace_20wsma$result = sb.toString();
+      }replace_20wsma$result = sb.toString();
     }
      while (false);
     var titleCase = replace_20wsma$result;
@@ -703,6 +731,33 @@ var output = function (_, Kotlin, $module$kotlinx_html_js) {
     simpleName: 'ButtonSetting',
     interfaces: [Setting]
   };
+  function visit$lambda_1(closure$block) {
+    return function ($receiver) {
+      closure$block($receiver);
+      return Unit;
+    };
+  }
+  function input$lambda_0($receiver) {
+    return Unit;
+  }
+  function visit$lambda_2(closure$block) {
+    return function ($receiver) {
+      closure$block($receiver);
+      return Unit;
+    };
+  }
+  function div$lambda($receiver) {
+    return Unit;
+  }
+  function visitAndFinalize$lambda_0(closure$block) {
+    return function ($receiver) {
+      closure$block($receiver);
+      return Unit;
+    };
+  }
+  function form$lambda_0($receiver) {
+    return Unit;
+  }
   function RadioSetting(options, onUpdate) {
     if (onUpdate === void 0)
       onUpdate = RadioSetting_init$lambda;
@@ -736,7 +791,8 @@ var output = function (_, Kotlin, $module$kotlinx_html_js) {
   }
   function RadioSetting$provideDelegate$lambda$lambda$lambda$lambda(closure$camelCase, closure$i, closure$option) {
     return function ($receiver) {
-      input($receiver, void 0, void 0, void 0, void 0, void 0, RadioSetting$provideDelegate$lambda$lambda$lambda$lambda$lambda(closure$camelCase, closure$i, closure$option));
+      var block = RadioSetting$provideDelegate$lambda$lambda$lambda$lambda$lambda(closure$camelCase, closure$i, closure$option);
+      visitTag(new INPUT_init(attributesMapOf_0(['type', null != null ? enumEncode(null) : null, 'formenctype', null != null ? enumEncode(null) : null, 'formmethod', null != null ? enumEncode(null) : null, 'name', null, 'class', null]), $receiver.consumer), visit$lambda_1(block));
       $receiver.unaryPlus_pdl1vz$(closure$option);
       return Unit;
     };
@@ -744,20 +800,23 @@ var output = function (_, Kotlin, $module$kotlinx_html_js) {
   function RadioSetting$provideDelegate$lambda$lambda(closure$camelCase, closure$titleCase, this$RadioSetting) {
     return function ($receiver) {
       $receiver.name = closure$camelCase;
-      div($receiver, void 0, RadioSetting$provideDelegate$lambda$lambda$lambda(closure$titleCase));
+      var block = RadioSetting$provideDelegate$lambda$lambda$lambda(closure$titleCase);
+      visitTag(new DIV_init(attributesMapOf('class', null), $receiver.consumer), visit$lambda_2(block));
       var $receiver_0 = this$RadioSetting.options_0;
       var tmp$, tmp$_0;
       var index = 0;
       for (tmp$ = 0; tmp$ !== $receiver_0.length; ++tmp$) {
         var item = $receiver_0[tmp$];
-        div($receiver, void 0, RadioSetting$provideDelegate$lambda$lambda$lambda$lambda(closure$camelCase, (tmp$_0 = index, index = tmp$_0 + 1 | 0, tmp$_0), item));
+        var block_0 = RadioSetting$provideDelegate$lambda$lambda$lambda$lambda(closure$camelCase, (tmp$_0 = index, index = tmp$_0 + 1 | 0, tmp$_0), item);
+        visitTag(new DIV_init(attributesMapOf('class', null), $receiver.consumer), visit$lambda_2(block_0));
       }
       return Unit;
     };
   }
   function RadioSetting$provideDelegate$lambda(closure$camelCase, closure$titleCase, this$RadioSetting) {
     return function ($receiver) {
-      form($receiver, void 0, void 0, void 0, void 0, RadioSetting$provideDelegate$lambda$lambda(closure$camelCase, closure$titleCase, this$RadioSetting));
+      var block = RadioSetting$provideDelegate$lambda$lambda(closure$camelCase, closure$titleCase, this$RadioSetting);
+      visitTagAndFinalize(new FORM_init(attributesMapOf_0(['action', null, 'enctype', null != null ? enumEncode(null) : null, 'method', null != null ? enumEncode(null) : null, 'class', null]), $receiver), $receiver, visitAndFinalize$lambda_0(block));
       return Unit;
     };
   }
@@ -779,8 +838,7 @@ var output = function (_, Kotlin, $module$kotlinx_html_js) {
       if (match == null) {
         replace_20wsma$result = tmp$_3.toString();
         break replace_20wsma$break;
-      }
-      var lastStart = 0;
+      }var lastStart = 0;
       var length = tmp$_3.length;
       var sb = StringBuilder_init(length);
       do {
@@ -793,8 +851,7 @@ var output = function (_, Kotlin, $module$kotlinx_html_js) {
        while (lastStart < length && match != null);
       if (lastStart < length) {
         sb.append_ezbsdh$(tmp$_3, lastStart, length);
-      }
-      replace_20wsma$result = sb.toString();
+      }replace_20wsma$result = sb.toString();
     }
      while (false);
     var titleCase = replace_20wsma$result;
@@ -816,6 +873,33 @@ var output = function (_, Kotlin, $module$kotlinx_html_js) {
     simpleName: 'RadioSetting',
     interfaces: [Setting]
   };
+  function visit$lambda_3(closure$block) {
+    return function ($receiver) {
+      closure$block($receiver);
+      return Unit;
+    };
+  }
+  function div$lambda_0($receiver) {
+    return Unit;
+  }
+  function visit$lambda_4(closure$block) {
+    return function ($receiver) {
+      closure$block($receiver);
+      return Unit;
+    };
+  }
+  function input$lambda_1($receiver) {
+    return Unit;
+  }
+  function visitAndFinalize$lambda_1(closure$block) {
+    return function ($receiver) {
+      closure$block($receiver);
+      return Unit;
+    };
+  }
+  function form$lambda_1($receiver) {
+    return Unit;
+  }
   function RangeSetting(initialValue, min, max, onUpdate) {
     RangeSetting$Companion_getInstance();
     if (onUpdate === void 0)
@@ -871,16 +955,21 @@ var output = function (_, Kotlin, $module$kotlinx_html_js) {
   function RangeSetting$provideDelegate$lambda$lambda(closure$camelCase, closure$titleCase, this$RangeSetting) {
     return function ($receiver) {
       $receiver.name = closure$camelCase;
-      div($receiver, void 0, RangeSetting$provideDelegate$lambda$lambda$lambda(closure$titleCase));
-      input($receiver, void 0, void 0, void 0, void 0, void 0, RangeSetting$provideDelegate$lambda$lambda$lambda_0(closure$camelCase, this$RangeSetting));
-      input($receiver, void 0, void 0, void 0, void 0, void 0, RangeSetting$provideDelegate$lambda$lambda$lambda_1(closure$camelCase, this$RangeSetting));
-      input($receiver, void 0, void 0, void 0, void 0, void 0, RangeSetting$provideDelegate$lambda$lambda$lambda_2(closure$camelCase));
+      var block = RangeSetting$provideDelegate$lambda$lambda$lambda(closure$titleCase);
+      visitTag(new DIV_init(attributesMapOf('class', null), $receiver.consumer), visit$lambda_3(block));
+      var block_0 = RangeSetting$provideDelegate$lambda$lambda$lambda_0(closure$camelCase, this$RangeSetting);
+      visitTag(new INPUT_init(attributesMapOf_0(['type', null != null ? enumEncode(null) : null, 'formenctype', null != null ? enumEncode(null) : null, 'formmethod', null != null ? enumEncode(null) : null, 'name', null, 'class', null]), $receiver.consumer), visit$lambda_4(block_0));
+      var block_1 = RangeSetting$provideDelegate$lambda$lambda$lambda_1(closure$camelCase, this$RangeSetting);
+      visitTag(new INPUT_init(attributesMapOf_0(['type', null != null ? enumEncode(null) : null, 'formenctype', null != null ? enumEncode(null) : null, 'formmethod', null != null ? enumEncode(null) : null, 'name', null, 'class', null]), $receiver.consumer), visit$lambda_4(block_1));
+      var block_2 = RangeSetting$provideDelegate$lambda$lambda$lambda_2(closure$camelCase);
+      visitTag(new INPUT_init(attributesMapOf_0(['type', null != null ? enumEncode(null) : null, 'formenctype', null != null ? enumEncode(null) : null, 'formmethod', null != null ? enumEncode(null) : null, 'name', null, 'class', null]), $receiver.consumer), visit$lambda_4(block_2));
       return Unit;
     };
   }
   function RangeSetting$provideDelegate$lambda(closure$camelCase, closure$titleCase, this$RangeSetting) {
     return function ($receiver) {
-      form($receiver, void 0, void 0, void 0, void 0, RangeSetting$provideDelegate$lambda$lambda(closure$camelCase, closure$titleCase, this$RangeSetting));
+      var block = RangeSetting$provideDelegate$lambda$lambda(closure$camelCase, closure$titleCase, this$RangeSetting);
+      visitTagAndFinalize(new FORM_init(attributesMapOf_0(['action', null, 'enctype', null != null ? enumEncode(null) : null, 'method', null != null ? enumEncode(null) : null, 'class', null]), $receiver), $receiver, visitAndFinalize$lambda_1(block));
       return Unit;
     };
   }
@@ -903,12 +992,10 @@ var output = function (_, Kotlin, $module$kotlinx_html_js) {
           var a_0 = Math_0.min(a, b);
           var b_0 = toDouble(closure$rangeInput.min);
           tmp$_0 = Math_0.max(a_0, b_0);
-        }
-         catch (e) {
+        } catch (e) {
           if (Kotlin.isType(e, NumberFormatException)) {
             tmp$_0 = toDouble(closure$rangeInput.value);
-          }
-           else
+          } else
             throw e;
         }
         var $receiver = tmp$_0;
@@ -920,8 +1007,7 @@ var output = function (_, Kotlin, $module$kotlinx_html_js) {
         this$RangeSetting_0.onUpdate(this$RangeSetting_0.value);
         tmp$_1.value = $receiver;
         closure$textInput.blur();
-      }
-      return Unit;
+      }return Unit;
     };
   }
   function RangeSetting$provideDelegate$lambda_2(this$RangeSetting, closure$rangeInput, closure$textInput) {
@@ -944,8 +1030,7 @@ var output = function (_, Kotlin, $module$kotlinx_html_js) {
       if (match == null) {
         replace_20wsma$result = tmp$_2.toString();
         break replace_20wsma$break;
-      }
-      var lastStart = 0;
+      }var lastStart = 0;
       var length = tmp$_2.length;
       var sb = StringBuilder_init(length);
       do {
@@ -958,8 +1043,7 @@ var output = function (_, Kotlin, $module$kotlinx_html_js) {
        while (lastStart < length && match != null);
       if (lastStart < length) {
         sb.append_ezbsdh$(tmp$_2, lastStart, length);
-      }
-      replace_20wsma$result = sb.toString();
+      }replace_20wsma$result = sb.toString();
     }
      while (false);
     var titleCase = replace_20wsma$result;
@@ -990,8 +1074,7 @@ var output = function (_, Kotlin, $module$kotlinx_html_js) {
   function RangeSetting$Companion_getInstance() {
     if (RangeSetting$Companion_instance === null) {
       new RangeSetting$Companion();
-    }
-    return RangeSetting$Companion_instance;
+    }return RangeSetting$Companion_instance;
   }
   function RangeSetting_init$lambda(it) {
     return Unit;
@@ -1050,8 +1133,7 @@ var output = function (_, Kotlin, $module$kotlinx_html_js) {
   function KeyboardControl$Companion_getInstance() {
     if (KeyboardControl$Companion_instance === null) {
       new KeyboardControl$Companion();
-    }
-    return KeyboardControl$Companion_instance;
+    }return KeyboardControl$Companion_instance;
   }
   KeyboardControl.prototype.isPressed_0 = function ($receiver) {
     var tmp$;
@@ -1281,6 +1363,7 @@ var output = function (_, Kotlin, $module$kotlinx_html_js) {
   package$robots.RobotBase = RobotBase;
   package$robots.SwerveRobot = SwerveRobot;
   package$robots.TankRobot = TankRobot;
+  $$importsForInline$$['kotlinx-html-js'] = $module$kotlinx_html_js;
   var package$settings = _.settings || (_.settings = {});
   package$settings.ButtonSetting = ButtonSetting;
   package$settings.RadioSetting = RadioSetting;

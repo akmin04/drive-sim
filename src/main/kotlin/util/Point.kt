@@ -9,8 +9,8 @@ infix fun Double.xy(that: Double) = Point(this, that)
  * @property y value of the point
  */
 data class Point(
-    var x: Double,
-    var y: Double
+        var x: Double,
+        var y: Double
 ) {
     override fun toString() = "($x, $y)"
 }

@@ -19,10 +19,10 @@ import kotlin.reflect.KProperty
  * @property max value of the setting.
  */
 class RangeSetting(
-    val initialValue: Double,
-    val min: Double,
-    val max: Double,
-    onUpdate: (Double) -> Unit = {}
+        val initialValue: Double,
+        val min: Double,
+        val max: Double,
+        onUpdate: (Double) -> Unit = {}
 ) : Setting<Double>(onUpdate) {
 
     override var value = initialValue
@@ -75,11 +75,11 @@ class RangeSetting(
                 // Cap value in range of min..max
                 this@RangeSetting.value = try {
                     max(
-                        min(
-                            textInput.value.toDouble(),
-                            rangeInput.max.toDouble()
-                        ),
-                        rangeInput.min.toDouble()
+                            min(
+                                    textInput.value.toDouble(),
+                                    rangeInput.max.toDouble()
+                            ),
+                            rangeInput.min.toDouble()
                     )
                 }
                 // Don't update value if new value contains non-numbers

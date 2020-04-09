@@ -1,7 +1,10 @@
 # Drive Sim
 Robot drivetrain simulator using Kotlin/JS
 
-1. Clone repository
-2. Make changes in `src/main/kotlin`
-3. Compile Kotlin to JS by running `./gradlew build`
-4. Open `index.html`
+Tank Drive
+- W/S = Forward/Backward
+- Left Arrow/Right Arrow = Turn Left/Right
+
+Swerve Drive
+- W/A/S/D = Strafe Up/Left/Down/Right
+- Left Arrow/Right Arrow = Turn Left/Right

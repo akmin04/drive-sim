@@ -2,7 +2,9 @@ package settings
 
 import kotlinx.html.*
 import kotlinx.html.dom.append
-import org.w3c.dom.*
+import org.w3c.dom.HTMLFormElement
+import org.w3c.dom.HTMLInputElement
+import org.w3c.dom.get
 import kotlin.browser.document
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
@@ -14,8 +16,8 @@ import kotlin.reflect.KProperty
  * @property options a list of options that the user can select.
  */
 class RadioSetting(
-    private val options: Array<String>,
-    onUpdate: (String) -> Unit = {}
+        private val options: Array<String>,
+        onUpdate: (String) -> Unit = {}
 ) : Setting<String>(onUpdate) {
 
     override var value = options[0]
